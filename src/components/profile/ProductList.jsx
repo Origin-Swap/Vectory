@@ -2,7 +2,7 @@
 import React from "react";
 import products from "../../data/mockProducts";
 import mockUser from "../../data/mockUser";
-import ItemCard from "../Marketplace/ItemCard";
+import ItemCard from "../marketplace/ItemCard";
 
 const ProductList = () => {
   const userWallet = mockUser.wallet;
