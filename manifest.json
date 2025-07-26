@@ -1,0 +1,68 @@
+{
+  "name": "Meet Finance App",
+  "short_name": "MeetFi",
+  "description": "Meet your style in web3",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "white",
+  "theme_color": "white",
+  "icons": [
+    {
+          "src": "https://meetfi.org/icons/icon-512x512.png",
+          "sizes": "192x192",
+          "type": "image/png",
+          "purpose": "any"
+        },
+        {
+          "src": "https://meetfi.org/icons/icon-512x512.png",
+          "sizes": "512x512",
+          "type": "image/png",
+          "purpose": "maskable"
+        }
+  ],
+  "id": "/",
+  "launch_handler": {
+    "client_mode": "web_apps"
+  },
+  "orientation": "portrait",
+  "display_override": [
+    "browser",
+    "fullscreen",
+    "minimal-ui",
+    "standalone",
+    "window-controls-overlay"
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/sc1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "platform": "wide",
+    }
+  ],
+  "categories": [
+    "business",
+    "education",
+    "finance",
+    "news",
+    "productivity",
+    "shopping",
+    "social",
+    "utilities"
+  ],
+  "lang": "en",
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.meetfi.org",
+      "id": "com.meetfi.org"
+    }
+  ],
+  "scope_extensions": [
+    "https://meetfi.org/"
+  ],
+  "dir": "auto"
+}

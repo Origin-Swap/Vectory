@@ -1,0 +1,72 @@
+const products = [
+  {
+    id: 1,
+    name: "Learn Web3",
+    description: "A complete guide to learning Web3 from scratch.",
+    about: "This ebook walks you through the basics of blockchain, Ethereum, and smart contracts. It’s beginner-friendly with examples, exercises, and practical tips to kickstart your Web3 journey.",
+    category: "Ebook",
+    price: 1.5,
+    owner: "0x1234...abcd",
+    image: "https://www.smpn147jkt.sch.id/public/img/ebook/default.png",
+    sales: 10,
+    available: 50,
+    rate: "3.0",
+    star: "⭐⭐⭐",
+    views: 128,
+    likes: 24,
+    createdAt: "2024-07-01"
+  },
+  {
+    id: 2,
+    name: "Crypto Landing Page Template",
+    description: "HTML + CSS template for a crypto project landing page.",
+    about: "A professionally designed landing page built with responsive layout, optimized for SEO, and lightweight performance. Perfect for blockchain startups and token launches.",
+    category: "Template",
+    price: 2.0,
+    owner: "0x1234...abcd",
+    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSd31FRxZwwrjfFxWUEje-ivGevFOkaUPxN7Q&s",
+    sales: 45,
+    available: 50,
+    rate: "4.0",
+    star: "⭐⭐⭐⭐",
+    views: 312,
+    likes: 67,
+    createdAt: "2024-07-05"
+  },
+  {
+    id: 3,
+    name: "Synthwave Music Pack",
+    description: "Original synthwave tracks for your creative projects.",
+    about: "This music pack includes 15 high-quality retro-futuristic synthwave tracks in MP3 and WAV formats. Ideal for games, videos, or personal enjoyment.",
+    category: "Music",
+    price: 1.2,
+    owner: "0x4321...dcba",
+    image: "https://www.promusicpack.com/images/promusicpack-fb.jpg",
+    sales: 20,
+    available: 100,
+    rate: "4.5",
+    star: "⭐⭐⭐⭐⭐",
+    views: 175,
+    likes: 43,
+    createdAt: "2024-07-10"
+  },
+  {
+    id: 4,
+    name: "Digital Art - Glitch Portrait",
+    description: "Unique glitch art portrait in HD.",
+    about: "A modern take on digital glitch art, this HD portrait is suitable for display, NFT minting, or as part of an artistic collection. Resolution: 4K.",
+    category: "Digital Art",
+    price: 0.8,
+    owner: "0xabcdef...",
+    image: "https://www.befunky.com/images/prismic/4a1048f4-5b7c-4097-90a7-44e4aa1cf0de_city-at-night-underpainting-dlx.jpeg?auto=avif,webp&format=jpg&width=863",
+    sales: 8,
+    available: 30,
+    rate: "3.5",
+    star: "⭐⭐⭐½",
+    views: 89,
+    likes: 17,
+    createdAt: "2024-07-12"
+  }
+];
+
+export default products;

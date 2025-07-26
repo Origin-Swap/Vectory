@@ -1,0 +1,86 @@
+// src/App.jsx
+
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LoadingScreen from './components/LoadingScreen';
+import SidebarMenu from './components/Menu/SidebarMenu';
+import BottomMenu from './components/Menu/BottomMenu';
+import HomePage from './pages/Home';
+import CreateItem from './pages/CreateItem';
+import ItemDetails from './pages/ItemDetails';
+import Dashboard from './pages/profile';
+import MyItems from './pages/profile/MyItems';
+import Checkout from './pages/Cart';
+
+import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
+import { WagmiProvider } from 'wagmi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { wagmiConfig } from './context/connector';
+
+const queryClient = new QueryClient();
+
+// ⬇️ Layout component harus berada DI DALAM LayoutProvider
+const Layout = () => {
+  const { isSidebarVisible } = useLayoutContext();
+
+  useEffect(() => {
+    navigator.serviceWorker.ready
+      .then((registration) => registration.sync.register('sync-user-actions'))
+      .then(() => {
+        console.log('Background Sync registered');
+      })
+      .catch((error) => {
+        console.error('Background Sync registration failed:', error);
+      });
+  }, []);
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      {/* Sidebar menu untuk desktop */}
+      <div className="hidden lg:flex">
+         <SidebarMenu />
+       </div>
+
+      {/* Main content area */}
+      <div>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/create-items" element={<CreateItem />} />
+          <Route path="/details/:id" element={<ItemDetails />} />
+          <Route path="/details/:id/checkout" element={<Checkout />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/my-items" element={<MyItems />} />
+        </Routes>
+      </div>
+
+      {/* Bottom menu untuk mobile */}
+      <BottomMenu />
+    </div>
+  );
+};
+
+// ⬇️ Perbaikan: LayoutProvider dan WagmiProvider berada di luar Layout
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // Simulasi waktu loading selama 3 detik
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <LayoutProvider>
+      <WagmiProvider config={wagmiConfig}>
+        <QueryClientProvider client={queryClient}>
+          <Router>
+            {isLoading ? <LoadingScreen /> : <Layout />}
+          </Router>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </LayoutProvider>
+  );
+};
+
+export default App;
