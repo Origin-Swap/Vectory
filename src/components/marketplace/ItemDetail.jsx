@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AddToCartButton from "./AddToCartButton";
 import mockUser from "../../data/mockUser";
 import products from "../../data/mockProducts";
-import ItemCard from "../Marketplace/ItemCard";
+import ItemCard from "./ItemCard";
 
 const ItemDetail = ({ item }) => {
   const navigate = useNavigate();
