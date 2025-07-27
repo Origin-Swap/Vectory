@@ -1,7 +1,6 @@
 import React from "react";
 import Topbar from '../components/Menu/TopBar';
 import ItemList from "../components/marketplace/ItemList";
-import { BsShop } from "react-icons/bs";
 
 const Home = () => {
   return (
