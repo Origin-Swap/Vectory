@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useAccount, useDisconnect } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { base } from 'viem/chains';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -11,12 +10,12 @@ import WalletIcon from '../../assets/wallet';
 import DisconnectIcon from '../../assets/disconnect';
 import DarkModeToggle from './../useDarkMode';
 import NotifIcon from '../../assets/notif';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const TopBar = () => {
   const navigate = useNavigate();
   const { isConnected, address } = useAccount();
-  const { disconnect } = useDisconnect(); // Gunakan fungsi disconnect dari wagmi
-  const { open } = useWeb3Modal();
+  const { disconnect } = useDisconnect();
   const [profileData, setProfileData] = useState({
     avatar: '',
     name: '',
@@ -89,7 +88,6 @@ const TopBar = () => {
         alt="Project Logo"
         className="hidden h-10 mr-1 dark:block"
       />
-       Vectory
       </p>
       </div>
 
@@ -134,25 +132,14 @@ const TopBar = () => {
         </div>
 
         {/* Tombol Connect/Disconnect Wallet */}
-        <button
-          onClick={isConnected ? handleDisconnectWallet : handleConnectWallet}
-          className="bg-gray-100 text-gray-800 dark:bg-transparent p-2 rounded-full flex items-center"
-          aria-label={isConnected ? "Disconnect Wallet" : "Connect Wallet"}
-        >
-          {isConnected ? (
-            <div className="flex items-center">
-              {loading ? (
-                'Loading...'
-              ) : (
-                <>
-                  <DisconnectIcon className="h-6 w-6 dark:fill-white" /> {/* Tambahkan ikon Disconnect */}
-                </>
-              )}
-            </div>
-          ) : (
-            <WalletIcon className="h-6 w-6" />
-          )}
-        </button>
+        <ConnectButton
+            accountStatus={{
+              smallScreen: 'avatar',
+              largeScreen: 'full',
+            }}
+            chainStatus="icon"
+            showBalance={false}
+          />
       </div>
     </div>
   );

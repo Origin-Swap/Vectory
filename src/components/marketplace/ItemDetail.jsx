@@ -72,7 +72,7 @@ const ItemDetail = ({ item }) => {
                 <AddToCartButton item={item} />
                 <button
                   onClick={handleBuyNow}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg text-lg transition"
+                  className="w-full bg-yellow-400 hover:bg-green-700 text-black py-2 rounded-lg text-lg transition"
                 >
                   Checkout
                 </button>

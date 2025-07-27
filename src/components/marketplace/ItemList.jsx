@@ -55,7 +55,7 @@ const ItemList = () => {
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 border text-sm md:text-lg border-gray-300 rounded"
+            className="px-4 py-3 border border-gray-300 rounded-xl"
           >
             {categories.map((cat, idx) => (
               <option key={idx} value={cat}>

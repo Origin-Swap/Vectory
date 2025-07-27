@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { base } from 'viem/chains';
 import { BsCart4 } from "react-icons/bs";
 import { IoCreateOutline } from "react-icons/io5";
 import { RxDashboard } from "react-icons/rx";
 import axios from 'axios';
 import { API_URL } from '../../config/ApiUrl';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const Navbar = () => {
   const { isConnected, address } = useAccount();
   const { disconnect } = useDisconnect();
-  const { open } = useWeb3Modal();
   const location = useLocation();
   const [profileData, setProfileData] = useState({ avatar: '', name: '' });
   const [loading, setLoading] = useState(true);
@@ -64,7 +63,7 @@ const Navbar = () => {
           alt="Logo"
           className="h-8 hidden dark:block"
         />
-        <span className="text-xl font-bold text-black dark:text-white">Vectory</span>
+        <span className="text-xl font-bold text-black dark:text-white">Kraftera</span>
       </div>
 
       {/* Navigation Links */}
@@ -86,35 +85,16 @@ const Navbar = () => {
       </div>
 
       {/* Wallet Button */}
-      <div className="flex items-center space-x-2">
-        <button
-          onClick={handleConnectWallet}
-          className="bg-gray-200 dark:bg-gray-700 text-black dark:text-white py-1 px-3 rounded-full text-sm"
-        >
-          {isConnected ? (
-            loading ? (
-              'Loading...'
-            ) : (
-              <div className="flex items-center gap-2">
-                {profileData.avatar ? (
-                  <img
-                    src={profileData.avatar.trim() || defaultAvatar}
-                    alt={profileData.name || defaultName}
-                    className="h-6 w-6 rounded-full"
-                  />
-                ) : (
-                  <div className="h-6 w-6 bg-gray-400 rounded-full" />
-                )}
-                <span className="max-w-[80px] truncate">
-                  {profileData.name?.slice(0, 10) || `${address.slice(0, 4)}...${address.slice(-3)}`}
-                </span>
-              </div>
-            )
-          ) : (
-            'Connect'
-          )}
-        </button>
-      </div>
+      <div className="relative font-sans text-sm"> {/* Tambahan font dan text size */}
+            <ConnectButton
+              accountStatus={{
+                smallScreen: 'avatar',
+                largeScreen: 'full',
+              }}
+              chainStatus="icon"
+              showBalance={false}
+            />
+          </div>
     </nav>
   );
 };

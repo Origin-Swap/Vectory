@@ -15,9 +15,28 @@ import Checkout from './pages/Cart';
 import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
 import { WagmiProvider } from 'wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { wagmiConfig } from './context/connector';
+import { supra } from './context/chains';
+import { base } from 'viem/chains';
+import '@rainbow-me/rainbowkit/styles.css';
+import {
+  getDefaultConfig,
+  RainbowKitProvider,
+  darkTheme,
+  lightTheme
+} from '@rainbow-me/rainbowkit';
 
 const queryClient = new QueryClient();
+
+// Project ID WalletConnect
+const projectId = '65e900325f6440b81073eb1b10270843'; //mainweb
+// const projectId = '92a84f411cd537d466fbaa048af85b42'; // local
+
+const config = getDefaultConfig({
+  appName: 'Vectory',
+  projectId: projectId,
+  chains: [base],
+  ssr: true,
+});
 
 // ⬇️ Layout component harus berada DI DALAM LayoutProvider
 const Layout = () => {
@@ -35,7 +54,14 @@ const Layout = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider
+              theme={lightTheme({
+                accentColor: '#837AF5',
+                borderRadius: 'large',
+              })}
+            >
       {/* Sidebar menu untuk desktop */}
       <div className="hidden lg:flex">
          <SidebarMenu />
@@ -55,7 +81,9 @@ const Layout = () => {
 
       {/* Bottom menu untuk mobile */}
       <BottomMenu />
-    </div>
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 };
 
@@ -72,13 +100,9 @@ const App = () => {
 
   return (
     <LayoutProvider>
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
           <Router>
             {isLoading ? <LoadingScreen /> : <Layout />}
           </Router>
-        </QueryClientProvider>
-      </WagmiProvider>
     </LayoutProvider>
   );
 };

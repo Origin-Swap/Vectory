@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /admin/
 Disallow: /dashboard/
 
-Sitemap: https://vectory.xyz/sitemap.xml
+Sitemap: https://kraftera.xyz/sitemap.xml
