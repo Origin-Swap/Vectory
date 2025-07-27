@@ -1,9 +1,16 @@
 // 📁 src/pages/profile/index.jsx
 import React from 'react';
-import ProfileDashboard from '../../components/profile/ProfileDashboard';
+import ProfileDashboard from '../../components/profile/Portfolio';
 
 const ProfilePage = () => {
-  return <ProfileDashboard />;
+  return (
+    <div className="w-full">
+    <div className="md:hidden block">
+      <Topbar />
+    </div>
+      <ProfileDashboard />
+    </div>
+  );
 };
 
 export default ProfilePage;

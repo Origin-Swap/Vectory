@@ -8,7 +8,8 @@ import BottomMenu from './components/Menu/BottomMenu';
 import HomePage from './pages/Home';
 import CreateItem from './pages/CreateItem';
 import ItemDetails from './pages/ItemDetails';
-import Dashboard from './pages/profile';
+import Profile from './pages/profile';
+import Shop from './pages/shop';
 import MyItems from './pages/profile/MyItems';
 import Checkout from './pages/Cart';
 
@@ -74,7 +75,8 @@ const Layout = () => {
           <Route path="/create-items" element={<CreateItem />} />
           <Route path="/details/:id" element={<ItemDetails />} />
           <Route path="/details/:id/checkout" element={<Checkout />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/shop" element={<Shop />} />
           <Route path="/my-items" element={<MyItems />} />
         </Routes>
       </div>

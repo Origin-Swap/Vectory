@@ -8,13 +8,16 @@ import DefaultAvatar from './avatar2.png';
 import MessageIcon from '../../assets/message';
 import WalletIcon from '../../assets/wallet';
 import DisconnectIcon from '../../assets/disconnect';
+import { HiOutlineChatAlt2 } from "react-icons/hi";
 import DarkModeToggle from './../useDarkMode';
 import NotifIcon from '../../assets/notif';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
+
 
 const TopBar = () => {
   const navigate = useNavigate();
   const { isConnected, address } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const { disconnect } = useDisconnect();
   const [profileData, setProfileData] = useState({
     avatar: '',
@@ -54,10 +57,11 @@ const TopBar = () => {
   }, [address]);
 
   const handleConnectWallet = () => {
-    if (!isConnected) {
-      open();
+    if (!isConnected && openConnectModal) {
+      openConnectModal();
     }
   };
+
 
   const handleDisconnectWallet = () => {
     disconnect();
@@ -92,19 +96,26 @@ const TopBar = () => {
       </div>
 
       {/* Tombol Connect Wallet dan Dropdown Chain di kanan */}
-      <div className="flex items-center space-x-2 mr-2">
-        {/* Dropdown untuk memilih chain
-        <div className="relative">
-          <DarkModeToggle />
-        </div>   */}
-        <div className="relative">
-          <button
-          className="flex bg-gray-100 dark:bg-transparent p-1 rounded-full"
-          onClick={handleNotif}
-          aria-label="View Notifications"
-          >
-            <NotifIcon className="h-6 w-6 dark:fill-white" loading="lazy" />
-          </button>
+      <div className="flex items-center gap-2">
+        <div className="flex space-x-2 relative">
+        {isConnected && (
+          <>
+            <button
+              className="flex bg-gray-100 dark:bg-transparent p-1 rounded-full"
+              aria-label="View Chat"
+            >
+              <HiOutlineChatAlt2 className="h-6 w-6 text-black" loading="lazy" />
+            </button>
+
+            <button
+              className="flex bg-gray-100 dark:bg-transparent p-1 rounded-full"
+              onClick={handleNotif}
+              aria-label="View Notifications"
+            >
+              <NotifIcon className="h-6 w-6 dark:fill-white" loading="lazy" />
+            </button>
+          </>
+        )}
         </div>
         <div className="relative">
           <button
@@ -131,16 +142,22 @@ const TopBar = () => {
           )}
         </div>
 
-        {/* Tombol Connect/Disconnect Wallet */}
-        <ConnectButton
-            accountStatus={{
-              smallScreen: 'avatar',
-              largeScreen: 'full',
-            }}
+        {isConnected ? (
+          <ConnectButton
+            accountStatus="avatar"
             chainStatus="icon"
             showBalance={false}
           />
-      </div>
+        ) : (
+          <button
+            onClick={handleConnectWallet}
+            className="flex items-center justify-center p-2 rounded-full bg-gray-200 hover:bg-blue-600 transition"
+            aria-label="Connect Wallet"
+          >
+            <WalletIcon className="h-5 w-5 text-white" />
+          </button>
+        )}
+        </div>
     </div>
   );
 };

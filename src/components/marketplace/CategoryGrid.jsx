@@ -27,7 +27,7 @@ const CategoryGrid = ({ onSelectCategory, selectedCategory }) => {
           src={cat.icon}
           alt={cat.name}
           className="w-12 h-12 mb-2 object-contain"
-          loading="lazy"
+          loading="eager" fetchpriority="high"
         />
         <span>{cat.name}</span>
       </div>

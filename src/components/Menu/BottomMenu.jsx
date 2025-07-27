@@ -96,18 +96,18 @@ const BottomMenu = () => {
       >
         <BsCart4 className="w-6 h-6 text-black" />
       </Link>
-         <Link
+         {/* <Link
           to="/create-items"
           className={`flex flex-col items-center ${
             isActive('/create-items') ? 'border p-1 rounded-md border-[#14b8a6]' : ''
           }`}
         >
           <IoCreateOutline className="w-6 h-6 dark:fill-white" />
-        </Link>
+        </Link> */}
         <Link
-          to="/dashboard"
+          to="/profile"
           className={`flex flex-col items-center ${
-            isActive('/dashboard') ? 'border p-1 rounded-md border-[#14b8a6]' : ''
+            isActive('/profile') ? 'border p-1 rounded-md border-[#14b8a6]' : ''
           }`}
         >
           <RxDashboard className="w-6 h-6 text-black" />

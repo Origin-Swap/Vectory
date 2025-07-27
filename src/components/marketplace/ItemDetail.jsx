@@ -37,7 +37,7 @@ const ItemDetail = ({ item }) => {
             src={item.image}
             alt={item.name}
             className="w-full h-full object-cover rounded-lg shadow"
-            loading="lazy"
+            loading="eager" fetchpriority="high"
           />
         </div>
 

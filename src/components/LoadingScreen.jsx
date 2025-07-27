@@ -1,19 +1,12 @@
 import React from 'react';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
-const LottieAnimation = () => {
+const LoadingScreen = () => {
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <DotLottieReact
-        src="https://lottie.host/a1191570-a60d-4288-9c4a-fb5c97614cee/Mafc86Lhh9.lottie"
-        loop
-        autoplay
-        style={{ width: '250px', height: '250px' }}
-      />
+    <div className="flex flex-col items-center justify-center h-screen bg-white space-y-4">
+      <img src="/images/logo2.png" alt="Kraftera Logo" className="w-16 h-16 animate-bounce" />
+      <p className="text-gray-600 text-sm">Loading Kraftera...</p>
     </div>
   );
 };
 
-
-
-export default LottieAnimation;
+export default LoadingScreen;

@@ -65,7 +65,7 @@ const PromotionSlider = () => {
               src={promo.banner}
               alt={promo.title}
               className="w-full h-32 object-cover md:h-56"
-              loading="lazy"
+              loading="eager" fetchpriority="high"
             />
             <div className="absolute top-0 left-0 w-full h-full flex flex-col-2 md:flex-row items-center p-6 text-black">
               {/* Bagian teks */}
@@ -83,7 +83,7 @@ const PromotionSlider = () => {
                   src={promo.image}
                   alt={promo.title}
                   className="h-40 md:h-64 object-contain rounded-lg"
-                  loading="lazy"
+                  loading="eager" fetchpriority="high"
                 />
               </div>
             </div>

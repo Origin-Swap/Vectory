@@ -13,7 +13,7 @@ const ItemCard = ({ item }) => {
       src={item.image}
       alt={item.name}
       className="w-full aspect-[4/3] object-contain rounded mb-3 bg-white"
-      loading="lazy"
+      loading="eager" fetchpriority="high"
     />
       <div className="md:text-sm text-xs text-gray-500">{item.category}</div>
       <h3 className="md:text-md text-sm text-yellow-600 font-bold">{item.name}</h3>

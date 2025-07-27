@@ -1,130 +1,120 @@
-import React, { useState } from "react";
-import { FaStar } from "react-icons/fa";
-import mockUser from "../../data/mockUser";
-import { MdOutlinePersonAddAlt } from "react-icons/md";
-import { RiUserUnfollowLine } from "react-icons/ri";
-import { MdOutlineChat } from "react-icons/md";
-import ProductList from "./ProductList";
-import SalesHistory from "./SalesHistory";
-import PurchaseHistory from "./PurchaseHistory";
-import PointHistory from "./PointHistory";
+import React from "react";
+import { Link } from "react-router-dom";
+import { FaStar, FaShareAlt, FaHeart, FaPlus } from "react-icons/fa";
 
+const StorePage = () => {
+  const store = {
+    name: "Synthwave Store",
+    description: "Original synthwave music, templates & visual assets for creators.",
+    banner: "/images/store-banner.webp",
+    avatar: "/images/avatar2.png",
+    stats: {
+      followers: 120,
+      items: 34,
+      rating: 4.8,
+    },
+    products: [
+      {
+        id: 1,
+        name: "Synthwave Music Pack",
+        category: "Music",
+        image: "/images/products/music-pack.webp",
+        price: "1.2 USDC",
+        rating: 5,
+        likes: 42,
+      },
+      {
+        id: 2,
+        name: "Digital Art - Glitch Portrait",
+        category: "Digital Art",
+        image: "/images/products/glitch-art.webp",
+        price: "0.8 USDC",
+        rating: 4.5,
+        likes: 17,
+      },
+    ],
+  };
 
-const ProfileDashboard = () => {
-  const [activeTab, setActiveTab] = useState("products");
-  const user = mockUser;
-  const [isFollowing, setIsFollowing] = useState(false);
-
-  const tabs = [
-    { key: "products", label: "Products" },
-    { key: "sales", label: "Sales History" },
-    { key: "purchases", label: "Purchase History" },
-    { key: "points", label: "Point History" },
-  ];
+  // (Opsional) Ganti ini dengan status apakah user adalah pemilik toko
+  const userIsOwner = true;
 
   return (
-    <div className="mx-auto">
+    <div className="max-w-6xl mx-auto px-4 py-6">
       {/* Banner */}
-      {/* Wrapper utama relative */}
-      <div className="relative mb-16">
-        {/* Banner */}
-        <div className="h-40 md:h-52 rounded-b-lg shadow overflow-hidden">
+      <div className="relative w-full h-48 rounded-xl overflow-hidden mb-6">
+        <img
+          src={store.banner}
+          alt="Store Banner"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute bottom-0 left-4 flex items-center space-x-4 mb-4">
           <img
-            src={user.banner}
-            alt="Banner"
-            className="w-full h-full object-cover"
-            loading="lazy"
+            src={store.avatar}
+            alt="Store Avatar"
+            className="w-16 h-16 rounded-full border-4 border-white shadow"
           />
-        </div>
-
-        {/* Avatar di luar banner, tapi masih dalam relative parent */}
-        <div className="absolute -bottom-14 left-4 md:left-6 z-10">
-          <img
-            src={user.avatar}
-            alt="User Avatar"
-            className="w-24 h-24 bg-white md:w-28 md:h-28 rounded-full object-cover border-4 border-white shadow-md"
-            loading="lazy"
-          />
-        </div>
-      </div>
-
-
-      {/* Info Section */}
-      <div className="px-4 md:px-6 -mt-22">
-      <div className="flex items-center justify-between gap-4">
-        <h2 className="flex items-center text-2xl font-bold">{user.name}<img src="/images/bagde/contstributor.png" loading="leazy" className="w-6 h-6 ml-2 "/></h2>
-      </div>
-
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-4 text-sm text-gray-700">
-          <div className="gap-x-2"><strong>Products:</strong> {user.products}</div>
-          <div className="gap-x-2"><strong>Following:</strong> {user.following}</div>
-          <div className="gap-x-2"><strong>Followers:</strong> {user.followers}</div>
-          <div className="flex items-center gap-1">
-            <strong>Rating:</strong> <FaStar className="text-yellow-400" /> {user.rating}
+          <div>
+            <h1 className="text-xl font-bold text-white">{store.name}</h1>
+            <p className="text-sm text-white">{store.description}</p>
           </div>
-          <div className="gap-x-2"><strong>Joined:</strong> {user.joinDate}</div>
-          <div className="gap-x-2"><strong>Points:</strong> {user.points}</div>
         </div>
       </div>
 
-      <div className="flex gap-x-2 mt-4 px-4 md:px-6">
-      <button
-        onClick={() => setIsFollowing(!isFollowing)}
-        className={`flex items-center gap-2 px-4 py-1 text-sm rounded-full border transition ${
-          isFollowing
-            ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            : "bg-blue-600 text-white hover:bg-blue-700"
-        }`}
-      >
-        {isFollowing ? (
-          <>
-            <RiUserUnfollowLine className="text-lg" />
-            Unfollow
-          </>
-        ) : (
-          <>
-            <MdOutlinePersonAddAlt className="text-lg" />
+      {/* Stats & Buttons */}
+      <div className="flex flex-wrap justify-between items-center mb-6">
+        <div className="flex space-x-6 text-sm text-gray-600 dark:text-gray-300">
+          <span><strong>{store.stats.followers}</strong> Followers</span>
+          <span><strong>{store.stats.items}</strong> Items</span>
+          <span className="flex items-center gap-1">
+            <FaStar className="text-yellow-400" />
+            {store.stats.rating}
+          </span>
+        </div>
+
+        <div className="flex gap-2">
+          <button className="px-4 py-1 border rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
             Follow
-          </>
-        )}
-      </button>
-      <button
-        className="flex border border-gray-500 items-center gap-2 px-4 py-1 text-sm rounded-full border transition"
-      >
-      <MdOutlineChat className="text-lg" />
-      Chat
-      </button>
+          </button>
+          <button className="p-2 border rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <FaShareAlt />
+          </button>
+          {userIsOwner && (
+            <Link to="/create-items">
+              <button className="flex items-center px-4 py-1 bg-blue-500 text-white text-sm rounded-full hover:bg-blue-600">
+                <FaPlus className="mr-1" />
+                Add Product
+              </button>
+            </Link>
+          )}
+        </div>
       </div>
 
-      {/* Tabs */}
-      <div className="mt-4 ">
-        <div className="flex border-b border-t px-4 md:px-6 mb-4 gap-x-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2 text-sm font-medium ${
-                activeTab === tab.key
-                  ? "text-blue-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Tab Content */}
-        <div className="bg-white border p-4 rounded shadow-sm">
-        {activeTab === "products" && <ProductList />}
-        {activeTab === "sales" && <SalesHistory />}
-        {activeTab === "purchases" && <PurchaseHistory />}
-        {activeTab === "points" && <PointHistory />}
-        </div>
+      {/* Product Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {store.products.map((product) => (
+          <div
+            key={product.id}
+            className="border rounded-lg p-3 bg-white dark:bg-gray-900 shadow-sm"
+          >
+            <img
+              src={product.image}
+              alt={product.name}
+              className="w-full h-40 object-cover rounded-md mb-3"
+            />
+            <h2 className="text-md font-semibold">{product.name}</h2>
+            <p className="text-xs text-gray-500">{product.category}</p>
+            <div className="mt-2 flex justify-between items-center text-sm">
+              <span className="font-bold text-green-600">{product.price}</span>
+              <span className="flex items-center gap-1">
+                <FaHeart className="text-red-500" />
+                {product.likes}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default ProfileDashboard;
+export default StorePage;
