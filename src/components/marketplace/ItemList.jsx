@@ -4,15 +4,17 @@ import ItemCard from "./ItemCard";
 import products from "../../data/mockProducts";
 import PromotionSlider from "./PromotionSlider";
 import CategoryGrid from "./CategoryGrid";
+import { HiSearch } from "react-icons/hi";
+import { BiCategory } from "react-icons/bi";
 
 
 const ItemList = () => {
   const [activeTab, setActiveTab] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Product");
+  const [selectedCategory, setSelectedCategory] = useState("All Category");
 
   const categories = [
-    "All Product",
+    "All Category",
     "Ebook",
     "Template",
     "Digital Art",
@@ -25,7 +27,7 @@ const ItemList = () => {
   const filteredProducts = products
     .filter((item) => {
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === "All Product" || item.category === selectedCategory;
+      const matchesCategory = selectedCategory === "All Category" || item.category === selectedCategory;
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
@@ -50,29 +52,38 @@ const ItemList = () => {
         </div>
 
         {/* Filter dan Search */}
-        <div className="flex mb-4 justify-between items-center gap-x-2">
-        <div className="flex flex-wrap items-center md:hidden block">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-3 border border-gray-300 rounded-xl"
-          >
-            {categories.map((cat, idx) => (
-              <option key={idx} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+        <div className="flex flex-col md:flex-row mb-4 justify-between items-stretch md:items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 md:hidden block">
+          <div className="flex items-center gap-1">
+            <BiCategory className="w-5 h-5 text-gray-600" />
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="py-3 font-bold"
+            >
+              {categories.map((cat, idx) => (
+                <option key={idx} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+
+          <div className="relative w-full md:w-1/2">
+            <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
+              <HiSearch className="w-5 h-5" />
+            </span>
+            <input
+              type="text"
+              placeholder="Search items"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
 
-        {/* Search */}
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-1/2 px-3 py-2 border border-gray-300 rounded-xl"
-          />
         </div>
 
         {/* Produk */}

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen';
 import SidebarMenu from './components/Menu/SidebarMenu';
+import Topbar from './components/Menu/TopBar'; // pastikan path ini benar
 import BottomMenu from './components/Menu/BottomMenu';
 import HomePage from './pages/Home';
 import CreateItem from './pages/CreateItem';
@@ -12,6 +13,8 @@ import Profile from './pages/profile';
 import Shop from './pages/shop';
 import MyItems from './pages/profile/MyItems';
 import Checkout from './pages/Cart';
+import NotifPage from './components/Notif';
+import Footer from "./pages/Footer";
 
 import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
 import { WagmiProvider } from 'wagmi';
@@ -67,6 +70,9 @@ const Layout = () => {
       <div className="hidden lg:flex">
          <SidebarMenu />
        </div>
+       <div className="block md:hidden">
+         <Topbar />
+       </div>
 
       {/* Main content area */}
       <div>
@@ -78,7 +84,9 @@ const Layout = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/my-items" element={<MyItems />} />
+          <Route path="/notification" element={<NotifPage />} />
         </Routes>
+        <Footer />
       </div>
 
       {/* Bottom menu untuk mobile */}
