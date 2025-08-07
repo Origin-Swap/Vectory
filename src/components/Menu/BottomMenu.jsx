@@ -73,7 +73,7 @@ const BottomMenu = () => {
         }`}
       >
         <TopBar />
-      </div>  */}
+      </div> 
 
       <div
         className={`lg:hidden  fixed bottom-0 w-full bg-gray-100 dark:bg-[#334155] rounded-t-3xl text-black flex justify-around p-2 items-center border-t transition-transform duration-100 ${
@@ -87,7 +87,7 @@ const BottomMenu = () => {
         }`}
       >
         <GrHomeRounded className="w-6 h-6 text-black" />
-      </Link> */}
+      </Link>
       <Link
         to="/"
         className={`flex flex-col items-center ${
@@ -103,7 +103,7 @@ const BottomMenu = () => {
           }`}
         >
           <IoCreateOutline className="w-6 h-6 dark:fill-white" />
-        </Link> */}
+        </Link>
         <Link
           to="/profile"
           className={`flex flex-col items-center ${
@@ -119,8 +119,8 @@ const BottomMenu = () => {
           }`}
         >}
           <img src={profileData.avatar || defaultAvatar} alt="Preview" className="w-7 h-7 dark:fill-white rounded-full border-2 border-slate-200" />
-        </Link> */}
-      </div>
+        </Link>
+      </div> */}
     </>
   );
 };

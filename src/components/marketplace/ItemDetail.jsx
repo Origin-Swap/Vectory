@@ -90,38 +90,37 @@ const ItemDetail = ({ item }) => {
   );
 
   return (
-    <div className="p-4 max-w-5xl mx-auto font-sans">
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Gambar */}
-        <div className="md:w-1/2">
+    <div className="md:p-4 mt-16 p-2 bg-gray-100 mx-auto font-sans">
+    <div className="flex flex-col md:flex-row gap-4">
+      {/* Bagian Produk */}
+      <div className="md:w-4/6 w-full bg-white rounded-lg shadow p-4 md:p-6 flex flex-col md:flex-row gap-6">
+        {/* Gambar Produk */}
+        <div className="md:w-1/3 w-full">
           <img
             src={item.image}
             alt={item.name}
-            className="w-full h-full object-cover rounded-lg shadow"
+            className="w-full h-full object-cover rounded-2xl"
             loading="eager"
           />
         </div>
 
         {/* Info Produk */}
-        <div className="md:w-1/2 flex flex-col justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">{item.name}</h1>
-            <p className="text-gray-700 text-base">{item.description}</p>
+        <div className="md:w-2/3 w-full flex flex-col justify-between">
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold text-gray-800">[{item.category}] {item.name}</h1>
+            <p className="text-base text-gray-700">{item.description}</p>
 
-            <div className="mt-4 flex items-center gap-2 text-yellow-500 text-xl">
+            <div className="flex items-center gap-2 text-yellow-500 text-xl">
               <span>{item.star}</span>
               <span className="text-sm text-gray-500">({item.rate})</span>
             </div>
 
-            <div className="mt-6 space-y-2 text-sm text-gray-600">
-              <div className="text-5xl font-bold text-yellow-500 mb-4">
+            <div className="mt-4 space-y-1 text-sm text-gray-600">
+              <div className="text-5xl font-bold text-yellow-500 mb-2">
                 {item.price} USDC
               </div>
               <p>
                 <strong>Owner:</strong> {item.owner}
-              </p>
-              <p>
-                <strong>Category:</strong> {item.category}
               </p>
               <p>
                 <strong>Available:</strong> {item.available} items
@@ -142,11 +141,11 @@ const ItemDetail = ({ item }) => {
 
           {!isOwner && (
             <div className="mt-6">
-              <div className="flex gap-x-2">
+              <div className="flex flex-col md:flex-row gap-3">
                 <AddToCartButton item={item} />
                 <button
                   onClick={handleBuyNow}
-                  className="w-full bg-yellow-400 hover:bg-green-700 text-black py-2 rounded-lg text-lg transition"
+                  className="w-full bg-yellow-400 hover:bg-green-600 text-black py-2 rounded-lg text-lg transition"
                 >
                   Checkout
                 </button>
@@ -156,50 +155,73 @@ const ItemDetail = ({ item }) => {
         </div>
       </div>
 
+      {/* Bagian Seller */}
+      {seller && (
+        <div className="md:w-2/6 w-full bg-white rounded-lg shadow p-4 md:p-6">
+          <h2 className="text-sm font-semibold text-gray-800 mb-3 border-b pb-2">
+            Seller Info
+          </h2>
+
+          <div className="flex flex-col items-center gap-3 text-center">
+            <img
+              src={seller.avatar}
+              alt="Seller Avatar"
+              className="w-16 h-16 rounded-full object-cover border"
+            />
+
+            <p className="text-lg font-bold">{seller.name}</p>
+            <p className="text-sm text-gray-600">{seller.bio}</p>
+
+            {/* Followers dan Following */}
+            <div className="flex gap-6 mt-2 text-sm text-gray-700">
+              <div>
+                <span className="font-bold">{seller.followers}</span> Followers
+              </div>
+              <div>
+                <span className="font-bold">{seller.following}</span> Following
+              </div>
+            </div>
+
+            {/* Tombol Chat dan Follow */}
+            <div className="flex gap-3 mt-4 w-full">
+              <button
+                // onClick={handleChat}
+                className="w-1/2 text-gray-800 py-2 px-4 rounded-lg text-sm transition"
+              >
+                Chat
+              </button>
+              <button
+                // onClick={handleFollow}
+                className="w-1/2 bg-yellow-400 hover:bg-yellow-500 text-black py-2 px-4 rounded-lg text-sm font-semibold transition"
+              >
+                Follow
+              </button>
+              <button
+                // onClick={handleFollow}
+                className="w-1/2 text-black py-2 px-4 rounded-lg text-sm font-semibold transition"
+              >
+                Share
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+
+
       {/* About Product */}
       {item.about && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">About Product</h2>
+        <div className="mt-6 bg-white p-4 md:p-6 rounded-xl">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-2 border-b-2">About Product</h2>
           <p className="text-gray-700 leading-relaxed whitespace-pre-line">
             {item.about}
           </p>
         </div>
       )}
 
-      {/* About Seller */}
-      {seller && (
-        <div className="mt-12 border-t pt-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2">About Seller</h2>
-          <div className="flex items-center gap-4">
-            <img
-              src={seller.avatar}
-              alt="Seller Avatar"
-              className="w-16 h-16 rounded-full object-cover border"
-            />
-            <div>
-              <p className="text-lg font-bold">{seller.name}</p>
-              <p className="text-sm text-gray-600">{seller.bio}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Other Items */}
-      {otherItems.length > 0 && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-            More from this Seller
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {otherItems.map((p) => (
-              <ItemCard key={p.id} item={p} />
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* ⭐ Ulasan Pembeli */}
-      <div className="mt-12 border-t pt-6">
+      <div className="mt-6 bg-white p-4 md:p-6 rounded-xl">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           Buyer Review
         </h2>
@@ -220,6 +242,20 @@ const ItemDetail = ({ item }) => {
           ))}
         </div>
       </div>
+
+      {/* Other Items */}
+      {otherItems.length > 0 && (
+        <div className="mt-6 bg-white p-4 md:p-6 rounded-xl">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            More from this Seller
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-4">
+            {otherItems.map((p) => (
+              <ItemCard key={p.id} item={p} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

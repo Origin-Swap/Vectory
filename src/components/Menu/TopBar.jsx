@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAccount, useDisconnect } from 'wagmi';
 import { base } from 'viem/chains';
 import axios from 'axios';
@@ -33,6 +34,7 @@ const TopBar = () => {
 
   // State untuk mengontrol visibilitas dropdown
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const defaultAvatar = '/images/avatar/Av11.png';
 
   // Daftar chain yang tersedia
   const chains = [
@@ -78,7 +80,7 @@ const TopBar = () => {
   const defaultName = 'Unknown';
 
   return (
-    <div className="w-full bg-[#f5f5f5] dark:bg-[#020617] text-white flex items-center justify-between px-2 py-1 lg:p-2 mb-2">
+    <div className="fixed top-0 left-0 w-full z-50 py-2 bg-[#f5f5f5] dark:bg-[#020617] text-white flex items-center justify-between px-2 py-1 lg:p-2 mb-2">
       {/* Logo di kiri */}
       <div className="flex items-center ml-1">
       <p className="flex items-center text-xl text-black dark:text-white font-semibold">
@@ -93,11 +95,18 @@ const TopBar = () => {
         className="hidden h-10 mr-1 dark:block"
       />
       </p>
+      <div className="flex-grow max-w-md mx-auto mx-2">
+       <input
+        type="text"
+        placeholder="Search..."
+        className="text-black w-full p-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+       />
+      </div>
       </div>
 
       {/* Tombol Connect Wallet dan Dropdown Chain di kanan */}
-      <div className="flex items-center gap-2">
-        <div className="flex space-x-2 relative">
+      <div className="flex items-center">
+        <div className="flex relative ">
         {isConnected && (
           <>
             <button
@@ -117,7 +126,7 @@ const TopBar = () => {
           </>
         )}
         </div>
-        <div className="relative">
+        {/* <div className="relative">
           <button
             onClick={() => setDropdownOpen(!isDropdownOpen)}
             className="flex bg-gray-100 dark:bg-transparent p-2 rounded-full "
@@ -140,22 +149,54 @@ const TopBar = () => {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
 
         {isConnected ? (
+          <div className="relative ml-1">
+            <button
+              onClick={() => setDropdownOpen(!isDropdownOpen)}
+              className="flex items-center rounded-full bg-gray-300 p-1"
+            >
+              <img
+                src={profileData.avatar || defaultAvatar}
+                alt="avatar"
+                className="w-5 h-5 rounded-full"
+              />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50">
+                <Link
+                  to="/profile"
+                  onClick={() => setDropdownOpen(false)}
+                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  Profile
+                </Link>
+                <Link
+                  to="/profile"
+                  onClick={() => setDropdownOpen(false)}
+                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  My Point
+                </Link>
+                <button
+                  onClick={() => {
+                    disconnect();
+                    setDropdownOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  Sign Out
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
           <ConnectButton
             accountStatus="avatar"
             chainStatus="icon"
             showBalance={false}
           />
-        ) : (
-          <button
-            onClick={handleConnectWallet}
-            className="flex items-center justify-center p-2 rounded-full bg-gray-200 hover:bg-blue-600 transition"
-            aria-label="Connect Wallet"
-          >
-            <WalletIcon className="h-5 w-5 text-white" />
-          </button>
         )}
         </div>
     </div>

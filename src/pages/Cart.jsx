@@ -32,7 +32,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
+    <div className="p-4 mt-14 max-w-3xl mx-auto">
       <h1 className="flex text-xl items-center gap-x-2 font-bold mb-6">
         <TiShoppingCart className="text-3xl" />
         Your Cart

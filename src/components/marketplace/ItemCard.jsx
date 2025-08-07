@@ -15,7 +15,7 @@ const ItemCard = ({ item }) => {
         className="w-full aspect-[4/4] object-cover rounded-lg mb-3"
       />
       <div className="text-xs text-gray-500 font-semibold mb-1">{item.category}</div>
-      <h3 className="text-base font-medium text-gray-800 mb-1">{truncate(item.name, 25)}</h3>
+      <h3 className="text-sm font-medium text-gray-800 mb-1">{truncate(item.name, 25)}</h3>
       <div className="flex justify-between items-center mb-1">
         <span className="text-amber-500 font-bold">{item.price} USDC</span>
       </div>

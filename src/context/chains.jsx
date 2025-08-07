@@ -2,15 +2,15 @@ import { defineChain } from 'viem';
 
 // Custom chain configuration
 export const supra = defineChain({
-  id: 2488,
-  name: 'NOW',
-  network: 'Now Chain Mainnet',
-  iconUrl: '/images/chain/now.png',
+  id: 519698972793,
+  name: 'SUPRA',
+  network: 'Supra Testnet',
+  iconUrl: '/images/tokens/supra.webp',
   iconBackground: 'black',
   nativeCurrency: {
     decimals: 18,
-    name: 'NOW Chain',
-    symbol: 'NOW',
+    name: 'SUPRA EVM',
+    symbol: 'SUPRA',
   },
   rpcUrls: {
     default: { http: ['https://rpc.nowscan.io/'] },

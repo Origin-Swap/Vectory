@@ -38,7 +38,7 @@ const projectId = '65e900325f6440b81073eb1b10270843'; //mainweb
 const config = getDefaultConfig({
   appName: 'Vectory',
   projectId: projectId,
-  chains: [base],
+  chains: [supra, base],
   ssr: true,
 });
 

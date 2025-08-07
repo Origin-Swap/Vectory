@@ -40,7 +40,7 @@ const products = [
     about: "This music pack includes 15 high-quality retro-futuristic synthwave tracks in MP3 and WAV formats. Ideal for games, videos, or personal enjoyment.",
     category: "Music",
     price: 1.2,
-    owner: "0x4321...dcba",
+    owner: "0x1234...abcd",
     image: "https://www.promusicpack.com/images/promusicpack-fb.jpg",
     sales: 20,
     available: 100,
