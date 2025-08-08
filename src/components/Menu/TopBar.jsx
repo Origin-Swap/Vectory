@@ -1,48 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { useAccount, useDisconnect } from 'wagmi';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAccount, useDisconnect, useChainId, useSwitchChain } from 'wagmi';
 import { base } from 'viem/chains';
+import { supra } from '../../context/chains';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../../config/ApiUrl';
-import DefaultAvatar from './avatar2.png';
-import MessageIcon from '../../assets/message';
-import WalletIcon from '../../assets/wallet';
-import DisconnectIcon from '../../assets/disconnect';
-import { HiOutlineChatAlt2 } from "react-icons/hi";
+import { HiOutlineChatAlt2, HiOutlineSearch } from "react-icons/hi";
+import { IoNotifications, IoCartOutline } from "react-icons/io5";
+import { FiMenu } from "react-icons/fi";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 import DarkModeToggle from './../useDarkMode';
-import NotifIcon from '../../assets/notif';
-import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
-
 
 const TopBar = () => {
   const navigate = useNavigate();
+  const chainId = useChainId();
   const { isConnected, address } = useAccount();
-  const { openConnectModal } = useConnectModal();
   const { disconnect } = useDisconnect();
-  const [profileData, setProfileData] = useState({
-    avatar: '',
-    name: '',
-  });
+  const { chains: supportedChains, switchChain } = useSwitchChain();
+
+  const [profileData, setProfileData] = useState({ avatar: '', name: '' });
   const [loading, setLoading] = useState(true);
-
-  const [selectedChain] = useState({
-    id: base.id,
-    name: 'BASE',
-    icon: '/images/chain/base.png',
-  });
-
-  // State untuk mengontrol visibilitas dropdown
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const defaultAvatar = '/images/avatar/Av11.png';
 
-  // Daftar chain yang tersedia
-  const chains = [
+  // Chain options with filtering for supported chains
+  const chainOptions = [
+    { id: supra.id, name: 'SUPRA', icon: '/images/tokens/supra.webp' },
     { id: base.id, name: 'BASE', icon: '/images/chain/base.png' },
-  ];
+  ].filter(chain => supportedChains.some(supported => supported.id === chain.id));
+
+  const currentChain = chainOptions.find(chain => chain.id === chainId);
+
+  const handleSwitchChain = async (targetChain) => {
+    try {
+      await switchChain({ chainId: targetChain.id });
+      setDropdownOpen(false);
+    } catch (err) {
+      console.error('Failed to switch chain:', err);
+    }
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!address) return;
+
       try {
         const { data } = await axios.get(`${API_URL}/api/profile/${address}`);
         setProfileData(data);
@@ -53,153 +58,210 @@ const TopBar = () => {
       }
     };
 
-    if (address) {
-      fetchProfile();
-    }
+    fetchProfile();
   }, [address]);
 
-  const handleConnectWallet = () => {
-    if (!isConnected && openConnectModal) {
-      openConnectModal();
+  const handleNotif = () => navigate('/notification');
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      setSearchOpen(false);
     }
   };
 
-
-  const handleDisconnectWallet = () => {
-    disconnect();
-  };
-
-  const handleChainChange = (chain) => {
-    setDropdownOpen(false);
-  };
-
-  const handleNotif = () => {
-    navigate(`/notification`);
-  };
-
-  const defaultName = 'Unknown';
-
   return (
-    <div className="fixed top-0 left-0 w-full z-50 py-2 bg-[#f5f5f5] dark:bg-[#020617] text-white flex items-center justify-between px-2 py-1 lg:p-2 mb-2">
-      {/* Logo di kiri */}
-      <div className="flex items-center ml-1">
-      <p className="flex items-center text-xl text-black dark:text-white font-semibold">
-      <img
-        src="/images/logo2.png"
-        alt="Project Logo"
-        className="h-10 mr-1 dark:hidden"
-      />
-      <img
-        src="/images/logo-white.png"
-        alt="Project Logo"
-        className="hidden h-10 mr-1 dark:block"
-      />
-      </p>
-      <div className="flex-grow max-w-md mx-auto mx-2">
-       <input
-        type="text"
-        placeholder="Search..."
-        className="text-black w-full p-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-       />
-      </div>
-      </div>
-
-      {/* Tombol Connect Wallet dan Dropdown Chain di kanan */}
-      <div className="flex items-center">
-        <div className="flex relative ">
-        {isConnected && (
-          <>
-            <button
-              className="flex bg-gray-100 dark:bg-transparent p-1 rounded-full"
-              aria-label="View Chat"
-            >
-              <HiOutlineChatAlt2 className="h-6 w-6 text-black" loading="lazy" />
-            </button>
-
-            <button
-              className="flex bg-gray-100 dark:bg-transparent p-1 rounded-full"
-              onClick={handleNotif}
-              aria-label="View Notifications"
-            >
-              <NotifIcon className="h-6 w-6 dark:fill-white" loading="lazy" />
-            </button>
-          </>
-        )}
-        </div>
-        {/* <div className="relative">
-          <button
-            onClick={() => setDropdownOpen(!isDropdownOpen)}
-            className="flex bg-gray-100 dark:bg-transparent p-2 rounded-full "
-            aria-label="Select Blockchain"
-          >
-            <img src={selectedChain.icon} alt={selectedChain.name} className="h-6 w-6" loading="lazy" />
-          </button>
-          {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 bg-blue-100 text-black dark:text-white rounded-md shadow-lg w-32 z-10">
-              {chains.map((chain) => (
-                <button
-                  key={chain.id}
-                  onClick={() => handleChainChange(chain)}
-                  className="flex items-center hover:bg-gray-100 py-2 w-full"
-                  aria-label={`Switch to ${chain.name}`}
-                >
-                  <img src={chain.icon} alt={chain.name} className="h-5 w-5 mr-2" loading="lazy" />
-                  {chain.name}
-                </button>
-              ))}
-            </div>
-          )}
-        </div> */}
-
-        {isConnected ? (
-          <div className="relative ml-1">
-            <button
-              onClick={() => setDropdownOpen(!isDropdownOpen)}
-              className="flex items-center rounded-full bg-gray-300 p-1"
-            >
+    <header className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo and Search (mobile) */}
+          <div className="flex items-center flex-1">
+            <Link to="/" className="flex items-center mr-2">
               <img
-                src={profileData.avatar || defaultAvatar}
-                alt="avatar"
-                className="w-5 h-5 rounded-full"
+                src="/images/logo2.png"
+                alt="Logo"
+                className="h-8 dark:hidden"
               />
+              <img
+                src="/images/logo-white.png"
+                alt="Logo"
+                className="hidden h-8 dark:block"
+              />
+            </Link>
+
+            {/* Mobile search button */}
+            <button
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="md:hidden p-2 text-gray-500 dark:text-gray-400"
+            >
+              <HiOutlineSearch className="w-5 h-5" />
             </button>
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50">
-                <Link
-                  to="/profile"
-                  onClick={() => setDropdownOpen(false)}
-                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+          </div>
+
+          {/* Desktop Search */}
+          <form
+            onSubmit={handleSearch}
+            className="hidden md:flex flex-1 max-w-md mx-4"
+          >
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-4 pr-10 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-white"
+              />
+              <button
+                type="submit"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400"
+              >
+                <HiOutlineSearch className="w-5 h-5" />
+              </button>
+            </div>
+          </form>
+
+          {/* Right side icons */}
+          <div className="flex items-center space-x-2">
+            {/* <DarkModeToggle className="p-2" /> */}
+
+            {isConnected && (
+              <>
+                <button
+                  onClick={() => navigate('/chat')}
+                  className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                 >
-                  Profile
-                </Link>
-                <Link
-                  to="/profile"
-                  onClick={() => setDropdownOpen(false)}
-                  className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                  <IoCartOutline className="w-6 h-6" />
+                </button>
+                <button
+                  onClick={() => navigate('/chat')}
+                  className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                 >
-                  My Point
-                </Link>
+                  <HiOutlineChatAlt2 className="w-6 h-6" />
+                </button>
+
+                <button
+                  onClick={handleNotif}
+                  className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                >
+                  <IoNotifications className="w-6 h-6 dark:fill-current" />
+                </button>
+              </>
+            )}
+
+            <ConnectButton.Custom>
+              {({ account, chain, openConnectModal, openChainModal }) => (
+                <button
+                  onClick={isConnected ? openChainModal : openConnectModal}
+                  className={`connect-custom-btn ${isConnected ? 'connected' : ''}`}
+                >
+                  {isConnected ? (
+                    chain.iconUrl ? (
+                      <img
+                        src={chain.iconUrl}
+                        alt={chain.name || 'Chain icon'}
+                        className="w-6 h-6"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/default-chain-icon.png'; // Fallback icon
+                        }}
+                      />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                    )
+                  ) : (
+                    "Connect Wallet"
+                  )}
+                </button>
+              )}
+            </ConnectButton.Custom>
+
+            {/* Profile dropdown */}
+            {isConnected && (
+              <div className="relative">
                 <button
                   onClick={() => {
-                    disconnect();
+                    setProfileDropdownOpen(!isProfileDropdownOpen);
                     setDropdownOpen(false);
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                 >
-                  Sign Out
+                  <FiMenu className="w-6 h-6" />
                 </button>
+
+                {isProfileDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50 border border-gray-200 dark:border-gray-700">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {profileData.name || 'My Account'}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {address?.slice(0, 6)}...{address?.slice(-4)}
+                      </p>
+                    </div>
+                    <Link
+                      to="/profile"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      My Profile
+                    </Link>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setProfileDropdownOpen(false)}
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/stake"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                    >
+                      Staking Pools
+                    </Link>
+                    <button
+                      onClick={() => {
+                        disconnect();
+                        setProfileDropdownOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
-        ) : (
-          <ConnectButton
-            accountStatus="avatar"
-            chainStatus="icon"
-            showBalance={false}
-          />
-        )}
         </div>
-    </div>
+
+        {/* Mobile search bar */}
+        {searchOpen && (
+          <div className="md:hidden py-2">
+            <form onSubmit={handleSearch} className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-4 pr-10 py-2 text-sm rounded-lg bg-gray-100 dark:bg-gray-800 border border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-white"
+                autoFocus
+              />
+              <button
+                type="submit"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400"
+              >
+                <HiOutlineSearch className="w-5 h-5" />
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+    </header>
   );
 };
 

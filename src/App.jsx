@@ -6,6 +6,8 @@ import LoadingScreen from './components/LoadingScreen';
 import SidebarMenu from './components/Menu/SidebarMenu';
 import Topbar from './components/Menu/TopBar'; // pastikan path ini benar
 import BottomMenu from './components/Menu/BottomMenu';
+import Dashboard from './components/Dashboard';
+import Stake from './components/Staking';
 import HomePage from './pages/Home';
 import CreateItem from './pages/CreateItem';
 import ItemDetails from './pages/ItemDetails';
@@ -85,6 +87,8 @@ const Layout = () => {
           <Route path="/shop" element={<Shop />} />
           <Route path="/my-items" element={<MyItems />} />
           <Route path="/notification" element={<NotifPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/stake" element={<Stake/>} />
         </Routes>
         <Footer />
       </div>

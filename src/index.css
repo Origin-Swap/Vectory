@@ -119,3 +119,56 @@ button:focus-visible {
   50% { transform: translateY(-20px); }
   100% { transform: translateY(0px); }
 }
+
+/* Style dasar untuk tombol */
+.connect-custom-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Style saat belum connect */
+.connect-custom-btn:not(.connected) {
+  background-color: #3b82f6; /* bg-blue-500 */
+  color: white;
+  border: 1px solid transparent;
+}
+
+.connect-custom-btn:not(.connected):hover {
+  background-color: #2563eb; /* bg-blue-600 */
+}
+
+/* Style saat sudah connect */
+.connect-custom-btn.connected {
+  background-color: transparent;
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  padding: 8px;
+}
+
+.connect-custom-btn.connected:hover {
+  background-color: #f3f4f6; /* bg-gray-100 */
+}
+
+/* Dark mode support */
+.dark .connect-custom-btn.connected {
+  border-color: #374151; /* dark:border-gray-700 */
+}
+
+.dark .connect-custom-btn.connected:hover {
+  background-color: #1f2937; /* dark:bg-gray-800 */
+}
+
+/* Style untuk chain icon */
+.connect-custom-btn img {
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  object-fit: contain;
+}
