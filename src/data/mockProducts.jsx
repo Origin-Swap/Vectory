@@ -1,6 +1,6 @@
 const products = [
   {
-    id: 1,
+    id: 2,
     name: "Learn Web3",
     description: "A complete guide to learning Web3 from scratch.",
     about: "This ebook walks you through the basics of blockchain, Ethereum, and smart contracts. It’s beginner-friendly with examples, exercises, and practical tips to kickstart your Web3 journey.",
@@ -17,7 +17,7 @@ const products = [
     createdAt: "2024-07-01"
   },
   {
-    id: 2,
+    id: 1,
     name: "Crypto Landing Page Template",
     description: "HTML + CSS template for a crypto project landing page.",
     about: "A professionally designed landing page built with responsive layout, optimized for SEO, and lightweight performance. Perfect for blockchain startups and token launches.",

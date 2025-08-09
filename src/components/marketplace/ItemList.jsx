@@ -11,10 +11,10 @@ import { BiCategory } from "react-icons/bi";
 const ItemList = () => {
   const [activeTab, setActiveTab] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Category");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
   const categories = [
-    "All Category",
+    "All Categories",
     "Ebook",
     "Template",
     "Digital Art",
@@ -27,7 +27,7 @@ const ItemList = () => {
   const filteredProducts = products
     .filter((item) => {
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === "All Category" || item.category === selectedCategory;
+      const matchesCategory = selectedCategory === "All Categories" || item.category === selectedCategory;
       return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
@@ -40,7 +40,7 @@ const ItemList = () => {
     });
 
     return (
-      <div className="p-2 mt-16">
+      <div className="py-4 mt-16">
         {/* Promo slider */}
         <PromotionSlider />
 
@@ -59,7 +59,7 @@ const ItemList = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="py-3 font-bold"
+              className="py-3 my-text"
             >
               {categories.map((cat, idx) => (
                 <option key={idx} value={cat}>
@@ -87,7 +87,7 @@ const ItemList = () => {
         </div>
 
         {/* Produk */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-2">
           {filteredProducts.map((item) => (
             <ItemCard key={item.id} item={item} />
           ))}

@@ -1,6 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
+import { BsBagCheck,BsCartCheck } from "react-icons/bs";
+import { TbCalendarCheck } from "react-icons/tb";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import AddToCartButton from "./AddToCartButton";
 import mockUser from "../../data/mockUser";
 import products from "../../data/mockProducts";
@@ -89,8 +92,13 @@ const ItemDetail = ({ item }) => {
     (p) => p.owner === item.owner && p.id !== item.id
   );
 
+  const handleBack = () => navigate('/');
+
   return (
     <div className="md:p-4 mt-16 p-2 bg-gray-100 mx-auto font-sans">
+    <p onClick={handleBack} className="flex items-center gap-1 mt-2 mb-4 cursor-pointer">
+    <IoIosArrowRoundBack className="w-6 h-6"/> Back To Market
+    </p>
     <div className="flex flex-col md:flex-row gap-4">
       {/* Bagian Produk */}
       <div className="md:w-4/6 w-full bg-white rounded-lg shadow p-4 md:p-6 flex flex-col md:flex-row gap-6">
@@ -107,29 +115,26 @@ const ItemDetail = ({ item }) => {
         {/* Info Produk */}
         <div className="md:w-2/3 w-full flex flex-col justify-between">
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-gray-800">[{item.category}] {item.name}</h1>
-            <p className="text-base text-gray-700">{item.description}</p>
+            <h1 className="md:text-2xl text-lg font-bold text-gray-800">[{item.category}] {item.name}</h1>
+            {/* <p className="text-base text-gray-700">{item.description}</p>
 
             <div className="flex items-center gap-2 text-yellow-500 text-xl">
               <span>{item.star}</span>
               <span className="text-sm text-gray-500">({item.rate})</span>
-            </div>
+            </div> */}
 
             <div className="mt-4 space-y-1 text-sm text-gray-600">
-              <div className="text-5xl font-bold text-yellow-500 mb-2">
+              <div className="md:text-3xl text-xl my-text text-red-500 mb-2">
                 {item.price} USDC
               </div>
-              <p>
-                <strong>Owner:</strong> {item.owner}
+              <p className="flex items-center gap-1">
+                <BsBagCheck /><strong>Available,</strong> {item.available} items
               </p>
-              <p>
-                <strong>Available:</strong> {item.available} items
+              <p className="flex items-center gap-1">
+                <BsCartCheck /><strong>Sold:</strong> {item.sales} items
               </p>
-              <p>
-                <strong>Sold:</strong> {item.sales} items
-              </p>
-              <p>
-                <strong>Created:</strong> {item.createdAt}
+              <p className="flex items-center gap-1">
+                <TbCalendarCheck /><strong>Last Updates, </strong> {item.createdAt}
               </p>
               {isOwner && (
                 <p className="text-yellow-500 font-semibold">
@@ -212,7 +217,7 @@ const ItemDetail = ({ item }) => {
 
       {/* About Product */}
       {item.about && (
-        <div className="mt-6 bg-white p-4 md:p-6 rounded-xl">
+        <div className="mt-4 bg-white p-4 md:p-6 rounded-xl shadow">
           <h2 className="text-2xl font-semibold text-gray-800 mb-2 border-b-2">About Product</h2>
           <p className="text-gray-700 leading-relaxed whitespace-pre-line">
             {item.about}
@@ -221,13 +226,13 @@ const ItemDetail = ({ item }) => {
       )}
 
       {/* ⭐ Ulasan Pembeli */}
-      <div className="mt-6 bg-white p-4 md:p-6 rounded-xl">
+      <div className="mt-4 bg-white p-4 md:p-6 rounded-xl shadow">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">
           Buyer Review
         </h2>
-        <div className="space-y-4">
+        <div className="space-y-2">
         {(mockReviews[item.id] || []).map((review, index) => (
-            <div key={index} className="bg-gray-50 p-4 rounded-lg border">
+            <div key={index} className="bg-gray-50 p-2 rounded-lg border">
               <div className="flex justify-between items-center mb-2">
                 <h4 className="font-semibold">{review.name}</h4>
                 <span className="text-sm text-gray-400">{review.date}</span>

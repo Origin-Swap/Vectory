@@ -72,7 +72,7 @@ const TopBar = () => {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Search (mobile) */}
           <div className="flex items-center flex-1">

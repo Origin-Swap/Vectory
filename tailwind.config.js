@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'serif'], // Gunakan font ini untuk teks sans default
+        sans: ['Mulish', 'serif'], // Gunakan font ini untuk teks sans default
       },
     },
   },

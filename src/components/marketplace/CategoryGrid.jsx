@@ -1,7 +1,7 @@
 import React from "react";
 
 const categories = [
-  { name: "All Product", icon: "/images/icons/all.webp" },
+  { name: "All Categories", icon: "/images/icons/all.webp" },
   { name: "Ebook", icon: "/images/icons/ebook.webp" },
   { name: "Template", icon: "/images/icons/template.webp" },
   { name: "Digital Art", icon: "/images/icons/digital-art.webp" },
@@ -14,7 +14,7 @@ const categories = [
 
 const CategoryGrid = ({ onSelectCategory, selectedCategory }) => {
   return (
-    <div className="grid grid-cols-4 sm:grid-cols-8 gap-4 my-6">
+    <div className="grid grid-cols-4 sm:grid-cols-8 gap-4 px-2 my-6">
     {categories.map((cat, index) => (
       <div
         key={index}
@@ -29,7 +29,7 @@ const CategoryGrid = ({ onSelectCategory, selectedCategory }) => {
           className="w-12 h-12 mb-2 object-contain"
           loading="eager" fetchpriority="high"
         />
-        <span>{cat.name}</span>
+        <span className="my-text">{cat.name}</span>
       </div>
     ))}
     </div>

@@ -72,7 +72,7 @@ const Layout = () => {
       <div className="hidden lg:flex">
          <SidebarMenu />
        </div>
-       <div className="block md:hidden">
+       <div className="block lg:hidden">
          <Topbar />
        </div>
 
