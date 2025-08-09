@@ -95,7 +95,7 @@ const ItemDetail = ({ item }) => {
   const handleBack = () => navigate('/');
 
   return (
-    <div className="md:p-4 mt-16 p-2 bg-gray-100 mx-auto font-sans">
+    <div className="md:p-4 p-2 mt-16 bg-gray-100 mx-auto font-sans">
     <p onClick={handleBack} className="flex items-center gap-1 mt-2 mb-4 cursor-pointer">
     <IoIosArrowRoundBack className="w-6 h-6"/> Back To Market
     </p>
@@ -162,7 +162,7 @@ const ItemDetail = ({ item }) => {
 
       {/* Bagian Seller */}
       {seller && (
-        <div className="md:w-2/6 w-full bg-white rounded-lg shadow p-4 md:p-6">
+        <div className="mt-2 md:w-2/6 w-full bg-white rounded-lg shadow p-4 md:p-6">
           <h2 className="text-sm font-semibold text-gray-800 mb-3 border-b pb-2">
             Seller Info
           </h2>
@@ -217,8 +217,8 @@ const ItemDetail = ({ item }) => {
 
       {/* About Product */}
       {item.about && (
-        <div className="mt-4 bg-white p-4 md:p-6 rounded-xl shadow">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-2 border-b-2">About Product</h2>
+        <div className="mt-2 bg-white p-4 md:p-6 rounded-xl shadow">
+          <h2 className="md:text-xl text-lg my-text font-semibold text-gray-800 mb-2 border-b-2">About Product</h2>
           <p className="text-gray-700 leading-relaxed whitespace-pre-line">
             {item.about}
           </p>
@@ -226,8 +226,8 @@ const ItemDetail = ({ item }) => {
       )}
 
       {/* ⭐ Ulasan Pembeli */}
-      <div className="mt-4 bg-white p-4 md:p-6 rounded-xl shadow">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+      <div className="mt-2 bg-white p-4 md:p-6 rounded-xl shadow">
+        <h2 className="md:text-xl text-lg my-text font-semibold text-gray-800 mb-4">
           Buyer Review
         </h2>
         <div className="space-y-2">

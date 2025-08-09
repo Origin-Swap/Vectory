@@ -40,7 +40,7 @@ const ItemList = () => {
     });
 
     return (
-      <div className="py-4 mt-16">
+      <div className="md:p-4 p-2 mt-16">
         {/* Promo slider */}
         <PromotionSlider />
 
