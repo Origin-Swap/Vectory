@@ -1,9 +1,10 @@
 // src/App.jsx
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen';
 import SidebarMenu from './components/Menu/SidebarMenu';
-import Topbar from './components/Menu/TopBar';
+import Topbar from './components/Menu/TopBar'; // pastikan path ini benar
 import BottomMenu from './components/Menu/BottomMenu';
 import Dashboard from './components/Dashboard';
 import Checkin from './components/Dashboard/dailypoint';
@@ -20,9 +21,32 @@ import NotifPage from './components/Notif';
 import Footer from "./pages/Footer";
 
 import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
-import { AccountProvider } from './context/account'; // 🔹 Context untuk Supra Move account
+import { WagmiProvider } from 'wagmi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { supra } from './context/chains';
+import { base } from 'viem/chains';
+import '@rainbow-me/rainbowkit/styles.css';
+import {
+  getDefaultConfig,
+  RainbowKitProvider,
+  darkTheme,
+  lightTheme
+} from '@rainbow-me/rainbowkit';
 
-// Layout Component
+const queryClient = new QueryClient();
+
+// Project ID WalletConnect
+const projectId = '65e900325f6440b81073eb1b10270843'; //mainweb
+// const projectId = '92a84f411cd537d466fbaa048af85b42'; // local
+
+const config = getDefaultConfig({
+  appName: 'Vectory',
+  projectId: projectId,
+  chains: [supra, base],
+  ssr: true,
+});
+
+// ⬇️ Layout component harus berada DI DALAM LayoutProvider
 const Layout = () => {
   const { isSidebarVisible } = useLayoutContext();
 
@@ -38,14 +62,21 @@ const Layout = () => {
   }, []);
 
   return (
-    <>
+    <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider
+              theme={lightTheme({
+                accentColor: '#837AF5',
+                borderRadius: 'large',
+              })}
+            >
       {/* Sidebar menu untuk desktop */}
       <div className="hidden lg:flex">
-        <SidebarMenu />
-      </div>
-      <div className="block lg:hidden">
-        <Topbar />
-      </div>
+         <SidebarMenu />
+       </div>
+       <div className="block lg:hidden">
+         <Topbar />
+       </div>
 
       {/* Main content area */}
       <div>
@@ -61,34 +92,35 @@ const Layout = () => {
           <Route path="/notification" element={<NotifPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/checkin" element={<Checkin />} />
-          <Route path="/stake" element={<Stake />} />
+          <Route path="/stake" element={<Stake/>} />
         </Routes>
         <Footer />
       </div>
 
-      {/* Bottom menu untuk mobile
-      <BottomMenu /> */}
-    </>
+      {/* Bottom menu untuk mobile */}
+      <BottomMenu />
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 };
 
+// ⬇️ Perbaikan: LayoutProvider dan WagmiProvider berada di luar Layout
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 3000); // Simulasi waktu loading selama 3 detik
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <LayoutProvider>
-      <AccountProvider> {/* 🔹 Bungkus semua komponen dengan Supra Move Account Context */}
-        <Router>
-          {isLoading ? <LoadingScreen /> : <Layout />}
-        </Router>
-      </AccountProvider>
+          <Router>
+            {isLoading ? <LoadingScreen /> : <Layout />}
+          </Router>
     </LayoutProvider>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAccount } from "wagmi";
 import products from "../../data/mockProducts";
 import mockUser from "../../data/mockUser";
@@ -7,15 +7,19 @@ import UserInfo from "./UserInfo";
 import WalletSection from "./WalletSection";
 import OrderHistory from "./OrderHistory";
 import MyProducts from "./MyProducts";
+import { useAccountSupra } from "../../context/account";
 
 const ProfilePortfolio = () => {
-  const { isConnected, address } = useAccount();
+  const { address, isConnected, connectWallet, disconnectWallet } = useAccountSupra();
   const userWallet = mockUser.wallet;
 
-  const profile = {
+  // Pindahkan profile ke state agar bisa diupdate
+  const [profile, setProfile] = useState({
     username: "UserName",
     wallet: "0xA12b...F9C7",
     avatar: "/images/avatar2.png",
+    email: "user@example.com",
+    bio: "Digital creator & blockchain enthusiast.",
     points: 860,
     balances: {
       SUPRA: 120.5,
@@ -39,7 +43,7 @@ const ProfilePortfolio = () => {
         status: "Completed",
       },
     ],
-  };
+  });
 
   const userProducts = products.filter((p) => p.owner === userWallet);
 
@@ -50,10 +54,41 @@ const ProfilePortfolio = () => {
     USDC: { logo: "/images/tokens/usdc.png", price: 1 },
   };
 
+  const handleProfileUpdate = async (updatedData) => {
+    try {
+      const formData = new FormData();
+      formData.append("address", updatedData.address);
+      formData.append("username", updatedData.username);
+      formData.append("email", updatedData.email);
+      formData.append("bio", updatedData.bio);
+
+      if (updatedData.avatarFile) {
+        formData.append("avatar", updatedData.avatarFile);
+      }
+
+      const res = await fetch("https://example.com/api/profile/update", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Gagal update profile");
+
+      const result = await res.json();
+
+      setProfile((prev) => ({
+        ...prev,
+        ...result.data,
+      }));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
   return (
     <div className="max-w-6xl mt-14 md:mt-16 mx-auto px-4 py-2">
       <Banner />
-      <UserInfo profile={profile} />
+      <UserInfo profile={profile} onProfileUpdate={handleProfileUpdate} />
       {isConnected && address && (
         <>
           <WalletSection balances={profile.balances} tokenData={tokenData} />

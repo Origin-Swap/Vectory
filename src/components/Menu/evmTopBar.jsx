@@ -1,42 +1,67 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { HiOutlineChatAlt2, HiOutlineSearch, HiMenu, HiX } from "react-icons/hi";
-import { FiMenu } from "react-icons/fi";
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAccount, useDisconnect, useChainId, useSwitchChain } from 'wagmi';
+import { base } from 'viem/chains';
+import { supra } from '../../context/chains';
+import axios from 'axios';
+import { API_URL } from '../../config/ApiUrl';
+import { HiOutlineChatAlt2, HiOutlineSearch } from "react-icons/hi";
 import { IoNotifications, IoCartOutline } from "react-icons/io5";
-import { AiOutlineMenuUnfold } from "react-icons/ai";
-import { API_URL } from "../../config/ApiUrl";
-import { useAccountSupra } from "../../context/account";
+import { FiMenu } from "react-icons/fi";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import DarkModeToggle from './../useDarkMode';
 
 const TopBar = () => {
   const navigate = useNavigate();
-  const { address, isConnected, connectWallet, disconnectWallet } = useAccountSupra();
+  const chainId = useChainId();
+  const { isConnected, address } = useAccount();
+  const { disconnect } = useDisconnect();
+  const { chains: supportedChains, switchChain } = useSwitchChain();
 
-  const [profileData, setProfileData] = useState({ avatar: "", name: "" });
+  const [profileData, setProfileData] = useState({ avatar: '', name: '' });
   const [loading, setLoading] = useState(true);
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const defaultAvatar = "/images/avatar/Av11.png";
+  const defaultAvatar = '/images/avatar/Av11.png';
+
+  // Chain options with filtering for supported chains
+  const chainOptions = [
+    { id: supra.id, name: 'SUPRA', icon: '/images/tokens/supra.webp' },
+    { id: base.id, name: 'BASE', icon: '/images/chain/base.png' },
+  ].filter(chain => supportedChains.some(supported => supported.id === chain.id));
+
+  const currentChain = chainOptions.find(chain => chain.id === chainId);
+
+  const handleSwitchChain = async (targetChain) => {
+    try {
+      await switchChain({ chainId: targetChain.id });
+      setDropdownOpen(false);
+    } catch (err) {
+      console.error('Failed to switch chain:', err);
+    }
+  };
 
   useEffect(() => {
     const fetchProfile = async () => {
       if (!address) return;
+
       try {
         const { data } = await axios.get(`${API_URL}/api/profile/${address}`);
         setProfileData(data);
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error('Error fetching profile:', error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchProfile();
   }, [address]);
 
-  const handleNotif = () => navigate("/notification");
+  const handleNotif = () => navigate('/notification');
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -123,15 +148,36 @@ const TopBar = () => {
               </>
             )}
 
-            {!isConnected && (
-              <button
-                onClick={connectWallet}
-                className="px-3 py-1 rounded-lg bg-yellow-200 text-gray-800"
-              >
-                Connect
-              </button>
-            )}
-
+            <ConnectButton.Custom>
+              {({ account, chain, openConnectModal, openChainModal }) => (
+                <button
+                  onClick={isConnected ? openChainModal : openConnectModal}
+                  className={`connect-custom-btn ${isConnected ? 'connected' : ''}`}
+                >
+                  {isConnected ? (
+                    chain.iconUrl ? (
+                      <img
+                        src={chain.iconUrl}
+                        alt={chain.name || 'Chain icon'}
+                        className="w-6 h-6"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = '/default-chain-icon.png'; // Fallback icon
+                        }}
+                      />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center">
+                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                    )
+                  ) : (
+                    "Connect Wallet"
+                  )}
+                </button>
+              )}
+            </ConnectButton.Custom>
 
             {/* Profile dropdown */}
             {isConnected && (
@@ -179,14 +225,13 @@ const TopBar = () => {
                     </Link>
                     <button
                       onClick={() => {
-                        disconnectWallet(); // ✅ ganti dari disconnect()
+                        disconnect();
                         setProfileDropdownOpen(false);
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Sign Out
                     </button>
-
                   </div>
                 )}
               </div>
