@@ -1,0 +1,147 @@
+import React, { useState } from "react";
+import axios from "axios";
+import { useAccountSupra } from "../../context/account";
+import { FaImage, FaTrash } from "react-icons/fa";
+
+export default function CreatePost({ onCreate }) {
+  const { address } = useAccountSupra();
+  const [content, setContent] = useState("");
+  const [files, setFiles] = useState([]);
+  const [previews, setPreviews] = useState([]);
+
+  const createPost = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("address", address);
+      formData.append("content", content);
+      files.forEach((file) => formData.append("images", file));
+
+      const res = await axios.post("http://localhost:5004/api/posts", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+
+      if (onCreate) onCreate(res.data);
+      setContent("");
+      setFiles([]);
+      setPreviews([]);
+    } catch (err) {
+      console.error("Gagal membuat post:", err);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!content.trim()) return;
+    createPost();
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+
+    // gabungkan dengan file yang sudah ada
+    let newFiles = [...files];
+    let newPreviews = [...previews];
+
+    for (let file of selectedFiles) {
+      if (newFiles.length >= 4) {
+        alert("Maksimal 4 gambar per post.");
+        break;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        alert(`Gambar ${file.name} lebih dari 2MB, tidak bisa diupload.`);
+        continue;
+      }
+      newFiles.push(file);
+      newPreviews.push(URL.createObjectURL(file));
+    }
+
+    setFiles(newFiles);
+    setPreviews(newPreviews);
+    e.target.value = ""; // reset input
+  };
+
+  const handleRemoveImage = (index) => {
+    const newFiles = files.filter((_, i) => i !== index);
+    const newPreviews = previews.filter((_, i) => i !== index);
+    setFiles(newFiles);
+    setPreviews(newPreviews);
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="mb-2 bg-white rounded-2xl shadow p-4 border"
+    >
+      <div className="flex gap-3">
+        {/* Avatar */}
+        <img
+          src="https://i.pravatar.cc/100?img=15"
+          alt="me"
+          className="w-10 h-10 rounded-full bg-gray-200"
+        />
+
+        {/* Kotak teks + preview */}
+        <div className="flex-1 flex flex-col gap-2">
+        <textarea
+          ref={(el) => {
+            if (el) {
+              el.style.height = "auto";
+              el.style.height = `${el.scrollHeight}px`;
+            }
+          }}
+          className="resize-none rounded-xl border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 overflow-hidden"
+          placeholder="Apa yang ingin kamu bagikan hari ini?"
+          value={content}
+          onChange={(e) => {
+            setContent(e.target.value);
+            e.target.style.height = "auto";
+            e.target.style.height = `${e.target.scrollHeight}px`;
+          }}
+        />
+
+
+          {/* Preview gambar multiple */}
+          {previews.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2">
+              {previews.map((src, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={src}
+                    alt={`Preview ${index}`}
+                    className="h-32 w-full object-cover rounded-xl border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
+                  >
+                    <FaTrash size={14} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex justify-between items-center mt-2">
+            <label className="cursor-pointer text-gray-600 hover:text-gray-900 flex items-center gap-1 w-fit">
+              <FaImage size={20} />
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileChange}
+                className="hidden"
+              />
+            </label>
+            <button
+              type="submit"
+              className="px-4 py-2 rounded-xl bg-gray-900 text-white text-sm hover:opacity-90"
+            >
+              Post
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+}

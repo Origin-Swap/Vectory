@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { HiOutlineChatAlt2, HiOutlineSearch, HiMenu, HiX } from "react-icons/hi";
 import { IoNotifications, IoCartOutline } from "react-icons/io5";
+import { MdOutlineRssFeed } from "react-icons/md";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { API_URL } from "../../config/ApiUrl";
 import { useAccountSupra } from "../../context/account";
@@ -36,6 +37,7 @@ const Navbar = () => {
   }, [address]);
 
   const handleNotif = () => navigate("/notification");
+  const handleFeed = () => navigate("/socialfi");
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -73,7 +75,10 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
-          {isConnected && (
+        <button onClick={() => navigate("/socialfi")} className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+          <MdOutlineRssFeed className="w-6 h-6" />
+        </button>
+        {isConnected && (
             <>
               <button onClick={() => navigate("/chat")} className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 <IoCartOutline className="w-6 h-6" />
@@ -85,7 +90,7 @@ const Navbar = () => {
                 <IoNotifications className="w-5 h-5 dark:fill-current" />
               </button>
             </>
-          )}
+            )}
 
           {/* Connect / Address Button */}
           {!isConnected && (

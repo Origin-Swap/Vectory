@@ -1,6 +1,11 @@
 import React, { useState } from "react";
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
+import axios from "axios";
+import { useAccountSupra } from "../../context/account";
 
 const CreateItemForm = () => {
+  const { address } = useAccountSupra(); // ambil address wallet
   const [form, setForm] = useState({
     title: "",
     shortDesc: "",
@@ -8,7 +13,7 @@ const CreateItemForm = () => {
     price: "",
     quantity: "",
     category: "Ebook",
-    paymentMethod: "BAY",
+    paymentMethod: "SUPRA",
     imageFiles: [],
     imagePreviews: [],
   });
@@ -35,16 +40,45 @@ const CreateItemForm = () => {
     setForm({ ...form, imageFiles: files, imagePreviews: previews });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
-    alert("Item created! (dummy)");
+
+    if (!address) {
+      alert("Please connect your wallet first!");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("userAddress", address);
+      formData.append("title", form.title);
+      formData.append("shortDesc", form.shortDesc);
+      formData.append("about", form.about);
+      formData.append("price", form.price);
+      formData.append("quantity", form.quantity);
+      formData.append("category", form.category);
+      formData.append("paymentMethod", form.paymentMethod);
+
+      form.imageFiles.forEach((file) => {
+        formData.append("images", file);
+      });
+
+      const res = await axios.post("http://localhost:5004/api/items", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      alert("Item created successfully!");
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create item.");
+    }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="p-4 max-w-2xl mx-auto space-y-4 bg-white rounded shadow"
+      className="p-4 mt-16 max-w-2xl mx-auto space-y-4 bg-white rounded shadow"
     >
       <h2 className="text-xl font-bold">Create New Item</h2>
 
@@ -103,13 +137,20 @@ const CreateItemForm = () => {
       {/* About Product */}
       <div>
         <label className="block font-medium mb-1">About Product</label>
-        <textarea
-          name="about"
+        <ReactQuill
+          theme="snow"
           value={form.about}
-          onChange={handleChange}
-          placeholder="Describe your product in detail"
-          rows={4}
-          className="w-full border rounded p-2"
+          onChange={(value) => setForm({ ...form, about: value })}
+          className="bg-white"
+          modules={{
+            toolbar: [
+              [{ header: [1, 2, false] }],
+              ["bold", "italic", "underline"],
+              [{ list: "ordered" }, { list: "bullet" }],
+              ["link"],
+              ["clean"],
+            ],
+          }}
         />
       </div>
 
@@ -165,7 +206,7 @@ const CreateItemForm = () => {
       <div>
         <label className="block font-medium mb-1">Payment Method</label>
         <div className="flex gap-x-6 mt-2">
-          {["BAY", "USDC", "USDT"].map((method) => (
+          {["SUPRA", "KT", "USDC", "USDT"].map((method) => (
             <label key={method} className="flex items-center gap-x-1">
               <input
                 type="radio"

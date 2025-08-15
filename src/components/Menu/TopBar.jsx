@@ -7,6 +7,7 @@ import { IoNotifications, IoCartOutline } from "react-icons/io5";
 import { AiOutlineMenuUnfold } from "react-icons/ai";
 import { API_URL } from "../../config/ApiUrl";
 import { useAccountSupra } from "../../context/account";
+import { MdOutlineRssFeed } from "react-icons/md";
 
 const TopBar = () => {
   const navigate = useNavigate();
@@ -163,7 +164,7 @@ const TopBar = () => {
                     >
                       My Profile
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/dashboard"
                       onClick={() => setProfileDropdownOpen(false)}
                       className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -176,7 +177,7 @@ const TopBar = () => {
                       className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
                     >
                       Staking Pools
-                    </Link>
+                    </Link> */}
                     <button
                       onClick={() => {
                         disconnectWallet(); // ✅ ganti dari disconnect()
