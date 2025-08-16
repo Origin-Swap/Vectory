@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useAccount } from "wagmi";
+import React, { useState, useEffect } from "react";
 import products from "../../data/mockProducts";
 import mockUser from "../../data/mockUser";
 import Banner from "./Banner";
@@ -8,12 +7,12 @@ import WalletSection from "./WalletSection";
 import OrderHistory from "./OrderHistory";
 import MyProducts from "./MyProducts";
 import { useAccountSupra } from "../../context/account";
+import { getSupraPrice } from "../../utils/getSupraPrice"; // 🆕 import
 
 const ProfilePortfolio = () => {
-  const { address, isConnected, connectWallet, disconnectWallet } = useAccountSupra();
+  const { address, isConnected, balance } = useAccountSupra();
   const userWallet = mockUser.wallet;
 
-  // Pindahkan profile ke state agar bisa diupdate
   const [profile, setProfile] = useState({
     username: "UserName",
     wallet: "0xA12b...F9C7",
@@ -22,73 +21,49 @@ const ProfilePortfolio = () => {
     bio: "Digital creator & blockchain enthusiast.",
     points: 860,
     balances: {
-      SUPRA: 120.5,
-      KT: 540.3,
-      USDT: 82.75,
-      USDC: 102.4,
+      SUPRA: 0,
     },
-    orders: [
-      {
-        id: "ORD-001",
-        product: "Digital Art - Glitch Portrait",
-        date: "2025-07-26",
-        price: "0.8 USDC",
-        status: "Completed",
-      },
-      {
-        id: "ORD-002",
-        product: "Synthwave Music Pack",
-        date: "2025-07-20",
-        price: "1.2 USDC",
-        status: "Completed",
-      },
-    ],
+    orders: [/* ... */],
   });
+
+  const [supraPrice, setSupraPrice] = useState(0); // 🆕 state harga SUPRA
 
   const userProducts = products.filter((p) => p.owner === userWallet);
 
   const tokenData = {
-    SUPRA: { logo: "/images/tokens/supra.webp", price: 0.25 },
-    KT: { logo: "/images/tokens/kt.png", price: 0.1 },
-    USDT: { logo: "/images/tokens/tether-1.svg", price: 1 },
-    USDC: { logo: "/images/tokens/usdc.png", price: 1 },
+    SUPRA: { logo: "/images/tokens/supra.webp", price: supraPrice }, // 🆕 pakai harga dari API
+    KT: { logo: "/images/tokens/kt.png", price: 0.1, address: "0xKTTokenAddress" },
+    USDT: { logo: "/images/tokens/tether-1.svg", price: 1, address: "0xUsdtTokenAddress" },
+    USDC: { logo: "/images/tokens/usdc.png", price: 1, address: "0xUsdcTokenAddress" },
   };
 
-  const handleProfileUpdate = async (updatedData) => {
-    try {
-      const formData = new FormData();
-      formData.append("address", updatedData.address);
-      formData.append("username", updatedData.username);
-      formData.append("email", updatedData.email);
-      formData.append("bio", updatedData.bio);
-
-      if (updatedData.avatarFile) {
-        formData.append("avatar", updatedData.avatarFile);
-      }
-
-      const res = await fetch("https://example.com/api/profile/update", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("Gagal update profile");
-
-      const result = await res.json();
-
+  // Update balance ketika connect
+  useEffect(() => {
+    if (isConnected && address) {
       setProfile((prev) => ({
         ...prev,
-        ...result.data,
+        wallet: address,
+        balances: {
+          ...prev.balances,
+          SUPRA: balance || 0,
+        },
       }));
-    } catch (err) {
-      console.error(err);
     }
-  };
+  }, [isConnected, address, balance]);
 
+  // 🆕 fetch harga SUPRA sekali saat load
+  useEffect(() => {
+    const fetchPrice = async () => {
+      const price = await getSupraPrice();
+      setSupraPrice(price);
+    };
+    fetchPrice();
+  }, []);
 
   return (
-    <div className="max-w-6xl mt-14 md:mt-16 mx-auto px-4 py-2">
+    <div className="max-w-6xl mt-14 md:mt-16 mx-auto md:px-4 md:py-2 px-2 py-2">
       <Banner />
-      <UserInfo profile={profile} onProfileUpdate={handleProfileUpdate} />
+      <UserInfo profile={profile} onProfileUpdate={() => {}} />
       {isConnected && address && (
         <>
           <WalletSection balances={profile.balances} tokenData={tokenData} />

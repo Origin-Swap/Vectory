@@ -123,6 +123,7 @@ const Navbar = () => {
                   </div>
                   <Link to="/profile" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">My Profile</Link>
                   <Link to="/dashboard" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">PointBoard</Link>
+                  <Link to="/stake" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Staking Pool</Link>
                   <button
                     onClick={disconnectWallet}
                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"

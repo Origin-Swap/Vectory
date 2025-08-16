@@ -1,68 +1,97 @@
-import { createContext, useContext, useState } from "react";
-import { SupraClient } from "supra-l1-sdk";
-import { Buffer } from "buffer";
-
-// Buffer polyfill untuk browser
-if (!window.Buffer) {
-  window.Buffer = Buffer;
-}
+import { createContext, useContext, useState, useEffect } from "react";
 
 const AccountContext = createContext();
 
+const getProvider = () => {
+  if ("starkey" in window) {
+    return window.starkey?.supra || null;
+  }
+  return null;
+};
+
 export const AccountProvider = ({ children }) => {
   const [address, setAddress] = useState(null);
-  const [client, setClient] = useState(null);
+  const [balance, setBalance] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
 
   const connectWallet = async () => {
     try {
-      // 1️⃣ Init Supra Client
-      const supraClient = await SupraClient.init("https://rpc-testnet.supra.com/");
-
-      // 2️⃣ Dapatkan provider dari StarKey Wallet
-      const provider = window.starkey?.supra;
-      if (!provider || typeof provider.connect !== "function") {
-        throw new Error("StarKey Wallet extension not found. Please install it first.");
+      const provider = getProvider();
+      if (!provider) {
+        // Redirect ke app kalau tidak ada wallet
+        window.location.href = "starkey://connect?dapp=https://kraftera.xyz";
+        return null;
       }
 
-      // 3️⃣ Connect ke wallet
       const accounts = await provider.connect();
-      if (!accounts || accounts.length === 0) {
+      if (!accounts?.length) {
         throw new Error("No accounts returned from StarKey Wallet");
       }
 
-      // 4️⃣ Simpan ke state
-      setClient(supraClient);
       setAddress(accounts[0]);
       setIsConnected(true);
 
       console.log("✅ Connected to StarKey Wallet:", accounts[0]);
 
-      // 5️⃣ Listen untuk perubahan account
-      provider.on("accountChanged", (newAccounts) => {
-        if (newAccounts.length > 0) {
-          setAddress(newAccounts[0]);
-          console.log("🔄 Account changed to:", newAccounts[0]);
-        }
+      // Ambil balance langsung dari provider
+      const bal = await provider.balance();
+      const formatted = bal?.balance ? bal.balance / 1e8 : 0;
+
+      setBalance(formatted);
+      console.log("💰 SUPRA Balance (StarKey):", {
+        raw: bal,
+        formatted,
       });
 
       return accounts[0];
     } catch (err) {
-      console.error("Failed to connect wallet:", err);
+      console.error("❌ Failed to connect wallet:", err);
       return null;
     }
   };
 
-  const disconnectWallet = () => {
-    setClient(null);
+  const refreshBalance = async () => {
+    try {
+      const provider = getProvider();
+      if (!provider || !address) return;
+
+      const bal = await provider.balance();
+      const formatted = bal?.balance ? bal.balance / 1e8 : 0;
+
+      setBalance(formatted);
+      return formatted;
+    } catch (err) {
+      console.error("❌ Failed to refresh balance:", err);
+      return 0;
+    }
+  };
+
+  const disconnectWallet = async () => {
+    try {
+      const provider = getProvider();
+      if (provider) {
+        await provider.disconnect();
+      }
+    } catch (e) {
+      console.warn("⚠️ Error disconnecting:", e);
+    }
+
     setAddress(null);
+    setBalance(0);
     setIsConnected(false);
-    console.log("Disconnected from StarKey Wallet");
+    console.log("🔌 Disconnected from StarKey Wallet");
   };
 
   return (
     <AccountContext.Provider
-      value={{ address, client, isConnected, connectWallet, disconnectWallet }}
+      value={{
+        address,
+        balance,
+        isConnected,
+        connectWallet,
+        disconnectWallet,
+        refreshBalance,
+      }}
     >
       {children}
     </AccountContext.Provider>
