@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAccountSupra } from "../../context/account";
 import { FaImage, FaTrash } from "react-icons/fa";
@@ -8,6 +8,34 @@ export default function CreatePost({ onCreate }) {
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
+  const [profile, setProfile] = useState(null);
+
+  // Ambil data user dari backend
+  useEffect(() => {
+    if (!address) return;
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`http://localhost:5004/api/user/${address}`);
+        if (res.status === 404) {
+          console.log("User not found, using default profile");
+          setProfile({
+            avatar: "/images/default-avatar.png",
+          });
+          return;
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        const data = await res.json();
+        setProfile(data.data);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+
+    fetchProfile();
+  }, [address]);
 
   const createPost = async () => {
     try {
@@ -16,7 +44,7 @@ export default function CreatePost({ onCreate }) {
       formData.append("content", content);
       files.forEach((file) => formData.append("images", file));
 
-      const res = await axios.post("http://localhost:5004/api/posts", formData, {
+      const res = await axios.post("http://localhost:5004/api/post", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       });
 
@@ -75,7 +103,7 @@ export default function CreatePost({ onCreate }) {
       <div className="flex gap-3">
         {/* Avatar */}
         <img
-          src="https://i.pravatar.cc/100?img=15"
+          src={profile?.avatar || "/images/default-avatar.png"}
           alt="me"
           className="w-10 h-10 rounded-full bg-gray-200"
         />

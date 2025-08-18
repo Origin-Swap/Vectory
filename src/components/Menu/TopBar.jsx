@@ -103,7 +103,7 @@ const TopBar = () => {
             {isConnected && (
               <>
                 <button
-                  onClick={() => navigate('/chat')}
+                  onClick={() => navigate('/my-items')}
                   className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                 >
                   <IoCartOutline className="w-6 h-6" />

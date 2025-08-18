@@ -19,6 +19,7 @@ import Checkout from './pages/Cart';
 import NotifPage from './components/Notif';
 import SocialFiIndex from './pages/post/index';
 import PostDetailPage from './pages/post/[id]';
+import ChatPage from './pages/chat';
 import Footer from "./pages/Footer";
 
 import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
@@ -66,6 +67,7 @@ const Layout = () => {
           <Route path="/stake" element={<Stake />} />
           <Route path="/socialfi" element={<SocialFiIndex />} />
           <Route path="/post/:id" element={<PostDetailPage />} />
+          <Route path="/chat/*" element={<ChatPage />} />
         </Routes>
         <Footer />
       </div>

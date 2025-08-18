@@ -3,7 +3,7 @@ import React from 'react';
 
 const MyItems = () => {
   return (
-    <div className="p-4">
+    <div className="p-4 mt-14">
       <h2 className="text-xl font-bold mb-4">My Items</h2>
       <p>List of items you have bought or listed.</p>
     </div>

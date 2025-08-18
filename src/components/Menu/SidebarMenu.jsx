@@ -80,9 +80,12 @@ const Navbar = () => {
         </button>
         {isConnected && (
             <>
-              <button onClick={() => navigate("/chat")} className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
-                <IoCartOutline className="w-6 h-6" />
-              </button>
+            <button
+              onClick={() => navigate('/my-items')}
+              className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+            >
+              <IoCartOutline className="w-6 h-6" />
+            </button>
               <button onClick={() => navigate("/chat")} className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 <HiOutlineChatAlt2 className="w-5 h-5" />
               </button>

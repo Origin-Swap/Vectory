@@ -9,14 +9,17 @@ export default function Post({ post, onLike }) {
       {/* Header */}
       <div className="flex items-center gap-3">
         <img
-          src={post.author.avatar}
-          alt={post.author.name}
+          src={post.author?.avatar || "/images/default-avatar.png"}
+          alt={post.author?.name || "Anon"}
           className="w-10 h-10 rounded-full"
         />
         <div>
-          <div className="font-semibold leading-tight">{post.author.name}</div>
+          <div className="font-semibold leading-tight">
+            {post.author?.name || "Anon"}
+          </div>
           <div className="text-xs text-gray-500">
-            {post.author.handle} • {new Date(post.createdAt).toLocaleString()}
+            {post.author?.handle || "@anon"} •{" "}
+            {new Date(post.createdAt).toLocaleString()}
           </div>
         </div>
       </div>
@@ -32,17 +35,17 @@ export default function Post({ post, onLike }) {
       {/* Actions */}
       <div className="mt-4 flex items-center gap-4 text-sm text-gray-600">
         <button
-          onClick={onLike}
+          onClick={() => onLike(post.id)}
           className="flex items-center gap-2 px-3 py-1 rounded-lg border hover:bg-gray-50"
         >
-          <FaRegHeart /> {post.likes}
+          <FaRegHeart /> {post.likes || 0}
         </button>
 
         <Link
           to={`/post/${post.id}`}
           className="flex items-center gap-2 px-3 py-1 rounded-lg border hover:bg-gray-50"
         >
-          <AiOutlineComment /> {post.comments.length}
+        <AiOutlineComment /> {post.commentsCount ?? (post.comments ? post.comments.length : 0)}
         </Link>
 
         <button className="ml-auto flex items-center gap-2 px-3 py-1 rounded-lg border hover:bg-gray-50">
