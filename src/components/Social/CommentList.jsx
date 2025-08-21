@@ -5,65 +5,79 @@ export default function CommentList({ comments, onAddReply, onDeleteComment }) {
     return <div className="text-sm text-gray-500">Belum ada komentar</div>;
   }
 
+  // 🚀 Urutkan paling baru dulu (descending createdAt)
+  const sortedComments = [...comments].sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
   return (
     <div className="space-y-4">
-      {comments.map((c) => (
+      {sortedComments.map((c) => (
         <div key={c.id} className="border rounded-lg p-3">
           {/* Header user */}
           <div className="flex items-center gap-2">
             <img
-              src={c.User?.avatar || "/images/default-avatar.png"}
-              alt={c.User?.username || "Anon"}
+              src={c.author?.avatar || "/images/default-avatar.png"}
+              alt={c.author?.name || "Anon"}
               className="w-6 h-6 rounded-full"
             />
-            <span className="font-medium text-sm">{c.User?.username || "Anon"}</span>
+            <span className="font-medium text-sm">{c.author?.name || "Anon"}</span>
+            <span className="text-xs text-gray-400 ml-auto">
+              {c.createdAt ? new Date(c.createdAt).toLocaleString() : ""}
+            </span>
           </div>
 
           {/* Isi komentar */}
-          <div className="mt-1 text-sm">{c.content}</div>
+          <div className="mt-1 text-sm">{c.content || c.text}</div>
 
           {/* Actions */}
           <div className="mt-2 flex gap-3 text-xs text-gray-500">
             <button
-              onClick={() => onAddReply(c.id, "Balasan...")} // nanti bisa bikin input reply
+              onClick={() => onAddReply(c.id, "Balasan...")}
               className="hover:underline"
             >
-              Balas
+              Reply
             </button>
             <button
               onClick={() => onDeleteComment(c.id)}
               className="hover:underline text-red-500"
             >
-              Hapus
+              Delete
             </button>
           </div>
 
           {/* List reply */}
           {c.replies && c.replies.length > 0 && (
             <div className="ml-6 mt-2 space-y-2">
-              {c.replies.map((r) => (
-                <div key={r.id} className="border rounded-lg p-2 bg-gray-50">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={r.User?.avatar || "/images/default-avatar.png"}
-                      alt={r.User?.username || "Anon"}
-                      className="w-5 h-5 rounded-full"
-                    />
-                    <span className="font-medium text-xs">
-                      {r.User?.username || "Anon"}
-                    </span>
+              {c.replies
+                .slice() // clone array
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // urutkan reply juga
+                .map((r) => (
+                  <div key={r.id} className="border rounded-lg p-2 bg-gray-50">
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={r.User?.avatar || "/images/default-avatar.png"}
+                        alt={r.User?.username || "Anon"}
+                        className="w-5 h-5 rounded-full"
+                      />
+                      <span className="font-medium text-xs">
+                        {r.User?.username || "Anon"}
+                      </span>
+                      <span className="text-[10px] text-gray-400 ml-auto">
+                        {r.createdAt ? new Date(r.createdAt).toLocaleString() : ""}
+                      </span>
+                    </div>
+                    <div className="mt-1 text-xs">{r.content}</div>
+                    <div className="mt-1 text-[11px] text-gray-500 flex gap-2">
+                      <button
+                        onClick={() => onDeleteComment(r.id, c.id)}
+                        className="hover:underline text-red-500"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                  <div className="mt-1 text-xs">{r.content}</div>
-                  <div className="mt-1 text-[11px] text-gray-500 flex gap-2">
-                    <button
-                      onClick={() => onDeleteComment(r.id, c.id)}
-                      className="hover:underline text-red-500"
-                    >
-                      Hapus
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           )}
         </div>

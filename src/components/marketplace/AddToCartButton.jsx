@@ -1,26 +1,43 @@
 import React from "react";
-import { BsCartPlus } from "react-icons/bs";
+import { useAccountSupra } from "../../context/account";
 
-const AddToCartButton = ({ item }) => {
-  const handleAddToCart = () => {
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const exists = cart.find((i) => i.id === item.id);
+const AddToCartButton = ({ item, userAddress }) => {
+  const { address } = useAccountSupra();
 
-    if (!exists) {
-      cart.push({ ...item, quantity: 1 });
-      localStorage.setItem("cart", JSON.stringify(cart));
-      alert("Item added to cart!");
-    } else {
-      alert("Item already in cart.");
+  const handleAddToCart = async () => {
+    const finalAddress = userAddress || address;
+    if (!finalAddress) {
+      alert("Please connect your wallet first!");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5004/api/cart/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userAddress: finalAddress,
+          itemId: item.id,
+          quantity: 1,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Item added to cart!");
+      } else {
+        alert(data.error || "Failed to add to cart");
+      }
+    } catch (err) {
+      console.error("Error adding to cart:", err);
     }
   };
 
   return (
     <button
       onClick={handleAddToCart}
-      className="flex items-center justify-center w-full gap-x-2 border border-red-200 hover:bg-red-100 text-black py-2 rounded-lg text-lg transition"
+      className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-lg transition"
     >
-      <BsCartPlus className="text-2xl" />
       Add to Cart
     </button>
   );

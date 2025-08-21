@@ -1,17 +1,30 @@
 // src/components/Marketplace/ItemList.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ItemCard from "./ItemCard";
-import products from "../../data/mockProducts";
 import PromotionSlider from "./PromotionSlider";
 import CategoryGrid from "./CategoryGrid";
-import { HiSearch } from "react-icons/hi";
 import { BiCategory } from "react-icons/bi";
 
-
 const ItemList = () => {
-  const [activeTab, setActiveTab] = useState("newest");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const res = await fetch("http://localhost:5004/api/items");
+        const data = await res.json();
+        setProducts(data);
+      } catch (err) {
+        console.error("Gagal ambil items:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItems();
+  }, []);
 
   const categories = [
     "All Categories",
@@ -21,38 +34,57 @@ const ItemList = () => {
     "Course",
     "Music",
     "Signature",
-    "Game Asset"
+    "Game Asset",
   ];
 
-  const filteredProducts = products
-    .filter((item) => {
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = selectedCategory === "All Categories" || item.category === selectedCategory;
+  // filter by search + category
+  const filterProducts = (list) =>
+    list.filter((item) => {
+      const matchesSearch = item.title
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "All Categories" ||
+        item.category === selectedCategory;
       return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (activeTab === "newest") {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      } else if (activeTab === "best") {
-        return b.sales - a.sales;
-      }
-      return 0;
     });
 
-    return (
-      <div className="md:p-4 p-2 mt-16">
-        {/* Promo slider */}
-        <PromotionSlider />
+  // kategori besar
+  const newProducts = filterProducts(
+    [...products].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  );
 
-        <div className="md:block hidden">
+  const mostPurchase = filterProducts(
+    [...products].sort((a, b) => (b.sales || 0) - (a.sales || 0))
+  );
+
+  const popularProducts = filterProducts(
+    [...products].sort(
+      (a, b) => ((b.views || 0) + (b.sales || 0)) - ((a.views || 0) + (a.sales || 0))
+    )
+  );
+
+  const paymentLogos = {
+    SUPRA: "/images/tokens/supra.webp",
+    KT: "/images/tokens/kt.png",
+    USDT: "/images/tokens/tether-1.svg",
+    USDC: "/images/tokens/usdc.png",
+};
+
+  return (
+    <div className="md:p-4 p-2 mt-16">
+      {/* Promo slider */}
+      <PromotionSlider />
+
+      <div className="md:block hidden">
         <CategoryGrid
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
-        </div>
+      </div>
 
-        {/* Filter dan Search */}
-        <div className="flex flex-col md:flex-row mb-4 justify-between items-stretch md:items-center gap-2">
+      {/* Filter mobile */}
+      <div className="flex flex-col md:flex-row mb-4 justify-between items-stretch md:items-center gap-2">
         <div className="flex flex-wrap items-center gap-2 md:hidden block">
           <div className="flex items-center gap-1">
             <BiCategory className="w-5 h-5 text-gray-600" />
@@ -69,34 +101,84 @@ const ItemList = () => {
             </select>
           </div>
         </div>
+      </div>
 
+      {loading ? (
+        <div className="col-span-full text-center text-gray-500">Loading...</div>
+      ) : (
+        <>
+          {/* New Products */}
+          <h2 className="text-xl font-bold mb-3 mt-6">🆕 New Products</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-2">
+            {newProducts.slice(0, 6).map((item) => (
+              <ItemCard key={item.title} item={item} />
+            ))}
+            {newProducts.length === 0 && (
+              <div className="col-span-full text-center text-gray-500">
+                No new items found.
+              </div>
+            )}
+          </div>
 
-          {/* <div className="relative w-full md:w-1/2">
-            <span className="absolute inset-y-0 left-3 flex items-center text-gray-400">
-              <HiSearch className="w-5 h-5" />
-            </span>
-            <input
-              type="text"
-              placeholder="Search items"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div> */}
+          {/* Most Purchase */}
+          <h2 className="text-xl font-bold mb-3 mt-8">🔥 Most Purchase</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-2">
+            {mostPurchase.slice(0, 6).map((item) => (
+              <ItemCard key={item.title} item={item} />
+            ))}
+            {mostPurchase.length === 0 && (
+              <div className="col-span-full text-center text-gray-500">
+                No popular purchase found.
+              </div>
+            )}
+          </div>
 
-        </div>
+          {/* Popular Product */}
+          <h2 className="text-xl font-bold mb-3 mt-8">⭐ Popular Product</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-2">
+            {popularProducts.slice(0, 6).map((item) => (
+              <ItemCard key={item.title} item={item} />
+            ))}
+            {popularProducts.length === 0 && (
+              <div className="col-span-full text-center text-gray-500">
+                No popular items found.
+              </div>
+            )}
+          </div>
+        </>
+      )}
+      <div className="my-8 border-t-2 ">
+      <div className="my-4">
+      <p className="text-[14px] my-text mb-2">
+      Experience the Ease of Buying and Selling on Kraftera
+      </p>
+      <p className="text-[12px]">
+      Welcome to Kraftera, the Web3-powered marketplace with zero admin fees, designed to make your transactions smarter, faster, and more cost-efficient. Discover a wide range of digital products—from ebooks, courses, templates, and music to game assets, artwork, and more—all without the extra charges that often burden creators and sellers.
 
-        {/* Produk */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-2">
-          {filteredProducts.map((item) => (
-            <ItemCard key={item.id} item={item} />
-          ))}
-          {filteredProducts.length === 0 && (
-            <div className="col-span-full text-center text-gray-500">No items found.</div>
-          )}
+At Kraftera, we are committed to delivering a seamless and enjoyable buying and selling experience for everyone. Whether you’re a small business owner, a student, a freelancer, or a digital creator, Kraftera empowers you through innovative, user-friendly features and the transparency of blockchain technology.
+
+Enjoy a fast, secure, and admin-free Web3 marketplace with Kraftera. Why wait? Switch to Kraftera today and unlock the future of digital commerce!
+      </p>
+      </div>
+      </div>
+      <div className="my-8">
+        <div className="my-4">
+          <p className="text-[14px] my-text mb-2">
+            Payment Method
+          </p>
+          <div className="flex flex-wrap items-center gap-4">
+            {Object.entries(paymentLogos).map(([symbol, logo]) => (
+              <div key={symbol} className="flex items-center gap-1 border-2 rounded-xl px-2 py-1">
+                <img src={logo} alt={symbol} className="md:w-6 md:h-6 w-4 h-4" />
+                <span className="text-[12px]">{symbol}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    );
+
+    </div>
+  );
 };
 
 export default ItemList;

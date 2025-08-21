@@ -15,6 +15,7 @@ import Profile from './pages/profile';
 import EditProfile from './pages/profile/Create';
 import Shop from './pages/shop';
 import MyItems from './pages/profile/MyItems';
+import MyCart from './components/marketplace/CartView';
 import Checkout from './pages/Cart';
 import NotifPage from './components/Notif';
 import SocialFiIndex from './pages/post/index';
@@ -55,12 +56,12 @@ const Layout = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/create-items" element={<CreateItem />} />
-          <Route path="/details/:id" element={<ItemDetails />} />
-          <Route path="/details/:id/checkout" element={<Checkout />} />
+          <Route path="/details/:title" element={<ItemDetails />} />
+          <Route path="/details/:title/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/shop" element={<Shop />} />
-          <Route path="/my-items" element={<MyItems />} />
+          <Route path="/my-cart" element={<MyCart />} />
           <Route path="/notification" element={<NotifPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/checkin" element={<Checkin />} />

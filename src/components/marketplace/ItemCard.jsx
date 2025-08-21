@@ -1,35 +1,64 @@
 // src/components/Marketplace/ItemCard.jsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const truncate = (str, maxLength = 25) =>
-  str.length > maxLength ? str.slice(0, maxLength) + "..." : str;
-
-const ItemCard = ({ item }) => {
-  return (
-    <Link to={`/details/${item.id}`}>
-    <div className="p-2 rounded-xl shadow hover:shadow-md transition bg-white">
-      <img
-        src={item.image}
-        alt={item.name}
-        className="w-full aspect-[4/4] object-cover rounded-lg mb-3"
-      />
-      <div className="flex justify-between text-xs text-gray-500">
-        <span className="text-stone-500">{item.category}</span>
-        <span>{item.sales} sold</span>
-      </div>
-      <h3 className="text-sm font-medium text-gray-800 mb-1">{truncate(item.name, 22)}</h3>
-      <div className="flex justify-between items-center mb-1">
-        <span className="md:text-md text-sm text-red-500 my-text">{item.price} USDC</span>
-      </div>
-      {/* <div className="flex justify-between text-xs text-gray-500">
-        <span className="text-yellow-500">{item.star}</span>
-        <span>{item.sales} sold</span>
-      </div> */}
-    </div>
-
-    </Link>
-  );
+const truncate = (text, maxLength = 50) => {
+  if (!text || typeof text !== "string") return ""; // 🚀 fallback aman
+  return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 };
 
-export default ItemCard;
+// mapping logo
+const paymentLogos = {
+  SUPRA: "/images/tokens/supra.webp",
+  KT: "/images/tokens/kt.png",
+  USDT: "/images/tokens/tether-1.svg",
+  USDC: "/images/tokens/usdc.png",
+};
+
+const ItemCard = ({ item }) => {
+  const navigate = useNavigate();
+
+  if (!item) return null;
+
+  const handleClick = () => {
+    navigate(`/details/${encodeURIComponent(item.title)}`);
+  };
+
+  const pm = (item.paymentMethod || "").toUpperCase();
+    const logoSrc = paymentLogos[pm];
+
+    return (
+      <div
+        onClick={handleClick}
+        className="bg-white dark:bg-gray-900 border rounded-xl shadow p-2 cursor-pointer hover:shadow-lg transition"
+      >
+        <img
+          src={(item.images && item.images[0]) || "/images/placeholder.png"}
+          alt={item.title || "Untitled"}
+          className="w-full h-40 object-cover rounded-lg"
+        />
+        <div className="mt-2">
+          <h3 className="text-xs font-semibold text-gray-800">
+            {truncate(item.category || "Untitled", 40)}
+          </h3>
+          <h3 className="text-sm font-semibold text-gray-800">
+            {truncate(item.title || "Untitled", 40)}
+          </h3>
+          <p className="text-xs text-gray-600">
+            {truncate(item.shortDesc || "No description available", 60)}
+          </p>
+
+          <div className="mt-2 flex items-center gap-1 text-sm text-red-500 my-text">
+            <span>${item.price ?? 0}</span>
+            {logoSrc ? (
+              <img src={logoSrc} alt={pm} className="w-4 h-4" />
+            ) : (
+              <span className="ml-1">{item.paymentMethod || ""}</span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  export default ItemCard;
