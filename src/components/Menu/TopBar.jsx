@@ -78,7 +78,7 @@ const TopBar = () => {
           <div className="flex items-center flex-1">
             <Link to="/" className="flex items-center mr-2">
               <img
-                src="/images/logo2.png"
+                src="/icons/icon-512x512.png"
                 alt="Logo"
                 className="h-8 dark:hidden"
               />

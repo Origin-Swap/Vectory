@@ -52,7 +52,7 @@ const Navbar = () => {
       <div className="hidden md:flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img src="/images/logo2.png" alt="Logo" className="h-8 dark:hidden" />
+          <img src="/icons/icon-512x512.png" alt="Logo" className="h-8 dark:hidden" />
           <img src="/images/logo-white.png" alt="Logo" className="hidden h-8 dark:block" />
           <span className="text-xl font-bold text-black dark:text-white">Kraftera</span>
         </Link>
