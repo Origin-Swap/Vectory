@@ -1,10 +1,41 @@
 // src/components/Social/CommentForm.jsx
 import React, { useState, useEffect } from "react";
+import { API_URL } from '../../config/ApiUrl';
 import { useAccountSupra } from "../../context/account";
 
 export default function CommentForm({ onSubmit }) {
   const [text, setText] = useState("");
   const { address } = useAccountSupra();
+  const [profile, setProfile] = useState({
+    avatar: "/images/avatar/Av11.png",
+  });
+
+
+  // Ambil data user dari backend
+  useEffect(() => {
+    if (!address) return;
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`http://localhost:5004/api/user/${address}`);
+        if (res.status === 404) {
+          console.log("User not found, using default profile");
+          setProfile({ avatar: "/images/default-avatar.png" });
+          return;
+        }
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        const data = await res.json();
+        setProfile(data.data);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+
+    fetchProfile();
+  }, [address]);
+
 
   const submit = (e) => {
     e.preventDefault();
@@ -19,7 +50,7 @@ export default function CommentForm({ onSubmit }) {
       <div className="flex gap-3">
         {/* Avatar user aktif */}
         <img
-          src={"/images/default-avatar.png"}
+          src={profile?.avatar || "/images/avatar/Av11.png"}
           alt="me"
           className="w-8 h-8 rounded-full"
         />

@@ -4,6 +4,7 @@ import CommentList from "./CommentList";
 import CommentForm from "./CommentForm";
 import { FaRegHeart, FaShare } from "react-icons/fa";
 import { AiOutlineComment } from "react-icons/ai";
+import { Link } from "react-router-dom";
 
 export default function PostDetail({
   post,
@@ -19,14 +20,25 @@ export default function PostDetail({
     <article className="bg-white rounded-2xl shadow p-4">
       {/* Header */}
       <div className="flex items-center gap-3">
+       <Link to={`/profile/${post.author?.address}`}>
         <img
           src={user.avatar || "/images/default-avatar.png"}
           alt={user.username || user.name || "Anon"}
           className="w-10 h-10 rounded-full"
         />
+        </Link>
         <div>
           <div className="font-semibold leading-tight">
+           <Link to={`/profile/${post.author?.address}`}>
             {user.username || user.name || "Anon"}
+            {user.level && (
+              <img
+                src={`/images/badge/${user.level.toLowerCase()}.png`}
+                alt={`${user.level} badge`}
+                className="ml-1 w-5 h-5 inline-block"
+              />
+            )}
+            </Link>
           </div>
           <div className="text-xs text-gray-500">
             {(user.handle || user.address || "").slice(0, 6)}... •{" "}
@@ -37,9 +49,21 @@ export default function PostDetail({
 
       {/* Body */}
       <div className="mt-3 whitespace-pre-wrap text-sm">{post.content}</div>
-      {post.image && (
-        <div className="mt-3 overflow-hidden rounded-xl border">
-          <img src={post.image} alt="post" className="w-full object-cover" />
+      {post.images && post.images.length > 0 && (
+        <div
+          className={`mt-3 grid gap-2 ${
+            post.images.length === 1 ? "grid-cols-1" : "grid-cols-2"
+          }`}
+        >
+          {post.images.map((img, i) => (
+            <div key={i} className="overflow-hidden rounded-xl border">
+              <img
+                src={img}
+                alt={`post-${i}`}
+                className="w-full h-64 object-cover"
+              />
+            </div>
+          ))}
         </div>
       )}
 

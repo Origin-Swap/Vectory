@@ -3,12 +3,12 @@ import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../../config/ApiUrl';
 import TopBar from './TopBar';
-import { BsCart4 } from "react-icons/bs";
+import { BsShop } from "react-icons/bs";
 import { ImFeed } from "react-icons/im";
 import { IoCreateOutline } from "react-icons/io5";
-import { RxDashboard } from "react-icons/rx";
+import { VscDashboard } from "react-icons/vsc";
 import { MdOutlineRssFeed } from "react-icons/md";
-import { GiFarmTractor } from "react-icons/gi";
+import { RiCoinsLine } from "react-icons/ri";
 
 const BottomMenu = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -53,46 +53,46 @@ const BottomMenu = () => {
       </div>
 
       <div
-        className={`lg:hidden  fixed bottom-0 w-full bg-yellow-50 dark:bg-[#334155] rounded-t-xl text-black flex justify-around p-2 items-center border-t transition-transform duration-100 ${
+        className={`lg:hidden  fixed bottom-0 w-full bg-gray-50 dark:bg-[#334155] rounded-t-xl text-black flex justify-around py-2 items-center border-t transition-transform duration-100 ${
           isVisible ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
       <Link
         to="/"
         className={`flex flex-col items-center ${
-          isActive('/') ? 'border p-1 rounded-md border-[#14b8a6]' : ''
+          isActive('/') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
         }`}
       >
-        <BsCart4 className="w-6 h-6 text-black" />
+        <BsShop className="w-6 h-6 text-black" />
       </Link>
          <Link
           to="/socialfi"
           className={`flex flex-col items-center ${
-            isActive('/socialfi') ? 'border p-1 rounded-md border-[#14b8a6]' : ''
+            isActive('/socialfi') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
           }`}
         >
-          <MdOutlineRssFeed className="w-6 h-6 dark:fill-white" />
+          <MdOutlineRssFeed className="w-6 h-6 text-black" />
         </Link>
         <Link
           to="/dashboard"
           className={`flex flex-col items-center ${
-            isActive('/dashboard') ? 'border p-1 rounded-md border-[#14b8a6]' : ''
+            isActive('/dashboard') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
           }`}
         >
-          <RxDashboard className="w-6 h-6 text-black" />
+          <VscDashboard className="w-6 h-6 text-black" />
         </Link>
         <Link
           to="/stake"
           className={`flex flex-col items-center ${
-            isActive('/stake') ? 'border p-1 rounded-md border-[#14b8a6]' : ''
+            isActive('/stake') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
           }`}
         >
-          <GiFarmTractor className="w-6 h-6 text-black" />
+          <RiCoinsLine className="w-6 h-6 text-black" />
         </Link>
         {/* <Link
           to={`/profile/${address}`}
           className={`flex flex-col items-center ${
-            isActive(`/profile/${address}`) ? 'border p-1 rounded-md border-[#14b8a6]' : ''
+            isActive(`/profile/${address}`) ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
           }`}
         >
           <img src={profileData.avatar || defaultAvatar} alt="Preview" className="w-7 h-7 dark:fill-white rounded-full border-2 border-slate-200" />

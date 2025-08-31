@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_URL } from '../../config/ApiUrl';
 import { useAccountSupra } from "../../context/account";
 import { FaImage, FaTrash } from "react-icons/fa";
 
@@ -42,10 +43,12 @@ export default function CreatePost({ onCreate }) {
       const formData = new FormData();
       formData.append("address", address);
       formData.append("content", content);
-      files.forEach((file) => formData.append("images", file));
+
+      // max 4 file
+      files.slice(0, 4).forEach((file) => formData.append("images", file));
 
       const res = await axios.post("http://localhost:5004/api/post", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       if (onCreate) onCreate(res.data);
@@ -72,11 +75,11 @@ export default function CreatePost({ onCreate }) {
 
     for (let file of selectedFiles) {
       if (newFiles.length >= 4) {
-        alert("Maksimal 4 gambar per post.");
+        alert("Max 4 images per post.");
         break;
       }
       if (file.size > 2 * 1024 * 1024) {
-        alert(`Gambar ${file.name} lebih dari 2MB, tidak bisa diupload.`);
+        alert(`Image ${file.name} more than 2mb, cannot upload.`);
         continue;
       }
       newFiles.push(file);
@@ -98,12 +101,12 @@ export default function CreatePost({ onCreate }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-2 bg-white rounded-2xl shadow p-4 border"
+      className="mb-2 bg-white rounded-2xl shadow md:p-4 p-2 border"
     >
       <div className="flex gap-3">
         {/* Avatar */}
         <img
-          src={profile?.avatar || "/images/default-avatar.png"}
+          src={profile?.avatar || "/images/avatar/Av11.png"}
           alt="me"
           className="w-10 h-10 rounded-full bg-gray-200"
         />
@@ -118,7 +121,7 @@ export default function CreatePost({ onCreate }) {
             }
           }}
           className="resize-none rounded-xl border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 overflow-hidden"
-          placeholder="Apa yang ingin kamu bagikan hari ini?"
+          placeholder="What you want to share today?"
           value={content}
           onChange={(e) => {
             setContent(e.target.value);
@@ -159,14 +162,30 @@ export default function CreatePost({ onCreate }) {
                 multiple
                 onChange={handleFileChange}
                 className="hidden"
+                disabled={profile?.level === "Bronze"} // kalau bronze disable upload
               />
             </label>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-xl bg-gray-900 text-white text-sm hover:opacity-90"
-            >
-              Post
-            </button>
+
+            <div className="flex flex-col items-end">
+              <button
+                type="submit"
+                disabled={profile?.level === "Bronze"}
+                className={`px-4 py-1 rounded-xl text-sm ${
+                  profile?.level === "Bronze"
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gray-900 text-white hover:opacity-90"
+                }`}
+              >
+                Post
+              </button>
+
+              {/* Keterangan kalau masih Bronze */}
+              {profile?.level === "Bronze" && (
+                <p className="text-xs text-red-500 mt-1">
+                  Upgrade to Silver to create posts
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>

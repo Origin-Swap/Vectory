@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from '../../config/ApiUrl';
 import PostDetail from "../../components/Social/PostDetail";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useAccountSupra } from "../../context/account";
@@ -15,7 +16,7 @@ export default function PostDetailPage() {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`http://localhost:5004/api/post/${id}`);
+        const res = await axios.get(`${API_URL}/api/post/${id}`);
         setPost(res.data);
       } catch (err) {
         console.error("Gagal ambil post:", err);
@@ -30,7 +31,7 @@ export default function PostDetailPage() {
   const handleLike = async () => {
     if (!post) return;
     try {
-      await axios.post("http://localhost:5004/api/like/add", {
+      await axios.post(`${API_URL}/api/like/add`, {
         address, // pakai address dari wallet user
         postId: post.id,
       });
@@ -43,7 +44,7 @@ export default function PostDetailPage() {
   // 🚀 Add comment handler
   const handleAddComment = async (text) => {
     try {
-      const res = await axios.post("http://localhost:5004/api/comment/add", {
+      const res = await axios.post(`${API_URL}/api/comment/add`, {
         address,
         postId: post.id,
         content: text,
@@ -61,7 +62,7 @@ export default function PostDetailPage() {
   // 🚀 Add reply handler
   const handleAddReply = async (parentId, text) => {
     try {
-      const res = await axios.post("http://localhost:5004/api/comment/reply", {
+      const res = await axios.post(`${API_URL}/api/comment/reply`, {
         address,
         postId: post.id,
         content: text,
@@ -84,7 +85,7 @@ export default function PostDetailPage() {
   // 🚀 Delete comment / reply handler
   const handleDeleteComment = async (commentId, parentId = null) => {
     try {
-      await axios.delete(`http://localhost:5004/api/comment/${commentId}`);
+      await axios.delete(`${API_URL}/api/comment/${commentId}`);
 
       setPost((prev) => {
         if (!prev) return prev;

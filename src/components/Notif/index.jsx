@@ -1,78 +1,97 @@
-import React, { useState } from 'react';
-
-// Data mock notifikasi
-const mockNotifications = [
-  {
-    id: 1,
-    title: 'Welcome to BullPad!',
-    description: 'Thank you for joining our platform. Explore and earn now!',
-    date: '2025-07-27',
-    read: false,
-  },
-  {
-    id: 2,
-    title: 'Claim your daily reward!',
-    description: 'You can now claim your daily token reward.',
-    date: '2025-07-26',
-    read: false,
-  },
-  {
-    id: 3,
-    title: 'Farming reward available',
-    description: 'Your farming rewards are now available to claim.',
-    date: '2025-07-25',
-    read: true,
-  },
-];
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { API_URL } from '../../config/ApiUrl';
+import { useAccountSupra } from "../../context/account";
 
 const TabPage = () => {
-  const [activeTab, setActiveTab] = useState('new');
+  const { address } = useAccountSupra();
+  const [activeTab, setActiveTab] = useState("new");
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Ambil notifikasi dari backend
+  useEffect(() => {
+    if (!address) return;
+
+    const fetchNotifs = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:5004/api/notification/${address}`
+        );
+        setNotifications(res.data.data || []);
+      } catch (err) {
+        console.error("Gagal fetch notifikasi:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNotifs();
+  }, [address]);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
 
-  const filteredNotifications = mockNotifications.filter((notif) =>
-    activeTab === 'new' ? !notif.read : notif.read
+  const markAsRead = async (id) => {
+    try {
+      await axios.post(`http://localhost:5004/api/notification/${id}/read`);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+      );
+    } catch (err) {
+      console.error("Gagal update notifikasi:", err);
+    }
+  };
+
+  const filteredNotifications = notifications.filter((notif) =>
+    activeTab === "new" ? !notif.isRead : notif.isRead
   );
 
   return (
-    <div className="w-full px-4 py-3">
+    <div className="w-full min-h-screen md:px-4 px-2 py-2 mt-16">
+      {/* Tab */}
       <div className="flex justify-center space-x-4 border-b border-gray-200 pb-4">
         <button
-          onClick={() => handleTabClick('new')}
-          className={`text-sm font-semibold py-2 px-4 rounded-t-lg transition-colors duration-300 ${
-            activeTab === 'new'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500'
+          onClick={() => handleTabClick("new")}
+          className={`text-sm font-semibold py-1 px-4 rounded-t-lg transition-colors duration-300 ${
+            activeTab === "new"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500"
           }`}
         >
           New
         </button>
         <button
-          onClick={() => handleTabClick('read')}
-          className={`text-sm font-semibold py-2 px-4 rounded-t-lg transition-colors duration-300 ${
-            activeTab === 'read'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500'
+          onClick={() => handleTabClick("read")}
+          className={`text-sm font-semibold py-1 px-4 rounded-t-lg transition-colors duration-300 ${
+            activeTab === "read"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500"
           }`}
         >
           Read
         </button>
       </div>
 
-      <div className="mt-6 space-y-4">
-        {filteredNotifications.length === 0 ? (
+      {/* List notif */}
+      <div className="mt-2 space-y-2">
+        {loading ? (
+          <div className="text-center text-gray-500">Loading...</div>
+        ) : filteredNotifications.length === 0 ? (
           <div className="text-center text-gray-500">No notifications</div>
         ) : (
           filteredNotifications.map((notif) => (
             <div
               key={notif.id}
-              className="bg-white shadow rounded-lg p-4 border border-gray-100"
+              className={`bg-white shadow rounded-lg p-4 border cursor-pointer transition
+              ${notif.isRead ? "opacity-70" : "hover:bg-gray-50"}`}
+              onClick={() => markAsRead(notif.id)}
             >
-              <h3 className="text-md font-bold text-gray-800">{notif.title}</h3>
-              <p className="text-sm text-gray-600 mt-1">{notif.description}</p>
-              <p className="text-xs text-gray-400 mt-2">{notif.date}</p>
+              <h3 className="text-md font-bold text-gray-800">{notif.message}</h3>
+              <p className="text-xs text-gray-400 mt-2">
+                {new Date(notif.createdAt).toLocaleString()}
+              </p>
             </div>
           ))
         )}

@@ -1,39 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { API_URL } from '../../config/ApiUrl';
+import { useParams } from "react-router-dom";
 import { FaUserGear } from "react-icons/fa6";
 import { MdOutlineChat, MdGroupAdd } from "react-icons/md";
 import UserProfileForm from './UserProfileForm';
 import { useAccountSupra } from "../../context/account";
 
 const UserInfo = ({ onProfileUpdate }) => {
-  const { address, isConnected, connectWallet, disconnectWallet } = useAccountSupra();
+  const { address: connectedAddress, isConnected } = useAccountSupra();
+  const { address: paramAddress } = useParams(); // param di URL
+
+  // target address (profil siapa yang dibuka)
+  const targetAddress = paramAddress || connectedAddress;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState({
-    avatar: "/images/default-avatar.png",
+    avatar: "/images/avatar/Av11.png",
     username: "",
     bio: "",
     email: ""
   });
 
-  // Ambil data user dari backend saat address berubah
+  const [isFollowing, setIsFollowing] = useState(false); // 🆕 status follow
+
+  // Ambil data user saat address berubah
   useEffect(() => {
-    if (!address) return;
+    if (!targetAddress) return;
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5004/api/user/${address}`);
+        const res = await fetch(`http://localhost:5004/api/user/${targetAddress}`);
         if (res.status === 404) {
           console.log("User not found, using default profile");
           setProfile({
-            avatar: "/images/default-avatar.png",
+            avatar: "/images/avatar/Av11.png",
             username: "",
             bio: "",
             email: ""
           });
           return;
-        }
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
         }
         const data = await res.json();
         setProfile(data.data);
@@ -43,7 +48,55 @@ const UserInfo = ({ onProfileUpdate }) => {
     };
 
     fetchProfile();
-  }, [address]);
+  }, [targetAddress]);
+
+  // Cek apakah connected user sudah follow paramAddress
+  useEffect(() => {
+    const checkFollow = async () => {
+      if (!connectedAddress || !paramAddress) return;
+      try {
+        const res = await fetch(
+          `http://localhost:5004/api/user/${paramAddress}/followers`
+        );
+        const data = await res.json();
+
+        const alreadyFollowing = data.data.some(
+          (u) => u.address.toLowerCase() === connectedAddress.toLowerCase()
+        );
+        setIsFollowing(alreadyFollowing);
+      } catch (err) {
+        console.error("Error checking follow status:", err);
+      }
+    };
+    checkFollow();
+  }, [connectedAddress, paramAddress]);
+
+  // Handler follow/unfollow
+  const handleFollowToggle = async () => {
+    if (!connectedAddress || !paramAddress) return;
+
+    try {
+      if (isFollowing) {
+        // Unfollow
+        await fetch(`http://localhost:5004/api/user/${paramAddress}/unfollow`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ followerAddress: connectedAddress }),
+        });
+        setIsFollowing(false);
+      } else {
+        // Follow
+        await fetch(`http://localhost:5004/api/user/${paramAddress}/follow`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ followerAddress: connectedAddress }),
+        });
+        setIsFollowing(true);
+      }
+    } catch (err) {
+      console.error("Error follow/unfollow:", err);
+    }
+  };
 
 
   return (
@@ -52,35 +105,59 @@ const UserInfo = ({ onProfileUpdate }) => {
         <div className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left gap-6">
           <div className="relative w-28 h-28">
             <img
-              src={profile.avatar || "/images/default-avatar.png"}
+              src={profile.avatar || "/images/avatar/Av11.png"}
               alt="Profile"
               className="w-full bg-white h-full rounded-full border-4 border-gradient-to-tr from-blue-400 to-purple-500 shadow-lg"
             />
           </div>
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-800 dark:text-white">
-              {profile.username || "Anonymous"}
-            </h1>
+          <h1 className="text-3xl font-extrabold text-gray-800 dark:text-white flex justify-center md:justify-start items-center gap-2 text-center md:text-left">
+            {profile.username || "Anonymous"}
+
+            {profile.level && (
+              <img
+                src={`/images/badge/${profile.level.toLowerCase()}.png`}
+                alt={`${profile.level} badge`}
+                className="w-6 h-6 inline-block"
+              />
+            )}
+          </h1>
+
             <p className="text-sm text-gray-500 font-mono mb-4">
-              {isConnected ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Not connected'}
+              {isConnected ? `${targetAddress.slice(0, 6)}...${targetAddress.slice(-4)}` : 'Not connected'}
             </p>
             <p className="text-sm text-gray-500 mb-2">{profile.bio}</p>
             <div className="flex gap-3 mt-2 justify-center md:justify-start">
               <button className="rounded-full px-4 py-1 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-                Follower
+                {profile.follower} Follower
               </button>
               <button className="rounded-full px-4 py-1 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-                Following
+                {profile.following} Following
               </button>
             </div>
             <div className="flex md:hidden flex-wrap gap-3 mt-4 justify-center">
-              <button className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
-                <MdOutlineChat className="text-lg items-center mr-1"/>Chat
+              {/* Chat & Follow hanya kalau buka profil orang lain */}
+              {paramAddress && paramAddress.toLowerCase() !== connectedAddress?.toLowerCase() && (
+                <>
+                  <button className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
+                    <MdOutlineChat className="text-lg items-center mr-1"/>Chat
+                  </button>
+                  <button
+                onClick={handleFollowToggle}
+                className={`flex px-4 py-2 rounded-full text-sm font-semibold transition ${
+                  isFollowing
+                    ? "bg-gray-300 text-gray-800 hover:bg-gray-400"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
+              >
+                <MdGroupAdd className="text-lg mr-1" />
+                {isFollowing ? "Unfollow" : "Follow"}
               </button>
-              <button className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
-                <MdGroupAdd className="text-lg items-center mr-1"/>Follow
-              </button>
-              {isConnected && (
+                </>
+              )}
+
+              {/* Edit hanya kalau buka profil sendiri */}
+              {isConnected && (!paramAddress || paramAddress.toLowerCase() === connectedAddress?.toLowerCase()) && (
                 <button
                   className="flex bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition"
                   onClick={() => setIsModalOpen(true)}
@@ -91,20 +168,37 @@ const UserInfo = ({ onProfileUpdate }) => {
             </div>
           </div>
         </div>
-        {isConnected && address && (
+        {isConnected && targetAddress && (
           <div className="hidden md:flex gap-3 mt-2">
-            <button className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
-              <MdOutlineChat className="text-lg items-center mr-1"/>Chat
-            </button>
-            <button className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
-              <MdGroupAdd className="text-lg items-center mr-1"/>Follow
-            </button>
-            <button
-              className="flex bg-gray-200 text-gray-800 px-5 py-2 rounded-full font-semibold hover:bg-gray-300 transition text-sm"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <FaUserGear className="text-lg items-center mr-1"/> Edit
-            </button>
+            {/* Chat & Follow hanya kalau buka profil orang lain */}
+            {paramAddress && paramAddress.toLowerCase() !== connectedAddress?.toLowerCase() && (
+              <>
+                <button className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
+                  <MdOutlineChat className="text-lg items-center mr-1"/>Chat
+                </button>
+                <button
+                onClick={handleFollowToggle}
+                className={`flex px-4 py-2 rounded-full text-sm font-semibold transition ${
+                  isFollowing
+                    ? "bg-gray-300 text-gray-800 hover:bg-gray-400"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
+              >
+                <MdGroupAdd className="text-lg mr-1" />
+                {isFollowing ? "Unfollow" : "Follow"}
+              </button>
+              </>
+            )}
+
+            {/* Edit hanya kalau buka profil sendiri */}
+            {(!paramAddress || paramAddress.toLowerCase() === connectedAddress?.toLowerCase()) && (
+              <button
+                className="flex bg-gray-200 text-gray-800 px-5 py-2 rounded-full font-semibold hover:bg-gray-300 transition text-sm"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <FaUserGear className="text-lg items-center mr-1"/> Edit
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -123,7 +217,7 @@ const UserInfo = ({ onProfileUpdate }) => {
             </button>
 
             <UserProfileForm
-              address={address}
+              address={connectedAddress}
               initialData={{ ...profile }}
               onSave={(data) => {
                 setProfile(data);

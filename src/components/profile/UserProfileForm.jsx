@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { API_URL } from '../../config/ApiUrl';
 
 const UserProfileForm = ({ initialData, onSave, address }) => {
   const [avatar, setAvatar] = useState(initialData?.avatar || "/images/default-avatar.png");

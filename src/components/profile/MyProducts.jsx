@@ -1,31 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ItemCard from '../marketplace/ItemCard';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { MdAddShoppingCart } from "react-icons/md";
+import { useAccountSupra } from "../../context/account";
 
-const MyProducts = ({ products }) => (
-  <div className="relative -top-12 bg-white dark:bg-gray-900 rounded-xl p-4 mb-4 shadow border">
-    <div className="flex justify-between items-center">
-      <h3 className="text-lg font-semibold mb-2">📦 My Products</h3>
-      <Link to={`/create-items`} className="flex gap-x-2 items-center text-md">
-        <MdAddShoppingCart />Add
-      </Link>
+const MyProducts = () => {
+  const { address: connectedAddress } = useAccountSupra();
+  const { address: paramAddress } = useParams();
+  const targetAddress = paramAddress || connectedAddress;
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState(""); // 🆕 simpan nama user
+
+  // Ambil produk
+  useEffect(() => {
+    let mounted = true;
+
+    const fetchMyProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5004/api/items");
+        const data = await res.json();
+
+        const myItems = data.filter(
+          (item) => item.userAddress?.toLowerCase() === targetAddress?.toLowerCase()
+        );
+
+        if (mounted) setProducts(myItems);
+      } catch (err) {
+        console.error("Gagal ambil produk:", err);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    if (targetAddress) {
+      fetchMyProducts();
+    } else {
+      setProducts([]);
+      setLoading(false);
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, [targetAddress]);
+
+  // 🆕 Ambil username kalau pakai paramAddress (profil orang lain)
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (paramAddress) {
+        try {
+          const res = await fetch(`http://localhost:5004/api/user/${paramAddress}`);
+          const data = await res.json();
+          setUsername(data?.data?.username || "");
+        } catch (err) {
+          console.error("Gagal ambil user:", err);
+        }
+      }
+    };
+    fetchUser();
+  }, [paramAddress]);
+
+  // 🆕 short address helper
+  const shortAddress = (addr) =>
+    addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "";
+
+  return (
+    <div className="relative -top-12 bg-white dark:bg-gray-900 rounded-xl p-4 mb-4 shadow border">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold mb-2">
+          📦 {paramAddress ? `${username || shortAddress(paramAddress)}'s Products` : "My Products"}
+        </h3>
+
+        {/* Tombol Add hanya muncul untuk profil milik sendiri */}
+        {!paramAddress && (
+          <Link to={`/create-items`} className="flex gap-x-2 items-center text-md">
+            <MdAddShoppingCart />Add
+          </Link>
+        )}
+      </div>
+
+      {loading ? (
+        <div className="flex justify-center items-center h-32">
+          <p className="text-gray-500 text-center text-sm">⏳ Loading...</p>
+        </div>
+      ) : products.length === 0 ? (
+        <div className="flex justify-center items-center h-32">
+          <p className="text-gray-500 text-center text-sm">🚫 No product found</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-4">
+          {products.map((item) => (
+            <ItemCard key={item.id} item={item} />
+          ))}
+        </div>
+      )}
     </div>
-
-    {(!products || products.length === 0) ? (
-      <div className="flex justify-center items-center h-32">
-        <p className="text-gray-500 text-center text-sm">
-          🚫 No product found
-        </p>
-      </div>
-    ) : (
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-4">
-        {products.map((item) => (
-          <ItemCard key={item.id} item={item} />
-        ))}
-      </div>
-    )}
-  </div>
-);
+  );
+};
 
 export default MyProducts;

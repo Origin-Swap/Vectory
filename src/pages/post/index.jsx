@@ -1,8 +1,10 @@
 // File: src/pages/Social/IndexPage.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
+import { API_URL } from '../../config/ApiUrl';
 import Post from "../../components/Social/Post";
 import CreatePost from "../../components/Social/CreatePost";
+import RecommendedUsers from "../../components/Social/RecommendedUsers";
 import { useAccountSupra } from "../../context/account";
 
 export default function IndexPage() {
@@ -15,7 +17,7 @@ export default function IndexPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await axios.get("http://localhost:5004/api/post");
+        const res = await axios.get(`${API_URL}/api/post`);
         setPosts(res.data);
       } catch (err) {
         console.error("Gagal ambil posts:", err);
@@ -28,10 +30,13 @@ export default function IndexPage() {
   const filtered = useMemo(() => {
     let sorted = [...posts];
 
-    if (activeTab === "hot") {
-      sorted.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-    } else if (activeTab === "mostView") {
-      sorted.sort((a, b) => (b.views || 0) - (a.views || 0));
+    if (activeTab === "newest") {
+      sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } else if (activeTab === "oldest") {
+      sorted.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+    } else {
+      // Default "For You" → bisa custom algoritma, misalnya campuran
+      sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
 
     if (!query) return sorted;
@@ -42,7 +47,7 @@ export default function IndexPage() {
     );
   }, [posts, query, activeTab]);
 
-  // 🚀 Like handler (pakai router /api/like/add)
+  // 🚀 Like handler
   const handleLike = async (postId) => {
     setPosts((prev) =>
       prev.map((p) =>
@@ -50,7 +55,7 @@ export default function IndexPage() {
       )
     );
     try {
-      await axios.post(`http://localhost:5004/api/like/add`, {
+      await axios.post(`${API_URL}/api/like/add`, {
         address,
         postId,
       });
@@ -65,56 +70,51 @@ export default function IndexPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 mt-14">
-      <main className="max-w-3xl mx-auto px-2 py-4">
-        {isConnected && <CreatePost onCreate={handleCreatePost} />}
+    <div className="flex min-h-screen bg-white text-gray-900 mt-14">
+      {/* ===== MAIN CONTENT ===== */}
+      <div className="w-full md:w-2/3 border-r">
+        <main className="max-w-2xl mx-auto px-4 py-4">
+          {isConnected && <CreatePost onCreate={handleCreatePost} />}
 
-        {/* Tabs */}
-        <div className="flex gap-2 my-4 justify-center text-xs">
-          <button
-            className={`px-2 py-1 ${
-              activeTab === "forYou"
-                ? "border-b-2 border-gray-400 font-semibold"
-                : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("forYou")}
-          >
-            For You
-          </button>
-          <button
-            className={`px-2 py-1 ${
-              activeTab === "hot"
-                ? "border-b-2 border-gray-400 font-semibold"
-                : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("hot")}
-          >
-            Hot Topic
-          </button>
-          <button
-            className={`px-2 py-1 ${
-              activeTab === "mostView"
-                ? "border-b-2 border-gray-400 font-semibold"
-                : "text-gray-500"
-            }`}
-            onClick={() => setActiveTab("mostView")}
-          >
-            Most View
-          </button>
-        </div>
+          {/* Tabs */}
+          <div className="flex gap-4 my-4 justify-center text-sm font-medium flex-wrap">
+            {[
+              { id: "forYou", label: "For You" },
+              { id: "newest", label: "Newest" },
+              { id: "oldest", label: "Oldest" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                className={`px-3 py-1 rounded ${
+                  activeTab === tab.id
+                    ? "border-b-2 border-gray-800 text-gray-900"
+                    : "text-gray-500"
+                }`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-        {/* Feed */}
-        <div className="space-y-2">
-          {filtered.map((post) => (
-            <Post key={post.id} post={post} onLike={() => handleLike(post.id)} />
-          ))}
-          {filtered.length === 0 && (
-            <div className="text-center text-sm text-gray-500">
-              No Post Found {query}
-            </div>
-          )}
-        </div>
-      </main>
+          {/* Feed */}
+          <div className="space-y-3">
+            {filtered.map((post) => (
+              <Post key={post.id} post={post} onLike={() => handleLike(post.id)} />
+            ))}
+            {filtered.length === 0 && (
+              <div className="text-center text-sm text-gray-500">
+                No Post Found {query}
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
+
+      {/* ===== SIDEBAR ===== */}
+      <aside className="hidden md:block w-1/3 p-4">
+        <RecommendedUsers />
+      </aside>
     </div>
   );
 }

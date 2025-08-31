@@ -25,7 +25,7 @@ const Navbar = () => {
     const fetchProfile = async () => {
       if (!address) return;
       try {
-        const { data } = await axios.get(`${API_URL}/api/profile/${address}`);
+        const { data } = await axios.get(`${API_URL}/api/user/${address}`);
         setProfileData(data);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -118,7 +118,7 @@ const Navbar = () => {
                 <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg z-50 border border-gray-200 dark:border-gray-700">
                   <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {profileData.name || "My Account"}
+                      {profileData.username || "My Account"}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                       {address?.slice(0, 6)}...{address?.slice(-4)}

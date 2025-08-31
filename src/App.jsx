@@ -7,6 +7,7 @@ import Topbar from './components/Menu/TopBar';
 import BottomMenu from './components/Menu/BottomMenu';
 import Dashboard from './components/Dashboard';
 import Checkin from './components/Dashboard/dailypoint';
+import SwapPage from './components/Dashboard/Swap';
 import Stake from './components/Staking';
 import HomePage from './pages/Home';
 import CreateItem from './pages/CreateItem';
@@ -21,6 +22,8 @@ import NotifPage from './components/Notif';
 import SocialFiIndex from './pages/post/index';
 import PostDetailPage from './pages/post/[id]';
 import ChatPage from './pages/chat';
+import Statistics from './components/stats';
+import Upgrade from './components/subcription';
 import Footer from "./pages/Footer";
 
 import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
@@ -58,7 +61,8 @@ const Layout = () => {
           <Route path="/create-items" element={<CreateItem />} />
           <Route path="/details/:title" element={<ItemDetails />} />
           <Route path="/details/:title/checkout" element={<Checkout />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} />               {/* profile sendiri */}
+          <Route path="/profile/:address" element={<Profile />} />      {/* profile orang lain */}
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/my-cart" element={<MyCart />} />
@@ -69,6 +73,9 @@ const Layout = () => {
           <Route path="/socialfi" element={<SocialFiIndex />} />
           <Route path="/post/:id" element={<PostDetailPage />} />
           <Route path="/chat/*" element={<ChatPage />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/level-upgrade" element={<Upgrade />} />
+          <Route path="/point-exchange" element={<SwapPage />} />
         </Routes>
         <Footer />
       </div>

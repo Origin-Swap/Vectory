@@ -7,11 +7,13 @@ import WalletSection from "./WalletSection";
 import OrderHistory from "./OrderHistory";
 import MyProducts from "./MyProducts";
 import { useAccountSupra } from "../../context/account";
-import { getSupraPrice } from "../../utils/getSupraPrice"; // 🆕 import
+import { getSupraPrice } from "../../utils/getSupraPrice";
+import { useParams } from "react-router-dom"; // 🆕 ambil param
 
 const ProfilePortfolio = () => {
-  const { address, isConnected, balance } = useAccountSupra();
-  const userWallet = mockUser.wallet;
+  const { address: connectedAddress, isConnected, balance } = useAccountSupra();
+  const { address: paramAddress } = useParams(); // 🆕 param di URL
+  const targetAddress = paramAddress || connectedAddress;
 
   const [profile, setProfile] = useState({
     username: "UserName",
@@ -26,32 +28,35 @@ const ProfilePortfolio = () => {
     orders: [/* ... */],
   });
 
-  const [supraPrice, setSupraPrice] = useState(0); // 🆕 state harga SUPRA
+  const [supraPrice, setSupraPrice] = useState(0);
 
-  const userProducts = products.filter((p) => p.owner === userWallet);
+  const userProducts = products.filter((p) => p.owner === profile.wallet);
 
   const tokenData = {
-    SUPRA: { logo: "/images/tokens/supra.webp", price: supraPrice }, // 🆕 pakai harga dari API
+    SUPRA: { logo: "/images/tokens/supra.webp", price: supraPrice },
     KT: { logo: "/images/tokens/kt.png", price: 0.1, address: "0xKTTokenAddress" },
     USDT: { logo: "/images/tokens/tether-1.svg", price: 1, address: "0xUsdtTokenAddress" },
     USDC: { logo: "/images/tokens/usdc.png", price: 1, address: "0xUsdcTokenAddress" },
   };
 
   // Update balance ketika connect
+  // Update balance & wallet tergantung targetAddress
   useEffect(() => {
-    if (isConnected && address) {
-      setProfile((prev) => ({
-        ...prev,
-        wallet: address,
-        balances: {
-          ...prev.balances,
-          SUPRA: balance || 0,
-        },
-      }));
-    }
-  }, [isConnected, address, balance]);
+    if (!targetAddress) return;
 
-  // 🆕 fetch harga SUPRA sekali saat load
+    setProfile((prev) => ({
+      ...prev,
+      wallet: targetAddress,
+      balances: {
+        ...prev.balances,
+        SUPRA: paramAddress ? 0 : (balance || 0),
+        // 👉 kalau lihat profil orang lain, SUPRA = 0
+      },
+    }));
+  }, [targetAddress, balance, paramAddress]);
+
+
+  // fetch harga SUPRA sekali saat load
   useEffect(() => {
     const fetchPrice = async () => {
       const price = await getSupraPrice();
@@ -60,16 +65,23 @@ const ProfilePortfolio = () => {
     fetchPrice();
   }, []);
 
+  // cek apakah ini profil milik connected wallet
+  const isSelfProfile =
+    isConnected &&
+    (!paramAddress || paramAddress.toLowerCase() === connectedAddress?.toLowerCase());
+
   return (
     <div className="max-w-6xl mt-14 md:mt-16 mx-auto md:px-4 md:py-2 px-2 py-2">
       <Banner />
       <UserInfo profile={profile} onProfileUpdate={() => {}} />
-      {isConnected && address && (
+
+      {isSelfProfile && (
         <>
           <WalletSection balances={profile.balances} tokenData={tokenData} />
           <OrderHistory orders={profile.orders} products={products} />
         </>
       )}
+
       <MyProducts products={userProducts} />
     </div>
   );

@@ -1,6 +1,7 @@
 // pages/Social/ChatPage.jsx
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { API_URL } from '../../config/ApiUrl';
 import { useAccountSupra } from "../../context/account";
 
 export default function ChatPage() {
@@ -20,7 +21,7 @@ export default function ChatPage() {
     const fetchConversations = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5004/api/chat/conversations/${address}`
+          `${API_URL}/api/chat/conversations/${address}`
         );
         setConversations(res.data);
       } catch (err) {
@@ -36,7 +37,7 @@ export default function ChatPage() {
     const fetchMessages = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5004/api/chat/between/${address}/${activeChat.address}`
+          `${API_URL}/api/chat/between/${address}/${activeChat.address}`
         );
         setMessages(res.data);
       } catch (err) {
@@ -51,7 +52,7 @@ export default function ChatPage() {
   const handleSend = async () => {
     if (!text.trim() || !activeChat) return;
     try {
-      const res = await axios.post("http://localhost:5004/api/chat/send", {
+      const res = await axios.post(`${API_URL}/api/chat/send`, {
         senderAddress: address,
         receiverAddress: activeChat.address,
         message: text,

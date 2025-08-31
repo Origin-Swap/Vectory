@@ -13,41 +13,28 @@ export const AccountProvider = ({ children }) => {
   const [address, setAddress] = useState(null);
   const [balance, setBalance] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
+  const [account, setAccount] = useState(null);
 
   const connectWallet = async () => {
-    try {
-      const provider = getProvider();
-      if (!provider) {
-        // Redirect ke app kalau tidak ada wallet
-        window.location.href = "starkey://connect?dapp=https://kraftera.xyz";
-        return null;
-      }
-
-      const accounts = await provider.connect();
-      if (!accounts?.length) {
-        throw new Error("No accounts returned from StarKey Wallet");
-      }
-
-      setAddress(accounts[0]);
-      setIsConnected(true);
-
-      console.log("✅ Connected to StarKey Wallet:", accounts[0]);
-
-      // Ambil balance langsung dari provider
-      const bal = await provider.balance();
-      const formatted = bal?.balance ? bal.balance / 1e8 : 0;
-
-      setBalance(formatted);
-      console.log("💰 SUPRA Balance (StarKey):", {
-        raw: bal,
-        formatted,
-      });
-
-      return accounts[0];
-    } catch (err) {
-      console.error("❌ Failed to connect wallet:", err);
+    const provider = getProvider();
+    if (!provider) {
+      window.location.href = "starkey://connect?dapp=https://kraftera.xyz";
       return null;
     }
+
+    const accounts = await provider.connect();
+    if (!accounts?.length) throw new Error("No accounts returned from StarKey Wallet");
+
+    setAddress(accounts[0]);
+    setAccount(provider);   // 👈 simpan provider ke state
+    setIsConnected(true);
+
+    // ambil balance
+    const bal = await provider.balance();
+    const formatted = bal?.balance ? bal.balance / 1e8 : 0;
+    setBalance(formatted);
+
+    return accounts[0];
   };
 
   const refreshBalance = async () => {
@@ -87,6 +74,7 @@ export const AccountProvider = ({ children }) => {
       value={{
         address,
         balance,
+        account,
         isConnected,
         connectWallet,
         disconnectWallet,

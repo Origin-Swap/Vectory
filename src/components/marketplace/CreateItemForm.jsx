@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
+import { useNavigate } from "react-router-dom";
 import 'react-quill/dist/quill.snow.css';
 import axios from "axios";
 import { useAccountSupra } from "../../context/account";
+import { createProductOnChain } from "../../context/EscrowContract"; // import dari file supra.js
 
 const CreateItemForm = () => {
-  const { address } = useAccountSupra(); // ambil address wallet
+  const { address, account, isConnected, connectWallet } = useAccountSupra(); // account diperlukan untuk sign tx
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "",
     shortDesc: "",
@@ -17,16 +20,10 @@ const CreateItemForm = () => {
     imageFiles: [],
     imagePreviews: [],
   });
+  const [loading, setLoading] = useState(false);
 
   const categories = [
-    "Ebook",
-    "Template",
-    "Digital Art",
-    "Course",
-    "Music",
-    "Signature",
-    "Game Asset",
-    "Other",
+    "Ebook", "Template", "Digital Art", "Course", "Music", "Signature", "Game Asset", "Other"
   ];
 
   const handleChange = (e) => {
@@ -43,12 +40,28 @@ const CreateItemForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!address) {
+    if (!address || !account || !isConnected) {
       alert("Please connect your wallet first!");
       return;
     }
 
+    setLoading(true);
     try {
+      // 1️⃣ Kirim transaksi ke blockchain SUPRA
+      const chainResult = await createProductOnChain(
+        account,   // account = provider
+        parseFloat(form.price),
+        "SUPRA",
+        parseInt(form.quantity)
+      );
+
+      if (!chainResult.success) {
+        alert("Blockchain transaction failed!");
+        setLoading(false);
+        return;
+      }
+
+      // 2️⃣ Kirim data ke backend
       const formData = new FormData();
       formData.append("userAddress", address);
       formData.append("title", form.title);
@@ -58,22 +71,25 @@ const CreateItemForm = () => {
       formData.append("quantity", form.quantity);
       formData.append("category", form.category);
       formData.append("paymentMethod", form.paymentMethod);
+      formData.append("txHash", chainResult.txHash); // simpan hash transaksi di backend
 
-      form.imageFiles.forEach((file) => {
-        formData.append("images", file);
-      });
+      form.imageFiles.forEach((file) => formData.append("images", file));
 
       const res = await axios.post("http://localhost:5004/api/items", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("Item created successfully!");
+      alert("Item created successfully on-chain and backend!");
       console.log(res.data);
+      navigate(`/profile/${address}`);
     } catch (err) {
       console.error(err);
       alert("Failed to create item.");
+    } finally {
+      setLoading(false);
     }
   };
+
 
   return (
     <form
@@ -221,15 +237,26 @@ const CreateItemForm = () => {
         </div>
       </div>
 
-      {/* Submit */}
       <div className="pt-4">
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Create Item
-        </button>
+        {!isConnected ? (
+          <button
+            type="button"
+            onClick={connectWallet}
+            className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
+          >
+            Connect Wallet
+          </button>
+        ) : (
+          <button
+            type="submit"
+            disabled={loading}
+            className={`bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          >
+            {loading ? "Processing..." : "Create Item"}
+          </button>
+        )}
       </div>
+
     </form>
   );
 };
