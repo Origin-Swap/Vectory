@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { API_URL } from "../../config/ApiUrl";
 import { BsBagCheck, BsCartCheck } from "react-icons/bs";
 import { TbCalendarCheck } from "react-icons/tb";
 import { IoIosArrowRoundBack } from "react-icons/io";
@@ -23,7 +24,7 @@ const ItemDetail = () => {
 
     const fetchItems = async () => {
       try {
-        const res = await fetch("https://towerpad.online/api/items");
+        const res = await fetch(`${API_URL}/api/items`);
         const data = await res.json();
 
         const found = data.find(
@@ -43,7 +44,7 @@ const ItemDetail = () => {
           // fetch info seller dari backend
           // fetch info seller dari backend
           try {
-            const resUser = await fetch(`https://towerpad.online/api/user/${found.userAddress}`);
+            const resUser = await fetch(`${API_URL}/api/user/${found.userAddress}`);
             if (resUser.ok) {
               const userData = await resUser.json();
               setSeller(userData.data); // <-- ambil dari "data"

@@ -11,7 +11,7 @@ const RecommendedUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("https://towerpad.online/api/user/recommended?limit=5");
+        const res = await axios.get(`${API_URL}/api/user/recommended?limit=5`);
         setUsers(res.data); // ✅ langsung array
       } catch (err) {
         console.error("Gagal ambil user:", err);
@@ -23,12 +23,12 @@ const RecommendedUsers = () => {
 
 
   return (
-    <div className="sticky top-20 bg-gray-50 border rounded-xl p-4 shadow">
-      <h3 className="text-lg font-semibold mb-3">👥 Recommended Users</h3>
-      <ul className="space-y-3">
+    <div className="sticky top-20 py-4 ">
+      <h3 className="text-lg font-semibold mb-3">👥 Suggested follows</h3>
+      <ul className="space-y-2">
         {users.map((user) => (
-          <li key={user.id} className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <li key={user.id} className="flex items-center bg-white border rounded-xl p-2 justify-between">
+            <div className="flex items-center gap-1">
               <img
                 src={user.avatar || "/images/avatar/Av11.png"}
                 alt={user.username}
@@ -38,9 +38,6 @@ const RecommendedUsers = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <button className="px-3 py-1 text-xs bg-blue-600 text-white rounded-lg">
-                Follow
-              </button>
               <Link
                 to={`/profile/${user.address}`}
                 className="p-2 rounded-full hover:bg-gray-200"

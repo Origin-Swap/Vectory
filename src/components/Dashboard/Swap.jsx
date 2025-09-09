@@ -22,7 +22,7 @@ export default function PointSwap() {
     if (!address) return;
     const fetchData = async () => {
       try {
-        const res = await axios.get(`https://towerpad.online/api/user/${address}`);
+        const res = await axios.get(`${API_URL}/api/user/${address}`);
         setUserData(res.data.data);
       } catch (err) {
         console.error("Gagal ambil data user:", err);
@@ -61,7 +61,7 @@ export default function PointSwap() {
 
     try {
       setLoading(true);
-      const res = await axios.post("https://towerpad.online/api/user/swap", {
+      const res = await axios.post(`${API_URL}/api/user/swap`, {
         address,
         points: swapVal,
       });

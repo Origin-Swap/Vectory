@@ -31,7 +31,7 @@ const UserProfileForm = ({ initialData, onSave, address }) => {
         formData.append("avatar", avatarFile); // file asli
       }
 
-      const res = await fetch("https://towerpad.online/api/user/update", {
+      const res = await fetch(`${API_URL}/api/user/update`, {
         method: "POST",
         body: formData,
       });

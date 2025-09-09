@@ -1,10 +1,11 @@
 // PostDetail.jsx
-import React from "react";
+import React, { useState } from "react";
 import CommentList from "./CommentList";
 import CommentForm from "./CommentForm";
 import { FaRegHeart, FaShare } from "react-icons/fa";
 import { AiOutlineComment } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { useAccountSupra } from "../../context/account";
 
 export default function PostDetail({
   post,
@@ -13,8 +14,22 @@ export default function PostDetail({
   onAddReply,
   onDeleteComment,
 }) {
+  const { address, isConnected } = useAccountSupra();
   // 🚀 Normalisasi user
   const user = post.User || post.author || {};
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextImage = () => {
+    setCurrentIndex((prev) =>
+      prev === post.images.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const prevImage = () => {
+    setCurrentIndex((prev) =>
+      prev === 0 ? post.images.length - 1 : prev - 1
+    );
+  };
 
   return (
     <article className="bg-white rounded-2xl shadow p-4">
@@ -50,20 +65,50 @@ export default function PostDetail({
       {/* Body */}
       <div className="mt-3 whitespace-pre-wrap text-sm">{post.content}</div>
       {post.images && post.images.length > 0 && (
-        <div
-          className={`mt-3 grid gap-2 ${
-            post.images.length === 1 ? "grid-cols-1" : "grid-cols-2"
-          }`}
-        >
-          {post.images.map((img, i) => (
-            <div key={i} className="overflow-hidden rounded-xl border">
+        <div className="mt-3 relative">
+          {post.images.length === 1 ? (
+            <img
+              src={post.images[0]}
+              alt="post"
+              className="max-h-[400px] w-full object-contain rounded-xl border border-gray-300"
+            />
+          ) : (
+            <div className="relative">
               <img
-                src={img}
-                alt={`post-${i}`}
-                className="w-full h-64 object-cover"
+                src={post.images[currentIndex]}
+                alt={`post-${currentIndex}`}
+                className="max-h-[400px] w-full object-contain rounded-xl border border-gray-300"
               />
+
+              {/* Tombol prev */}
+              <button
+                onClick={prevImage}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+              >
+                ‹
+              </button>
+
+              {/* Tombol next */}
+              <button
+                onClick={nextImage}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
+              >
+                ›
+              </button>
+
+              {/* indikator dot */}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                {post.images.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`w-2 h-2 rounded-full ${
+                      i === currentIndex ? "bg-white" : "bg-gray-400"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-          ))}
+          )}
         </div>
       )}
 
@@ -84,7 +129,7 @@ export default function PostDetail({
       </div>
 
       {/* Comment composer */}
-      <CommentForm onSubmit={onAddComment} />
+      {isConnected && ( <CommentForm onSubmit={onAddComment} /> )}
 
       {/* Comment list */}
       <div className="mt-4">

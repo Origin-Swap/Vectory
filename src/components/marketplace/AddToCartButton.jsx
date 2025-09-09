@@ -1,5 +1,6 @@
 import React from "react";
 import { useAccountSupra } from "../../context/account";
+import { API_URL } from "../../config/ApiUrl";
 
 const AddToCartButton = ({ item, userAddress }) => {
   const { address } = useAccountSupra();
@@ -12,7 +13,7 @@ const AddToCartButton = ({ item, userAddress }) => {
     }
 
     try {
-      const res = await fetch("https://towerpad.online/api/cart/add", {
+      const res = await fetch(`${API_URL}/api/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

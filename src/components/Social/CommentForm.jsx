@@ -17,7 +17,7 @@ export default function CommentForm({ onSubmit }) {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`https://towerpad.online/api/user/${address}`);
+        const res = await fetch(`${API_URL}/api/user/${address}`);
         if (res.status === 404) {
           console.log("User not found, using default profile");
           setProfile({ avatar: "/images/default-avatar.png" });

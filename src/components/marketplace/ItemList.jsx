@@ -1,5 +1,6 @@
 // src/components/Marketplace/ItemList.jsx
 import React, { useState, useEffect } from "react";
+import { API_URL } from "../../config/ApiUrl";
 import ItemCard from "./ItemCard";
 import PromotionSlider from "./PromotionSlider";
 import CategoryGrid from "./CategoryGrid";
@@ -14,7 +15,7 @@ const ItemList = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const res = await fetch("https://towerpad.online/api/items");
+        const res = await fetch(`${API_URL}/api/items`);
         const data = await res.json();
         setProducts(data);
       } catch (err) {

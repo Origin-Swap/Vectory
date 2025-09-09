@@ -1,7 +1,7 @@
 import React from "react";
 
 const ReferralCard = ({ invites, address }) => {
-  const referralLink = `http://localhost:5173/?ref=${address}`;
+  const referralLink = `https://kraftera.xyz/?ref=${address}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);

@@ -25,7 +25,7 @@ export default function StatsDashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("https://towerpad.online/api/stats");
+        const res = await axios.get(`${API_URL}/api/stats`);
         setStats(res.data);
       } catch (err) {
         console.error("Gagal ambil stats:", err);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_URL } from "../../config/ApiUrl";
 import ItemCard from '../marketplace/ItemCard';
 import { Link, useParams } from "react-router-dom";
 import { MdAddShoppingCart } from "react-icons/md";
@@ -19,7 +20,7 @@ const MyProducts = () => {
 
     const fetchMyProducts = async () => {
       try {
-        const res = await fetch("https://towerpad.online/api/items");
+        const res = await fetch(`${API_URL}/api/items`);
         const data = await res.json();
 
         const myItems = data.filter(
@@ -51,7 +52,7 @@ const MyProducts = () => {
     const fetchUser = async () => {
       if (paramAddress) {
         try {
-          const res = await fetch(`https://towerpad.online/api/user/${paramAddress}`);
+          const res = await fetch(`${API_URL}/api/user/${paramAddress}`);
           const data = await res.json();
           setUsername(data?.data?.username || "");
         } catch (err) {

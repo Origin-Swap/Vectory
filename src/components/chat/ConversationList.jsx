@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../../config/ApiUrl";
 import { useAccountSupra } from "../../context/account";
 
 export default function ChatWindow() {
@@ -15,7 +16,7 @@ export default function ChatWindow() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`https://towerpad.online/api/chat/between/${address}/${chatAddress}`);
+        const res = await axios.get(`${API_URL}/api/chat/between/${address}/${chatAddress}`);
         setMessages(res.data);
       } catch (err) {
         console.error("Gagal ambil chat:", err);
@@ -29,7 +30,7 @@ export default function ChatWindow() {
   const handleSend = async () => {
     if (!text.trim()) return;
     try {
-      const res = await axios.post("https://towerpad.online/api/chat/send", {
+      const res = await axios.post(`${API_URL}/api/chat/send`, {
         senderAddress: address,
         receiverAddress: chatAddress,
         message: text

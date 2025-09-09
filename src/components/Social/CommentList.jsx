@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function CommentList({ comments, onAddReply, onDeleteComment }) {
   if (!comments || comments.length === 0) {
-    return <div className="text-sm text-gray-500">Belum ada komentar</div>;
+    return <div className="text-sm text-gray-500">No Comments Found</div>;
   }
 
   // 🚀 Urutkan paling baru dulu (descending createdAt)

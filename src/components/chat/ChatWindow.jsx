@@ -1,6 +1,7 @@
 // components/Chat/ChatBox.jsx
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { API_URL } from "../../config/ApiUrl";
 
 export default function ChatBox({ userAddress, chatWithAddress }) {
   const [messages, setMessages] = useState([]);
@@ -14,7 +15,7 @@ export default function ChatBox({ userAddress, chatWithAddress }) {
       try {
         setLoading(true);
         const res = await axios.get(
-          `https://towerpad.online/api/chat/between/${userAddress}/${chatWithAddress}`
+          `${API_URL}/api/chat/between/${userAddress}/${chatWithAddress}`
         );
         setMessages(res.data);
       } catch (err) {

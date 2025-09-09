@@ -3,6 +3,7 @@ import ReactQuill from "react-quill";
 import { useNavigate } from "react-router-dom";
 import 'react-quill/dist/quill.snow.css';
 import axios from "axios";
+import { API_URL } from "../../config/ApiUrl";
 import { useAccountSupra } from "../../context/account";
 import { createProductOnChain } from "../../context/EscrowContract"; // import dari file supra.js
 
@@ -75,7 +76,7 @@ const CreateItemForm = () => {
 
       form.imageFiles.forEach((file) => formData.append("images", file));
 
-      const res = await axios.post("https://towerpad.online/api/items", formData, {
+      const res = await axios.post(`${API_URL}/api/items`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

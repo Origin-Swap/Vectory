@@ -17,7 +17,7 @@ export default function CreatePost({ onCreate }) {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`https://towerpad.online/api/user/${address}`);
+        const res = await fetch(`${API_URL}/api/user/${address}`);
         if (res.status === 404) {
           console.log("User not found, using default profile");
           setProfile({
@@ -47,7 +47,7 @@ export default function CreatePost({ onCreate }) {
       // max 4 file
       files.slice(0, 4).forEach((file) => formData.append("images", file));
 
-      const res = await axios.post("https://towerpad.online/api/post", formData, {
+      const res = await axios.post(`${API_URL}/api/post`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -101,7 +101,7 @@ export default function CreatePost({ onCreate }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-2 bg-white rounded-2xl shadow md:p-4 p-2 border"
+      className="mb-2 bg-white rounded-xl shadow md:p-4 p-2"
     >
       <div className="flex gap-3">
         {/* Avatar */}
@@ -120,8 +120,8 @@ export default function CreatePost({ onCreate }) {
               el.style.height = `${el.scrollHeight}px`;
             }
           }}
-          className="resize-none rounded-xl border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 overflow-hidden"
-          placeholder="What you want to share today?"
+          className="resize-none rounded-xl border px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-gray-200 overflow-hidden"
+          placeholder="Promote your product today!"
           value={content}
           onChange={(e) => {
             setContent(e.target.value);

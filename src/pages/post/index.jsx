@@ -70,14 +70,15 @@ export default function IndexPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white text-gray-900 mt-14">
-      {/* ===== MAIN CONTENT ===== */}
+    <div className="flex min-h-screen bg-gray-100 text-gray-900 mt-14">
+    <aside className="hidden md:block w-1/3 p-4">
+    </aside>
       <div className="w-full md:w-2/3 border-r">
-        <main className="max-w-2xl mx-auto px-4 py-4">
+        <main className="max-w-2xl mx-auto py-4 px-2 md:p-4">
           {isConnected && <CreatePost onCreate={handleCreatePost} />}
 
           {/* Tabs */}
-          <div className="flex gap-4 my-4 justify-center text-sm font-medium flex-wrap">
+          <div className="flex gap-4 my-4 text-sm font-medium flex-wrap">
             {[
               { id: "forYou", label: "For You" },
               { id: "newest", label: "Newest" },

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAccountSupra } from "../../context/account";
+import { API_URL } from "../../config/ApiUrl";
 
 const CartView = () => {
   const { address } = useAccountSupra();
@@ -11,7 +12,7 @@ const CartView = () => {
     const fetchCart = async () => {
       try {
         if (!address) return;
-        const res = await fetch(`https://towerpad.online/api/cart/${address}`);
+        const res = await fetch(`${API_URL}/api/cart/${address}`);
         const data = await res.json();
         setCart(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -23,7 +24,7 @@ const CartView = () => {
 
   const handleRemove = async (cartItemId) => {
     try {
-      await fetch(`https://towerpad.online/api/cart/${cartItemId}`, {
+      await fetch(`${API_URL}/api/cart/${cartItemId}`, {
         method: "DELETE",
       });
       setCart((prev) => prev.filter((c) => c.id !== cartItemId));
@@ -49,7 +50,7 @@ const CartView = () => {
   const confirmPurchase = async () => {
     try {
       // panggil API checkout
-      const res = await fetch(`https://towerpad.online/api/cart/checkout`, {
+      const res = await fetch(`${API_URL}/api/cart/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userAddress: address }),
