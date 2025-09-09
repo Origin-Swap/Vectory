@@ -16,7 +16,7 @@ const TabPage = () => {
     const fetchNotifs = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5004/api/notification/${address}`
+          `https://towerpad.online/api/notification/${address}`
         );
         setNotifications(res.data.data || []);
       } catch (err) {
@@ -35,7 +35,7 @@ const TabPage = () => {
 
   const markAsRead = async (id) => {
     try {
-      await axios.post(`http://localhost:5004/api/notification/${id}/read`);
+      await axios.post(`https://towerpad.online/api/notification/${id}/read`);
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
       );

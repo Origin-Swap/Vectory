@@ -30,7 +30,7 @@ const promotions = [
     id: 4,
     banner: "/images/icons/banner4.png",
     title: "Invite and Earn",
-    desc: "Earn More VEC Tokens",
+    desc: "Earn More $KT Tokens",
     cta: "Invite Now",
     image: "https://cdn3d.iconscout.com/3d/premium/thumb/party-invitation-3d-icon-download-in-png-blend-fbx-gltf-file-formats--request-greeting-mail-card-new-year-pack-festival-days-icons-8447381.png",
   },

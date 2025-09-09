@@ -11,7 +11,7 @@ const RecommendedUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:5004/api/user/recommended?limit=5");
+        const res = await axios.get("https://towerpad.online/api/user/recommended?limit=5");
         setUsers(res.data); // ✅ langsung array
       } catch (err) {
         console.error("Gagal ambil user:", err);

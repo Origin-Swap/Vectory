@@ -75,7 +75,7 @@ const CreateItemForm = () => {
 
       form.imageFiles.forEach((file) => formData.append("images", file));
 
-      const res = await axios.post("http://localhost:5004/api/items", formData, {
+      const res = await axios.post("https://towerpad.online/api/items", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

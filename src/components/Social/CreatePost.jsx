@@ -17,7 +17,7 @@ export default function CreatePost({ onCreate }) {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5004/api/user/${address}`);
+        const res = await fetch(`https://towerpad.online/api/user/${address}`);
         if (res.status === 404) {
           console.log("User not found, using default profile");
           setProfile({
@@ -47,7 +47,7 @@ export default function CreatePost({ onCreate }) {
       // max 4 file
       files.slice(0, 4).forEach((file) => formData.append("images", file));
 
-      const res = await axios.post("http://localhost:5004/api/post", formData, {
+      const res = await axios.post("https://towerpad.online/api/post", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

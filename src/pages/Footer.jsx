@@ -27,7 +27,7 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-bold mb-4">Product</h3>
             <ul className="space-y-2 text-gray-400">
-              <li><a href="#socialfi" className="text-gray-700">Marketplace</a></li>
+              <li><a href="#socialfi" className="text-gray-700">SocialFi</a></li>
               <li><a href="#launchpad" className="text-gray-700">Shop</a></li>
             </ul>
           </div>

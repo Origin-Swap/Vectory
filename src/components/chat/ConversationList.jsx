@@ -15,7 +15,7 @@ export default function ChatWindow() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`http://localhost:5004/api/chat/between/${address}/${chatAddress}`);
+        const res = await axios.get(`https://towerpad.online/api/chat/between/${address}/${chatAddress}`);
         setMessages(res.data);
       } catch (err) {
         console.error("Gagal ambil chat:", err);
@@ -29,7 +29,7 @@ export default function ChatWindow() {
   const handleSend = async () => {
     if (!text.trim()) return;
     try {
-      const res = await axios.post("http://localhost:5004/api/chat/send", {
+      const res = await axios.post("https://towerpad.online/api/chat/send", {
         senderAddress: address,
         receiverAddress: chatAddress,
         message: text

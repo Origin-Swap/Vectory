@@ -29,7 +29,7 @@ const UserInfo = ({ onProfileUpdate }) => {
 
     const fetchProfile = async () => {
       try {
-        const res = await fetch(`http://localhost:5004/api/user/${targetAddress}`);
+        const res = await fetch(`https://towerpad.online/api/user/${targetAddress}`);
         if (res.status === 404) {
           console.log("User not found, using default profile");
           setProfile({
@@ -56,7 +56,7 @@ const UserInfo = ({ onProfileUpdate }) => {
       if (!connectedAddress || !paramAddress) return;
       try {
         const res = await fetch(
-          `http://localhost:5004/api/user/${paramAddress}/followers`
+          `https://towerpad.online/api/user/${paramAddress}/followers`
         );
         const data = await res.json();
 
@@ -78,7 +78,7 @@ const UserInfo = ({ onProfileUpdate }) => {
     try {
       if (isFollowing) {
         // Unfollow
-        await fetch(`http://localhost:5004/api/user/${paramAddress}/unfollow`, {
+        await fetch(`https://towerpad.online/api/user/${paramAddress}/unfollow`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ followerAddress: connectedAddress }),
@@ -86,7 +86,7 @@ const UserInfo = ({ onProfileUpdate }) => {
         setIsFollowing(false);
       } else {
         // Follow
-        await fetch(`http://localhost:5004/api/user/${paramAddress}/follow`, {
+        await fetch(`https://towerpad.online/api/user/${paramAddress}/follow`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ followerAddress: connectedAddress }),

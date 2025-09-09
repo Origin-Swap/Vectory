@@ -23,7 +23,7 @@ const ItemDetail = () => {
 
     const fetchItems = async () => {
       try {
-        const res = await fetch("http://localhost:5004/api/items");
+        const res = await fetch("https://towerpad.online/api/items");
         const data = await res.json();
 
         const found = data.find(
@@ -43,7 +43,7 @@ const ItemDetail = () => {
           // fetch info seller dari backend
           // fetch info seller dari backend
           try {
-            const resUser = await fetch(`http://localhost:5004/api/user/${found.userAddress}`);
+            const resUser = await fetch(`https://towerpad.online/api/user/${found.userAddress}`);
             if (resUser.ok) {
               const userData = await resUser.json();
               setSeller(userData.data); // <-- ambil dari "data"

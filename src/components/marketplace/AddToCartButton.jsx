@@ -12,7 +12,7 @@ const AddToCartButton = ({ item, userAddress }) => {
     }
 
     try {
-      const res = await fetch("http://localhost:5004/api/cart/add", {
+      const res = await fetch("https://towerpad.online/api/cart/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

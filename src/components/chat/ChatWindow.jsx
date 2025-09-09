@@ -14,7 +14,7 @@ export default function ChatBox({ userAddress, chatWithAddress }) {
       try {
         setLoading(true);
         const res = await axios.get(
-          `http://localhost:5004/api/chat/between/${userAddress}/${chatWithAddress}`
+          `https://towerpad.online/api/chat/between/${userAddress}/${chatWithAddress}`
         );
         setMessages(res.data);
       } catch (err) {
@@ -32,7 +32,7 @@ export default function ChatBox({ userAddress, chatWithAddress }) {
     if (!input.trim()) return;
 
     try {
-      const res = await axios.post("http://localhost:5004/api/chat/send", {
+      const res = await axios.post("https://towerpad.online/api/chat/send", {
         senderAddress: userAddress,
         receiverAddress: chatWithAddress,
         message: input.trim(),

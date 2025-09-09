@@ -24,13 +24,13 @@ const Dashboard = () => {
 
     const fetchData = async () => {
       try {
-        const profileRes = await axios.get(`http://localhost:5004/api/user/${address}`);
+        const profileRes = await axios.get(`https://towerpad.online/api/user/${address}`);
         const profile = profileRes.data.data;
 
-        const rankRes = await axios.get(`http://localhost:5004/api/user/rank/${address}`);
+        const rankRes = await axios.get(`https://towerpad.online/api/user/rank/${address}`);
         const rankData = rankRes.data;
 
-        const leaderboardRes = await axios.get(`http://localhost:5004/api/user/leaderboard?limit=10`);
+        const leaderboardRes = await axios.get(`https://towerpad.online/api/user/leaderboard?limit=10`);
         const leaderboardArr = leaderboardRes.data.data.map((item, idx) => ({
           rank: idx + 1,
           username: item.username,
@@ -79,7 +79,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchCheckinData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5004/api/user/${address}/history`);
+        const res = await axios.get(`https://towerpad.online/api/user/${address}/history`);
         const history = res.data.data || [];
 
         setPointHistory(history); // simpan untuk tabel
@@ -112,13 +112,13 @@ const Dashboard = () => {
   const handleCheckIn = async (dayIndex) => {
     if (checkedInDays.includes(dayIndex)) return;
     try {
-      await axios.post("http://localhost:5004/api/user/checkin", {
+      await axios.post("https://towerpad.online/api/user/checkin", {
         address,
         points: rewards[dayIndex]
       });
 
       // Reload data dari backend
-      const res = await axios.get(`http://localhost:5004/api/user/${address}/history`);
+      const res = await axios.get(`https://towerpad.online/api/user/${address}/history`);
       const history = res.data.data || [];
 
       const startDate = history.length > 0 ? history[0].date : new Date().toISOString().split("T")[0];
@@ -146,7 +146,7 @@ const Dashboard = () => {
     const referrer = localStorage.getItem("referrer");
     if (isConnected && address && referrer) {
       console.log("Sending referral:", { referrer, newUser: address });
-      axios.post("http://localhost:5004/api/user/referral", {
+      axios.post("https://towerpad.online/api/user/referral", {
         referrerAddress: referrer.toLowerCase(),
         newUserAddress: address.toLowerCase()
       })

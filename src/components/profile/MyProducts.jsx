@@ -19,7 +19,7 @@ const MyProducts = () => {
 
     const fetchMyProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5004/api/items");
+        const res = await fetch("https://towerpad.online/api/items");
         const data = await res.json();
 
         const myItems = data.filter(
@@ -51,7 +51,7 @@ const MyProducts = () => {
     const fetchUser = async () => {
       if (paramAddress) {
         try {
-          const res = await fetch(`http://localhost:5004/api/user/${paramAddress}`);
+          const res = await fetch(`https://towerpad.online/api/user/${paramAddress}`);
           const data = await res.json();
           setUsername(data?.data?.username || "");
         } catch (err) {
