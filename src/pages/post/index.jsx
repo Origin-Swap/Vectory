@@ -5,6 +5,7 @@ import { API_URL } from '../../config/ApiUrl';
 import Post from "../../components/Social/Post";
 import CreatePost from "../../components/Social/CreatePost";
 import RecommendedUsers from "../../components/Social/RecommendedUsers";
+import RecommendedUsersPhone from "../../components/Social/RecommendedUsersPhone";
 import { useAccountSupra } from "../../context/account";
 
 export default function IndexPage() {
@@ -70,15 +71,16 @@ export default function IndexPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100 text-gray-900 mt-14">
-    <aside className="hidden md:block w-1/3 p-4">
+    <div className="flex min-h-screen bg-white text-gray-900 mt-14">
+    <aside className="hidden md:block  p-4">
     </aside>
       <div className="w-full md:w-2/3 border-r">
         <main className="max-w-2xl mx-auto py-4 px-2 md:p-4">
           {isConnected && <CreatePost onCreate={handleCreatePost} />}
+          <RecommendedUsersPhone/>
 
           {/* Tabs */}
-          <div className="flex gap-4 my-4 text-sm font-medium flex-wrap">
+          <div className="flex gap-4 mb-4 text-sm font-medium flex-wrap">
             {[
               { id: "forYou", label: "For You" },
               { id: "newest", label: "Newest" },
@@ -86,9 +88,9 @@ export default function IndexPage() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                className={`px-3 py-1 rounded ${
+                className={`px-4  py-1 rounded ${
                   activeTab === tab.id
-                    ? "border-b-2 border-gray-800 text-gray-900"
+                    ? "border-b-2 card-bg rounded-xl border-[#F5E856] text-gray-900"
                     : "text-gray-500"
                 }`}
                 onClick={() => setActiveTab(tab.id)}
@@ -113,7 +115,7 @@ export default function IndexPage() {
       </div>
 
       {/* ===== SIDEBAR ===== */}
-      <aside className="hidden md:block w-1/3 p-4">
+      <aside className="hidden md:block w-6/12 p-4">
         <RecommendedUsers />
       </aside>
     </div>

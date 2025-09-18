@@ -15,7 +15,7 @@ const UserInfo = ({ onProfileUpdate }) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState({
-    avatar: "/images/avatar/Av11.png",
+    avatar: "/images/avatar-image.png",
     username: "",
     bio: "",
     email: ""
@@ -33,7 +33,7 @@ const UserInfo = ({ onProfileUpdate }) => {
         if (res.status === 404) {
           console.log("User not found, using default profile");
           setProfile({
-            avatar: "/images/avatar/Av11.png",
+            avatar: "/images/avatar-image.png",
             username: "",
             bio: "",
             email: ""
@@ -105,7 +105,7 @@ const UserInfo = ({ onProfileUpdate }) => {
         <div className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left gap-6">
           <div className="relative w-28 h-28">
             <img
-              src={profile.avatar || "/images/avatar/Av11.png"}
+              src={profile.avatar || "/images/avatar-image.png"}
               alt="Profile"
               className="w-full bg-white h-full rounded-full border-4 border-gradient-to-tr from-blue-400 to-purple-500 shadow-lg"
             />

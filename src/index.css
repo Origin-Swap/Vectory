@@ -37,7 +37,7 @@ a:hover {
 }
 
 body {
-  background: #fafafa;
+  background: white;
 }
 
 .dark body {
@@ -175,4 +175,8 @@ button:focus-visible {
 
 .my-text {
   font-weight: 900; /* extrabold */
+}
+
+.card-bg {
+background: linear-gradient(169deg,rgba(232, 250, 245, 0.11) 0%, rgba(140, 189, 181, 0.14) 29%, rgba(163, 219, 204, 0.14) 64%, rgba(218, 237, 231, 0.09) 100%);
 }

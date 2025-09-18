@@ -44,7 +44,7 @@ export default function Post({ post, onLike }) {
   };
 
   return (
-    <article className="bg-gray-50 rounded-xl shadow border border-gray-100 px-4 pt-4 pb-2">
+    <article className="card-bg rounded-xl shadow-md border border-gray-200 px-4 pt-4 pb-2">
       {/* Header */}
       <div className="flex items-center gap-3">
         <Link to={`/profile/${user.address}`}>
@@ -55,14 +55,14 @@ export default function Post({ post, onLike }) {
           />
         </Link>
         <div>
-          <div className="font-semibold leading-tight items-center">
-            <Link to={`/profile/${user.address}`}>
+          <div className="font-bold text-black leading-tight items-center">
+            <Link to={`/profile/${user.address}`} className="font-bold text-black">
               {user.name || "Anon"}
               {user.level && (
                 <img
                   src={`/images/badge/${user.level.toLowerCase()}.png`}
                   alt={`${user.level} badge`}
-                  className="ml-1 w-5 h-5 inline-block"
+                  className="ml-1 w-4 h-4 inline-block"
                 />
               )}
             </Link>
@@ -82,44 +82,30 @@ export default function Post({ post, onLike }) {
             <img
               src={post.images[0]}
               alt="post"
-              className="max-h-[400px] w-full object-contain rounded-xl border border-gray-300"
+              className="max-h-[400px] bg-white dark:bg-gray-800 shadow-xl w-full object-contain rounded-xl border border-gray-300"
             />
           ) : (
             <div className="relative">
               <img
                 src={post.images[currentIndex]}
                 alt={`post-${currentIndex}`}
-                className="max-h-[400px] w-full object-contain rounded-xl border border-gray-300"
+                className="max-h-[400px] w-full bg-white shadow-xl dark:bg-gray-800 object-contain rounded-xl border border-gray-300"
               />
 
-              {/* Tombol prev */}
-              <button
-                onClick={prevImage}
-                className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
-              >
-                ‹
-              </button>
-
-              {/* Tombol next */}
-              <button
-                onClick={nextImage}
-                className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full"
-              >
-                ›
-              </button>
-
               {/* indikator dot */}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
                 {post.images.map((_, i) => (
-                  <span
+                  <button
                     key={i}
-                    className={`w-2 h-2 rounded-full ${
-                      i === currentIndex ? "bg-white" : "bg-gray-400"
+                    onClick={() => setCurrentIndex(i)}
+                    className={`w-2.5 h-2.5 rounded-full transition ${
+                      i === currentIndex ? "bg-white scale-110" : "bg-gray-400"
                     }`}
                   />
                 ))}
               </div>
             </div>
+
           )}
         </div>
       )}

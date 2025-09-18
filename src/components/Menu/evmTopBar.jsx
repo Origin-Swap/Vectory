@@ -25,7 +25,7 @@ const TopBar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const defaultAvatar = '/images/avatar/Av11.png';
+  const defaultAvatar = '/images/avatar-image.png';
 
   // Chain options with filtering for supported chains
   const chainOptions = [

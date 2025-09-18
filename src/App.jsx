@@ -2,11 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen';
-import SidebarMenu from './components/Menu/SidebarMenu';
+import TopBarPCMenu from './components/Menu/SidebarMenu';
+import Sidebar from './components/Menu/Sidebar';
 import Topbar from './components/Menu/TopBar';
 import BottomMenu from './components/Menu/BottomMenu';
 import Dashboard from './components/Dashboard';
-import Checkin from './components/Dashboard/dailypoint';
 import SwapPage from './components/Dashboard/Swap';
 import Stake from './components/Staking';
 import HomePage from './pages/Home';
@@ -24,11 +24,13 @@ import PostDetailPage from './pages/post/[id]';
 import ChatPage from './pages/chat';
 import Statistics from './components/stats';
 import Upgrade from './components/subcription';
+import SellerBoard from "./components/Dashboard/SellerBoard";
 import Footer from "./pages/Footer";
 
 import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
 import { AccountProvider } from './context/account'; // 🔹 Context untuk Supra Move account
 
+// Layout Component
 // Layout Component
 const Layout = () => {
   const { isSidebarVisible } = useLayoutContext();
@@ -48,27 +50,33 @@ const Layout = () => {
     <>
       {/* Sidebar menu untuk desktop */}
       <div className="hidden lg:flex">
-        <SidebarMenu />
+        <TopBarPCMenu />
       </div>
+
+      {/* Topbar untuk mobile */}
       <div className="block lg:hidden">
         <Topbar />
       </div>
 
+      {/* Sidebar tambahan (kalau ada) */}
+      <div className="hidden lg:flex">
+        <Sidebar />
+      </div>
+
       {/* Main content area */}
-      <div>
+      <div className="lg:ml-52 flex-1"> {/* ✅ Tambahkan margin-left biar tidak ketimpa sidebar */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/create-items" element={<CreateItem />} />
           <Route path="/details/:title" element={<ItemDetails />} />
           <Route path="/details/:title/checkout" element={<Checkout />} />
-          <Route path="/profile" element={<Profile />} />               {/* profile sendiri */}
-          <Route path="/profile/:address" element={<Profile />} />      {/* profile orang lain */}
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:address" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/my-cart" element={<MyCart />} />
           <Route path="/notification" element={<NotifPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/checkin" element={<Checkin />} />
           <Route path="/stake" element={<Stake />} />
           <Route path="/socialfi" element={<SocialFiIndex />} />
           <Route path="/post/:id" element={<PostDetailPage />} />
@@ -76,13 +84,17 @@ const Layout = () => {
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/level-upgrade" element={<Upgrade />} />
           <Route path="/point-exchange" element={<SwapPage />} />
+          <Route path="/seller-board" element={<SellerBoard />} />
         </Routes>
         <Footer />
       </div>
+
+      {/* Bottom menu untuk mobile */}
       <BottomMenu />
     </>
   );
 };
+
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);

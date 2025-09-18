@@ -106,7 +106,7 @@ export default function CreatePost({ onCreate }) {
       <div className="flex gap-3">
         {/* Avatar */}
         <img
-          src={profile?.avatar || "/images/avatar/Av11.png"}
+          src={profile?.avatar || "/images/avatar-image.png"}
           alt="me"
           className="w-10 h-10 rounded-full bg-gray-200"
         />

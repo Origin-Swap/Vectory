@@ -19,7 +19,7 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const defaultAvatar = "/images/avatar/Av11.png";
+  const defaultAvatar = "/images/avatar-image.png";
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -75,9 +75,9 @@ const Navbar = () => {
 
         {/* Right Section */}
         <div className="flex items-center gap-4">
-        <button onClick={() => navigate("/socialfi")} className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+        {/* <button onClick={() => navigate("/socialfi")} className="p-1 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
           <MdOutlineRssFeed className="w-6 h-6" />
-        </button>
+        </button> */}
         {isConnected && (
             <>
             <button
@@ -86,12 +86,12 @@ const Navbar = () => {
             >
               <IoCartOutline className="w-6 h-6" />
             </button>
-              <button onClick={() => navigate("/chat")} className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+              {/* <button onClick={() => navigate("/chat")} className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 <HiOutlineChatAlt2 className="w-5 h-5" />
               </button>
               <button onClick={handleNotif} className="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
                 <IoNotifications className="w-5 h-5 dark:fill-current" />
-              </button>
+              </button> */}
             </>
             )}
 
@@ -124,9 +124,9 @@ const Navbar = () => {
                       {address?.slice(0, 6)}...{address?.slice(-4)}
                     </p>
                   </div>
-                  <Link to="/profile" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">My Profile</Link>
+                  {/* <Link to="/profile" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">My Profile</Link>
                   <Link to="/dashboard" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">PointBoard</Link>
-                  <Link to="/stake" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Staking Pool</Link>
+                  <Link to="/stake" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700">Staking Pool</Link> */}
                   <button
                     onClick={disconnectWallet}
                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700"

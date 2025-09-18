@@ -7,7 +7,7 @@ import { BsShop } from "react-icons/bs";
 import { ImFeed } from "react-icons/im";
 import { IoCreateOutline } from "react-icons/io5";
 import { VscDashboard } from "react-icons/vsc";
-import { MdOutlineRssFeed } from "react-icons/md";
+import { MdOutlineRssFeed, MdOutlineSell } from "react-icons/md";
 import { RiCoinsLine } from "react-icons/ri";
 
 const BottomMenu = () => {
@@ -53,7 +53,7 @@ const BottomMenu = () => {
       </div>
 
       <div
-        className={`lg:hidden  fixed bottom-0 w-full bg-gray-50 dark:bg-[#334155] rounded-t-xl text-black flex justify-around py-2 items-center border-t transition-transform duration-100 ${
+        className={`lg:hidden  fixed bottom-0 w-full bg-gray-50 dark:bg-[#334155] rounded-t-xl text-black flex justify-around py-2 items-center border-t-2 transition-transform duration-100 ${
           isVisible ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
@@ -63,7 +63,8 @@ const BottomMenu = () => {
           isActive('/') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
         }`}
       >
-        <BsShop className="w-6 h-6 text-black" />
+        <BsShop className="w-6 h-6 text-gray-800 " />
+        <span className="text-sm text-gray-800 pt-1"> Home </span>
       </Link>
          <Link
           to="/socialfi"
@@ -71,7 +72,17 @@ const BottomMenu = () => {
             isActive('/socialfi') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
           }`}
         >
-          <MdOutlineRssFeed className="w-6 h-6 text-black" />
+          <MdOutlineRssFeed className="w-6 h-6 text-gray-800 " />
+          <span className="text-sm text-gray-800 pt-1"> Feeds </span>
+        </Link>
+        <Link
+          to="/seller-board"
+          className={`flex flex-col items-center ${
+            isActive('/seller-board') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
+          }`}
+        >
+          <MdOutlineSell className="w-6 h-6 text-gray-800 " />
+          <span className="text-sm text-gray-800 pt-1"> Seller </span>
         </Link>
         <Link
           to="/dashboard"
@@ -79,7 +90,8 @@ const BottomMenu = () => {
             isActive('/dashboard') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
           }`}
         >
-          <VscDashboard className="w-6 h-6 text-black" />
+          <VscDashboard className="w-6 h-6 text-gray-800 " />
+          <span className="text-sm text-gray-800 pt-1"> Point </span>
         </Link>
         <Link
           to="/stake"
@@ -87,7 +99,8 @@ const BottomMenu = () => {
             isActive('/stake') ? 'border p-1 rounded-md border-2 border-yellow-300' : ''
           }`}
         >
-          <RiCoinsLine className="w-6 h-6 text-black" />
+          <RiCoinsLine className="w-6 h-6 text-gray-800 " />
+          <span className="text-sm text-gray-800 pt-1"> Earn </span>
         </Link>
         {/* <Link
           to={`/profile/${address}`}

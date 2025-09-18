@@ -1,14 +1,16 @@
+// src/components/marketplace/CreateItemForm.jsx
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import { useNavigate } from "react-router-dom";
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
 import axios from "axios";
 import { API_URL } from "../../config/ApiUrl";
 import { useAccountSupra } from "../../context/account";
-import { createProductOnChain } from "../../context/EscrowContract"; // import dari file supra.js
+import { IoIosArrowRoundBack } from "react-icons/io";
+// import { initEscrowOnChain, createProductOnChain } from "../../context/EscrowContract"; // sementara nonaktif
 
 const CreateItemForm = () => {
-  const { address, account, isConnected, connectWallet } = useAccountSupra(); // account diperlukan untuk sign tx
+  const { address, account, isConnected, connectWallet } = useAccountSupra();
   const navigate = useNavigate();
   const [form, setForm] = useState({
     title: "",
@@ -18,13 +20,21 @@ const CreateItemForm = () => {
     quantity: "",
     category: "Ebook",
     paymentMethod: "SUPRA",
+    link: "", // 🔹 field baru: link item/karya
     imageFiles: [],
     imagePreviews: [],
   });
   const [loading, setLoading] = useState(false);
 
   const categories = [
-    "Ebook", "Template", "Digital Art", "Course", "Music", "Signature", "Game Asset", "Other"
+    "Ebook",
+    "Template",
+    "Digital Art",
+    "Course",
+    "Music",
+    "Signature",
+    "Game Asset",
+    "Other",
   ];
 
   const handleChange = (e) => {
@@ -41,19 +51,31 @@ const CreateItemForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!address || !account || !isConnected) {
+    if (!account || !isConnected) {
       alert("Please connect your wallet first!");
       return;
     }
 
     setLoading(true);
     try {
-      // 1️⃣ Kirim transaksi ke blockchain SUPRA
+      // 1️⃣ sementara nonaktifkan escrow
+      /*
+      const initResult = await initEscrowOnChain(account);
+      if (!initResult.success) {
+        alert("Escrow initialization failed!");
+        setLoading(false);
+        return;
+      }
+
+      const qtyOption = form.quantity
+        ? { some: true, value: String(parseInt(form.quantity)) }
+        : { some: false };
+
       const chainResult = await createProductOnChain(
-        account,   // account = provider
-        parseFloat(form.price),
-        "SUPRA",
-        parseInt(form.quantity)
+        address,
+        parseInt(form.price),
+        "0x0000000000000000000000000000000000000000000000000000000000000001",
+        qtyOption
       );
 
       if (!chainResult.success) {
@@ -61,8 +83,9 @@ const CreateItemForm = () => {
         setLoading(false);
         return;
       }
+      */
 
-      // 2️⃣ Kirim data ke backend
+      // 2️⃣ Kirim data ke backend langsung
       const formData = new FormData();
       formData.append("userAddress", address);
       formData.append("title", form.title);
@@ -72,17 +95,17 @@ const CreateItemForm = () => {
       formData.append("quantity", form.quantity);
       formData.append("category", form.category);
       formData.append("paymentMethod", form.paymentMethod);
-      formData.append("txHash", chainResult.txHash); // simpan hash transaksi di backend
+      formData.append("link", form.link); // 🔹 simpan link item
+      // formData.append("txHash", chainResult.txHash); // sementara tidak dipakai
 
       form.imageFiles.forEach((file) => formData.append("images", file));
 
-      const res = await axios.post(`${API_URL}/api/items`, formData, {
+      await axios.post(`${API_URL}/api/items`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("Item created successfully on-chain and backend!");
-      console.log(res.data);
-      navigate(`/profile/${address}`);
+      alert("Item created successfully!");
+      navigate(`/seller-board`);
     } catch (err) {
       console.error(err);
       alert("Failed to create item.");
@@ -91,12 +114,17 @@ const CreateItemForm = () => {
     }
   };
 
+  const handleBack = () => navigate("/seller-board");
 
   return (
     <form
       onSubmit={handleSubmit}
       className="p-4 mt-16 max-w-2xl mx-auto space-y-4 bg-white rounded shadow"
     >
+    <p onClick={handleBack} className="flex items-center gap-1 mt-2 mb-4 cursor-pointer">
+      <IoIosArrowRoundBack className="w-6 h-6" /> Back To Market
+    </p>
+
       <h2 className="text-xl font-bold">Create New Item</h2>
 
       {/* Upload Gambar */}
@@ -219,6 +247,19 @@ const CreateItemForm = () => {
         />
       </div>
 
+      {/* Link Item */}
+      <div>
+        <label className="block font-medium mb-1">Link to Item / File</label>
+        <input
+          type="url"
+          name="link"
+          value={form.link}
+          onChange={handleChange}
+          placeholder="https://your-link.com/item"
+          className="w-full border rounded p-2"
+        />
+      </div>
+
       {/* Payment Method */}
       <div>
         <label className="block font-medium mb-1">Payment Method</label>
@@ -251,13 +292,14 @@ const CreateItemForm = () => {
           <button
             type="submit"
             disabled={loading}
-            className={`bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             {loading ? "Processing..." : "Create Item"}
           </button>
         )}
       </div>
-
     </form>
   );
 };

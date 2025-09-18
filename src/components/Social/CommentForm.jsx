@@ -7,7 +7,7 @@ export default function CommentForm({ onSubmit }) {
   const [text, setText] = useState("");
   const { address } = useAccountSupra();
   const [profile, setProfile] = useState({
-    avatar: "/images/avatar/Av11.png",
+    avatar: "/images/avatar-image.png",
   });
 
 
@@ -50,7 +50,7 @@ export default function CommentForm({ onSubmit }) {
       <div className="flex gap-3">
         {/* Avatar user aktif */}
         <img
-          src={profile?.avatar || "/images/avatar/Av11.png"}
+          src={profile?.avatar || "/images/avatar-image.png"}
           alt="me"
           className="w-8 h-8 rounded-full"
         />

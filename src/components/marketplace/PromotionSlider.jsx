@@ -41,7 +41,7 @@ const PromotionSlider = () => {
     dots: true,
     infinite: true,
     speed: 800,
-    slidesToShow: 2, // Default untuk PC
+    slidesToShow: 1, // Default untuk PC
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
@@ -72,7 +72,7 @@ const PromotionSlider = () => {
               <div className="w-full md:w-1/2 mb-4 md:mb-0">
                 <h3 className="text-sm md:text-3xl font-bold mb-2 mt-4">{promo.title}</h3>
                 <p className="text-xs md:text-base mb-2">{promo.desc}</p>
-                <button className="bg-yellow-400 text-black md:px-4 md:py-2 py-1 px-2 text-sm md:text-lg rounded-xl font-semibold hover:bg-yellow-500">
+                <button className="bg-yellow-400 text-black font-bold md:px-4 md:py-1 py-1 px-2 text-sm md:text-md rounded-xl hover:bg-yellow-500">
                   {promo.cta}
                 </button>
               </div>

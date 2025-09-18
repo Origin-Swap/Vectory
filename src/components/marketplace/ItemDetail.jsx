@@ -31,6 +31,7 @@ const ItemDetail = () => {
           (p) => p.title.toLowerCase() === decodeURIComponent(title).toLowerCase()
         );
         if (!mounted) return;
+        console.log("Found item:", found);
 
         setItem(found || null);
 
@@ -93,7 +94,7 @@ const ItemDetail = () => {
   const mainImage =
     Array.isArray(item.images) && item.images.length > 0
       ? item.images[0]
-      : "/images/placeholder.png";
+      : "/images/avatar-image.png";
 
   const handleBuyNow = () => {
     const cart = JSON.parse(localStorage.getItem("checkout") || "[]");
@@ -102,7 +103,7 @@ const ItemDetail = () => {
       cart.push({ ...item, quantity: 1 });
       localStorage.setItem("checkout", JSON.stringify(cart));
     }
-    navigate(`/details/${encodeURIComponent(item.title)}/checkout`);
+    navigate(`/my-cart`);
   };
 
   const handleBack = () => navigate("/");
@@ -226,7 +227,7 @@ const ItemDetail = () => {
 
             <div className="flex flex-col items-center text-center">
               <img
-                src={seller.avatar || "/images/avatar-placeholder.png"}
+                src={seller.avatar || "/images/avatar-image.png"}
                 alt="Seller Avatar"
                 className="w-16 h-16 rounded-full object-cover border"
               />

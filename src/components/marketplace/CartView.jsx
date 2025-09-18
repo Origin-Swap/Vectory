@@ -1,3 +1,4 @@
+// src/components/marketplace/CartView.jsx
 import React, { useEffect, useState } from "react";
 import { useAccountSupra } from "../../context/account";
 import { API_URL } from "../../config/ApiUrl";
@@ -5,7 +6,7 @@ import { API_URL } from "../../config/ApiUrl";
 const CartView = () => {
   const { address } = useAccountSupra();
   const [cart, setCart] = useState([]);
-  const [selected, setSelected] = useState([]); // item terpilih
+  const [selected, setSelected] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
@@ -24,9 +25,7 @@ const CartView = () => {
 
   const handleRemove = async (cartItemId) => {
     try {
-      await fetch(`${API_URL}/api/cart/${cartItemId}`, {
-        method: "DELETE",
-      });
+      await fetch(`${API_URL}/api/cart/${cartItemId}`, { method: "DELETE" });
       setCart((prev) => prev.filter((c) => c.id !== cartItemId));
       setSelected((prev) => prev.filter((id) => id !== cartItemId));
     } catch (err) {
@@ -42,6 +41,16 @@ const CartView = () => {
     );
   };
 
+  // 🔹 Update quantity di state (frontend)
+  const handleQuantityChange = (cartItemId, newQty) => {
+    if (newQty < 1) return;
+    setCart((prev) =>
+      prev.map((c) =>
+        c.id === cartItemId ? { ...c, quantity: newQty } : c
+      )
+    );
+  };
+
   const handlePurchase = () => {
     if (selected.length === 0) return alert("No items selected!");
     setShowPopup(true);
@@ -49,16 +58,26 @@ const CartView = () => {
 
   const confirmPurchase = async () => {
     try {
-      // panggil API checkout
+      const selectedItems = cart
+        .filter((c) => selected.includes(c.id))
+        .map((c) => ({
+          id: c.id,
+          quantity: c.quantity,
+        }));
+
       const res = await fetch(`${API_URL}/api/cart/checkout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userAddress: address }),
+        body: JSON.stringify({
+          userAddress: address,
+          items: selectedItems, // 🔹 kirim item + quantity
+        }),
       });
+
       const data = await res.json();
       if (res.ok) {
         alert("Purchase success!");
-        setCart([]); // kosongkan cart
+        setCart([]);
         setSelected([]);
       } else {
         alert(data.error || "Failed to purchase");
@@ -118,13 +137,29 @@ const CartView = () => {
                     </div>
 
                     <div className="flex-1">
-                      <h4 className="font-semibold">{item.title || "Unnamed item"}</h4>
+                      <h4 className="font-semibold">
+                        {item.title || "Unnamed item"}
+                      </h4>
                       <p className="text-sm text-gray-500">
                         {item.price ?? 0} {item.paymentMethod || "USDC"}
                       </p>
-                      <p className="text-xs text-gray-400">
-                        Qty: {cartItem.quantity || 1}
-                      </p>
+
+                      {/* 🔹 Input quantity */}
+                      <div className="flex items-center gap-2 mt-1">
+                        <label className="text-xs text-gray-500">Qty:</label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={cartItem.quantity || 1}
+                          onChange={(e) =>
+                            handleQuantityChange(
+                              cartItem.id,
+                              parseInt(e.target.value, 10)
+                            )
+                          }
+                          className="w-16 border rounded px-2 py-1 text-sm"
+                        />
+                      </div>
                     </div>
 
                     <button

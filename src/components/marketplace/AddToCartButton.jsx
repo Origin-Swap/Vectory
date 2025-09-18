@@ -1,25 +1,25 @@
-import React from "react";
-import { useAccountSupra } from "../../context/account";
+// src/components/marketplace/AddToCartButton.jsx
+import React, { useState } from "react";
 import { API_URL } from "../../config/ApiUrl";
 
 const AddToCartButton = ({ item, userAddress }) => {
-  const { address } = useAccountSupra();
+  const [loading, setLoading] = useState(false);
 
-  const handleAddToCart = async () => {
-    const finalAddress = userAddress || address;
-    if (!finalAddress) {
+  const handleAdd = async () => {
+    if (!userAddress) {
       alert("Please connect your wallet first!");
       return;
     }
 
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userAddress: finalAddress,
-          itemId: item.id,
-          quantity: 1,
+          userAddress: userAddress, // pembeli
+          itemId: item.id,     // produk
+          quantity: 1,         // default, bisa ubah sesuai kebutuhan
         }),
       });
 
@@ -30,16 +30,22 @@ const AddToCartButton = ({ item, userAddress }) => {
         alert(data.error || "Failed to add to cart");
       }
     } catch (err) {
-      console.error("Error adding to cart:", err);
+      console.error("Error add to cart:", err);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <button
-      onClick={handleAddToCart}
-      className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg text-lg transition"
+      onClick={handleAdd}
+      disabled={loading}
+      className={`w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-lg transition ${
+        loading ? "opacity-50 cursor-not-allowed" : ""
+      }`}
     >
-      Add to Cart
+      {loading ? "Adding..." : "Add to Cart"}
     </button>
   );
 };

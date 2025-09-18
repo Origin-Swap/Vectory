@@ -20,7 +20,7 @@ const CategoryGrid = ({ onSelectCategory, selectedCategory }) => {
         key={index}
         onClick={() => onSelectCategory(cat.name)}
         className={`flex flex-col items-center  text-center text-sm cursor-pointer rounded-lg p-2 transition-all ${
-          selectedCategory === cat.name ? "bg-yellow-200 text-black" : "hover:bg-gray-100"
+          selectedCategory === cat.name ? "bg-yellow-200 text-black" : "bg-gray-100 hover:bg-gray-100"
         }`}
       >
         <img

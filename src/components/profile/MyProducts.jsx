@@ -67,19 +67,13 @@ const MyProducts = () => {
   const shortAddress = (addr) =>
     addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "";
 
+
   return (
     <div className="relative -top-12 bg-white dark:bg-gray-900 rounded-xl p-4 mb-4 shadow border">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold mb-2">
           📦 {paramAddress ? `${username || shortAddress(paramAddress)}'s Products` : "My Products"}
         </h3>
-
-        {/* Tombol Add hanya muncul untuk profil milik sendiri */}
-        {!paramAddress && (
-          <Link to={`/create-items`} className="flex gap-x-2 items-center text-md">
-            <MdAddShoppingCart />Add
-          </Link>
-        )}
       </div>
 
       {loading ? (

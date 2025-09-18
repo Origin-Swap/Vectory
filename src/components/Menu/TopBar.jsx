@@ -19,8 +19,9 @@ const TopBar = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const defaultAvatar = "/images/avatar/Av11.png";
+  const defaultAvatar = "/images/avatar-image.png";
 
   useEffect(() => {
     const fetchProfile = async () => {

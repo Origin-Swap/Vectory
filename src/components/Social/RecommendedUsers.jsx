@@ -30,7 +30,7 @@ const RecommendedUsers = () => {
           <li key={user.id} className="flex items-center bg-white border rounded-xl p-2 justify-between">
             <div className="flex items-center gap-1">
               <img
-                src={user.avatar || "/images/avatar/Av11.png"}
+                src={user.avatar || "/images/avatar-image.png"}
                 alt={user.username}
                 className="w-8 h-8 rounded-full"
               />
