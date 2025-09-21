@@ -154,38 +154,26 @@ export default function CreatePost({ onCreate }) {
           )}
 
           <div className="flex justify-between items-center mt-2">
-            <label className="cursor-pointer text-gray-600 hover:text-gray-900 flex items-center gap-1 w-fit">
-              <FaImage size={20} />
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleFileChange}
-                className="hidden"
-                disabled={profile?.level === "Bronze"} // kalau bronze disable upload
-              />
-            </label>
+          <label className="cursor-pointer text-gray-600 hover:text-gray-900 flex items-center gap-1 w-fit">
+            <FaImage size={20} />
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </label>
 
-            <div className="flex flex-col items-end">
-              <button
-                type="submit"
-                disabled={profile?.level === "Bronze"}
-                className={`px-4 py-1 rounded-xl text-sm ${
-                  profile?.level === "Bronze"
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-gray-900 text-white hover:opacity-90"
-                }`}
-              >
-                Post
-              </button>
+          <div className="flex flex-col items-end">
+            <button
+              type="submit"
+              className="px-4 py-1 rounded-xl text-sm bg-gray-900 text-white hover:opacity-90"
+            >
+              Post
+            </button>
+          </div>
 
-              {/* Keterangan kalau masih Bronze */}
-              {profile?.level === "Bronze" && (
-                <p className="text-xs text-red-500 mt-1">
-                  Upgrade to Silver to create posts
-                </p>
-              )}
-            </div>
           </div>
         </div>
       </div>
