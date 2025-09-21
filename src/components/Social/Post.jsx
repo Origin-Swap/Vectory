@@ -4,6 +4,7 @@ import { FaRegHeart, FaHeart, FaShare } from "react-icons/fa";
 import { BiLike } from "react-icons/bi";
 import { LiaComments } from "react-icons/lia";
 import { PiBookmarksLight } from "react-icons/pi";
+import { LuBadgeCheck } from "react-icons/lu";
 import { useAccountSupra } from "../../context/account";
 
 // ✅ helper waktu relatif
@@ -56,15 +57,15 @@ export default function Post({ post, onLike }) {
         </Link>
         <div>
           <div className="font-bold text-black leading-tight items-center">
-            <Link to={`/profile/${user.address}`} className="font-bold text-black">
+            <Link to={`/profile/${user.address}`} className="flex font-bold text-black">
               {user.name || "Anon"}
-              {user.level && (
-                <img
-                  src={`/images/badge/${user.level.toLowerCase()}.png`}
-                  alt={`${user.level} badge`}
-                  className="ml-1 w-4 h-4 inline-block"
-                />
+              {user.level === "Silver" && (
+                <LuBadgeCheck className="w-6 h-6 text-white fill-blue-500" />
               )}
+              {user.level === "Gold" && (
+                <LuBadgeCheck className="w-6 h-6 text-white fill-yellow-400" />
+              )}
+
             </Link>
           </div>
           <div className="text-xs text-gray-500">
@@ -77,12 +78,12 @@ export default function Post({ post, onLike }) {
 
       {/* Images */}
       {post.images && post.images.length > 0 && (
-        <div className="mt-3 relative">
+        <Link to={`/post/${post.id}`} className="relative">
           {post.images.length === 1 ? (
             <img
               src={post.images[0]}
               alt="post"
-              className="max-h-[400px] bg-white dark:bg-gray-800 shadow-xl w-full object-contain rounded-xl border border-gray-300"
+              className="max-h-[400px] mt-3 bg-white dark:bg-gray-800 shadow-xl w-full object-contain rounded-xl border border-gray-300"
             />
           ) : (
             <div className="relative">
@@ -107,12 +108,25 @@ export default function Post({ post, onLike }) {
             </div>
 
           )}
-        </div>
+        </Link>
       )}
 
       <div className="mt-3 whitespace-pre-wrap text-sm border-b pb-2">
-        {post.content}
+        {post.content && post.content.length > 160 ? (
+          <>
+            {post.content.slice(0, 160)}...
+            <Link
+              to={`/post/${post.id}`}
+              className="text-blue-500 hover:underline ml-1"
+            >
+              Read more
+            </Link>
+          </>
+        ) : (
+          post.content
+        )}
       </div>
+
 
       {/* Actions */}
       <div className="mt-2 flex items-center gap-4 text-sm text-gray-600">

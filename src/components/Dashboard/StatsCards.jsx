@@ -2,6 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import ReferralCard from "./ReferralCard";
+import { LuBadgeCheck } from "react-icons/lu";
 
 const StatsCards = ({ userData, address }) => {
   return (
@@ -13,14 +14,13 @@ const StatsCards = ({ userData, address }) => {
             <img src={userData.avatar || '/images/avatar-image.png'} alt="avatar" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+            <h2 className="flex items-center text-xl font-semibold text-gray-800 dark:text-white">
               {userData.username}
-              {userData.level && (
-                <img
-                  src={`/images/badge/${userData.level.toLowerCase()}.png`}
-                  alt={`${userData.level} badge`}
-                  className="ml-1 w-6 h-6 inline-block"
-                />
+              {userData.level === "Silver" && (
+                <LuBadgeCheck className="w-6 h-6 text-white fill-blue-500" />
+              )}
+              {userData.level === "Gold" && (
+                <LuBadgeCheck className="w-6 h-6 text-white fill-yellow-400" />
               )}
             </h2>
             <p className="text-blue-600 dark:text-blue-400">{userData.level} Member</p>

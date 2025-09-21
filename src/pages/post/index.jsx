@@ -72,10 +72,10 @@ export default function IndexPage() {
 
   return (
     <div className="flex min-h-screen bg-white text-gray-900 mt-14">
-    <aside className="hidden md:block  p-4">
+    <aside className="hidden md:block p-4">
     </aside>
-      <div className="w-full md:w-2/3 border-r">
-        <main className="max-w-2xl mx-auto py-4 px-2 md:p-4">
+      <div className="w-full md:w-7/12 border-r">
+        <main className="max-w-5xl mx-auto py-4 px-2 md:p-4">
           {isConnected && <CreatePost onCreate={handleCreatePost} />}
           <RecommendedUsersPhone/>
 
@@ -115,7 +115,7 @@ export default function IndexPage() {
       </div>
 
       {/* ===== SIDEBAR ===== */}
-      <aside className="hidden md:block w-6/12 p-4">
+      <aside className="hidden md:block w-5/12 p-4">
         <RecommendedUsers />
       </aside>
     </div>

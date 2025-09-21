@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { API_URL } from '../../config/ApiUrl';
 import { FaArrowRight } from "react-icons/fa";
+import { LuBadgeCheck } from "react-icons/lu";
 import axios from "axios";
 
 const RecommendedUsers = () => {
@@ -34,7 +35,15 @@ const RecommendedUsers = () => {
                 alt={user.username}
                 className="w-8 h-8 rounded-full"
               />
-              <span className="text-sm font-medium">{user.username || "Anon"}</span>
+              <span className="flex items-center text-sm font-medium">
+              {user.username || "Anon"}
+              {user.level === "Silver" && (
+                <LuBadgeCheck className="w-6 h-6 text-white fill-blue-500" />
+              )}
+              {user.level === "Gold" && (
+                <LuBadgeCheck className="w-6 h-6 text-white fill-yellow-400" />
+              )}
+              </span>
             </div>
 
             <div className="flex items-center gap-2">

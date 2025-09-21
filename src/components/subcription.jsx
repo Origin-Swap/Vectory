@@ -53,9 +53,9 @@ export default function SubscriptionPage() {
     {
       id: "gold",
       name: "Gold",
-      price: 2,
+      price: 2000,
       subtitle: "Full creator toolkit",
-      costToken: 2,
+      costToken: 2000,
       discount: 30, // 30%
       features: [
         "Everything in Bronze & Silver",

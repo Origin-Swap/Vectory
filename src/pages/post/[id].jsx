@@ -4,6 +4,7 @@ import axios from "axios";
 import { API_URL } from '../../config/ApiUrl';
 import PostDetail from "../../components/Social/PostDetail";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import RecommendedUsers from "../../components/Social/RecommendedUsers";
 import { useAccountSupra } from "../../context/account";
 
 export default function PostDetailPage() {
@@ -141,9 +142,10 @@ export default function PostDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 mt-16">
+    <div className="flex min-h-screen bg-gray-50 mt-16">
+    <div className="w-full md:w-7/12 border-r">
       <header className="sticky top-0 z-20 backdrop-blur bg-white/75 border-b">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
+        <div className="max-w-3xl mx-auto px-4 py-1 flex items-center gap-3">
           <Link to="/socialfi" className="flex px-3 py-1 items-center rounded-lg border">
             <IoIosArrowRoundBack className="w-5 h-5" /> Back to Feed
           </Link>
@@ -159,6 +161,10 @@ export default function PostDetailPage() {
           onDeleteComment={handleDeleteComment}
         />
       </main>
+    </div>
+      <aside className="hidden md:block w-5/12 p-4">
+        <RecommendedUsers />
+      </aside>
     </div>
   );
 }

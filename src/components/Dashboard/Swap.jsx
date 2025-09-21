@@ -150,7 +150,7 @@ export default function PointSwap() {
               disabled={loading || !pointsToSwap}
               className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-3 rounded-xl shadow-lg disabled:opacity-50 transition transform hover:scale-[1.02]"
             >
-              {loading ? "⏳ Processing..." : "🚀 Swap Now"}
+              {loading ? "⏳ Processing..." : "🚀 Redeem Now"}
             </button>
           </div>
         ) : (

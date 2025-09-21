@@ -27,7 +27,7 @@ const SidebarMenu = () => {
   };
 
   return (
-    <aside className="hidden mt-16 lg:flex flex-col w-52 bg-gray-50 dark:bg-gray-950 border-r border-gray-700 h-screen px-4 py-4 fixed">
+    <aside className="hidden mt-16 lg:flex flex-col w-64 bg-gray-50 dark:bg-gray-950 border-r border-gray-700 h-screen px-4 py-4 fixed">
       {/* Menu */}
       <nav className="flex-1 flex flex-col">
         <button

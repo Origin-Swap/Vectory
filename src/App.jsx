@@ -64,7 +64,7 @@ const Layout = () => {
       </div>
 
       {/* Main content area */}
-      <div className="lg:ml-52 flex-1"> {/* ✅ Tambahkan margin-left biar tidak ketimpa sidebar */}
+      <div className="lg:ml-64 flex-1"> {/* ✅ Tambahkan margin-left biar tidak ketimpa sidebar */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/create-items" element={<CreateItem />} />

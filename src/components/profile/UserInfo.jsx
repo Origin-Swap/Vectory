@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { FaUserGear } from "react-icons/fa6";
 import { MdOutlineChat, MdGroupAdd } from "react-icons/md";
 import UserProfileForm from './UserProfileForm';
+import { LuBadgeCheck } from "react-icons/lu";
 import { useAccountSupra } from "../../context/account";
 
 const UserInfo = ({ onProfileUpdate }) => {
@@ -99,6 +100,8 @@ const UserInfo = ({ onProfileUpdate }) => {
   };
 
 
+
+
   return (
     <>
       <div className="relative -top-16 px-2 flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
@@ -114,13 +117,13 @@ const UserInfo = ({ onProfileUpdate }) => {
           <h1 className="text-3xl font-extrabold text-gray-800 dark:text-white flex justify-center md:justify-start items-center gap-2 text-center md:text-left">
             {profile.username || "Anonymous"}
 
-            {profile.level && (
-              <img
-                src={`/images/badge/${profile.level.toLowerCase()}.png`}
-                alt={`${profile.level} badge`}
-                className="w-6 h-6 inline-block"
-              />
+            {profile.level === "Silver" && (
+              <LuBadgeCheck className="w-6 h-6 text-white fill-blue-500" />
             )}
+            {profile.level === "Gold" && (
+              <LuBadgeCheck className="w-6 h-6 text-white fill-yellow-500" />
+            )}
+
           </h1>
 
             <p className="text-sm text-gray-500 font-mono mb-4">
