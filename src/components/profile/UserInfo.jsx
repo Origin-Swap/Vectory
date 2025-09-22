@@ -114,14 +114,14 @@ const UserInfo = ({ onProfileUpdate }) => {
             />
           </div>
           <div>
-          <h1 className="text-3xl font-extrabold text-gray-800 dark:text-white flex justify-center md:justify-start items-center gap-2 text-center md:text-left">
+          <h1 className="text-2xl font-extrabold text-gray-800 dark:text-white flex justify-center md:justify-start items-center gap-2 text-center md:text-left">
             {profile.username || "Anonymous"}
 
             {profile.level === "Silver" && (
-              <LuBadgeCheck className="w-6 h-6 text-white fill-blue-500" />
+              <LuBadgeCheck className="w-8 h-8 text-white fill-blue-500" />
             )}
             {profile.level === "Gold" && (
-              <LuBadgeCheck className="w-6 h-6 text-white fill-yellow-500" />
+              <LuBadgeCheck className="w-8 h-8 text-white fill-yellow-500" />
             )}
 
           </h1>
@@ -130,11 +130,11 @@ const UserInfo = ({ onProfileUpdate }) => {
               {isConnected ? `${targetAddress.slice(0, 6)}...${targetAddress.slice(-4)}` : 'Not connected'}
             </p>
             <p className="text-sm text-gray-500 mb-2">{profile.bio}</p>
-            <div className="flex gap-3 mt-2 justify-center md:justify-start">
-              <button className="rounded-full px-4 py-1 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+            <div className="flex mt-2 justify-center md:justify-start">
+              <button className="rounded-full font-medium text-sm bg-white/0 hover:bg-gray-100 dark:hover:bg-gray-800 transition">
                 {profile.follower} Follower
               </button>
-              <button className="rounded-full px-4 py-1 font-medium text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+              <button className="rounded-full font-medium text-sm bg-white/0 hover:bg-gray-100 dark:hover:bg-gray-800 transition">
                 {profile.following} Following
               </button>
             </div>

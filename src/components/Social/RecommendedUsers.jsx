@@ -38,10 +38,10 @@ const RecommendedUsers = () => {
               <span className="flex items-center text-sm font-medium">
               {user.username || "Anon"}
               {user.level === "Silver" && (
-                <LuBadgeCheck className="w-6 h-6 text-white fill-blue-500" />
+                <LuBadgeCheck className="w-5 h-5 text-white fill-blue-500" />
               )}
               {user.level === "Gold" && (
-                <LuBadgeCheck className="w-6 h-6 text-white fill-yellow-400" />
+                <LuBadgeCheck className="w-5 h-5 text-white fill-yellow-400" />
               )}
               </span>
             </div>

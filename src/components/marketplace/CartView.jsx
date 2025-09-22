@@ -2,17 +2,21 @@
 import React, { useEffect, useState } from "react";
 import { useAccountSupra } from "../../context/account";
 import { API_URL } from "../../config/ApiUrl";
+import { purchaseItems } from "../../services/purchaseService";
 
 const CartView = () => {
-  const { address } = useAccountSupra();
+  const { account, address, balance } = useAccountSupra();
+
   const [cart, setCart] = useState([]);
   const [selected, setSelected] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  // Ambil cart user
   useEffect(() => {
     const fetchCart = async () => {
+      if (!address) return;
       try {
-        if (!address) return;
         const res = await fetch(`${API_URL}/api/cart/${address}`);
         const data = await res.json();
         setCart(Array.isArray(data) ? data : []);
@@ -23,6 +27,24 @@ const CartView = () => {
     fetchCart();
   }, [address]);
 
+  // Toggle select item
+  const toggleSelect = (cartItemId) => {
+    setSelected((prev) =>
+      prev.includes(cartItemId)
+        ? prev.filter((id) => id !== cartItemId)
+        : [...prev, cartItemId]
+    );
+  };
+
+  // Update quantity
+  const handleQuantityChange = (cartItemId, newQty) => {
+    if (newQty < 1) return;
+    setCart((prev) =>
+      prev.map((c) => (c.id === cartItemId ? { ...c, quantity: newQty } : c))
+    );
+  };
+
+  // Remove item
   const handleRemove = async (cartItemId) => {
     try {
       await fetch(`${API_URL}/api/cart/${cartItemId}`, { method: "DELETE" });
@@ -33,59 +55,55 @@ const CartView = () => {
     }
   };
 
-  const toggleSelect = (cartItemId) => {
-    setSelected((prev) =>
-      prev.includes(cartItemId)
-        ? prev.filter((id) => id !== cartItemId)
-        : [...prev, cartItemId]
-    );
-  };
-
-  // 🔹 Update quantity di state (frontend)
-  const handleQuantityChange = (cartItemId, newQty) => {
-    if (newQty < 1) return;
-    setCart((prev) =>
-      prev.map((c) =>
-        c.id === cartItemId ? { ...c, quantity: newQty } : c
-      )
-    );
-  };
-
-  const handlePurchase = () => {
-    if (selected.length === 0) return alert("No items selected!");
-    setShowPopup(true);
-  };
-
+  // Confirm purchase
+  // Confirm purchase
   const confirmPurchase = async () => {
+    if (!account || !address) return alert("Wallet not connected");
+    if (selected.length === 0) return alert("No items selected!");
+
+    const selectedItems = cart
+      .filter((c) => selected.includes(c.id))
+      .map((c) => ({
+        id: c.id,
+        itemId: c.Item?.id,
+        quantity: c.quantity,
+        price: c.Item?.price || 0,
+        sellerAddress: c.Item?.Seller?.address || null,
+      }));
+
+    setLoading(true);
     try {
-      const selectedItems = cart
-        .filter((c) => selected.includes(c.id))
-        .map((c) => ({
-          id: c.id,
-          quantity: c.quantity,
-        }));
+      // 1️⃣ Transfer SUPRA ke seller on-chain
+      const txResult = await purchaseItems(account, address, selectedItems, balance * 1e8);
+      if (!txResult.success || !txResult.txHashes?.length) throw new Error(txResult.error || "Tx failed");
 
-      const res = await fetch(`${API_URL}/api/cart/checkout`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userAddress: address,
-          items: selectedItems, // 🔹 kirim item + quantity
-        }),
-      });
+      // 2️⃣ Simpan order ke backend dengan status completed
+      for (const item of selectedItems) {
+        const res = await fetch(`${API_URL}/api/order/create`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userAddress: address,  // buyer
+            itemId: item.itemId,
+            quantity: item.quantity,
+            txHash: txResult.txHashes[0],
+          }),
+        });
 
-      const data = await res.json();
-      if (res.ok) {
-        alert("Purchase success!");
-        setCart([]);
-        setSelected([]);
-      } else {
-        alert(data.error || "Failed to purchase");
+        const data = await res.json();
+        if (!res.ok) console.error("Failed to create order:", data);
       }
+
+      alert("✅ Purchase success!");
+      // Hapus item dari cart
+      setCart((prev) => prev.filter((c) => !selected.includes(c.id)));
+      setSelected([]);
     } catch (err) {
       console.error("Error purchasing:", err);
+      alert(err.message || "Purchase failed");
     } finally {
       setShowPopup(false);
+      setLoading(false);
     }
   };
 
@@ -135,7 +153,6 @@ const CartView = () => {
                         className="w-full h-full object-cover rounded-lg shadow"
                       />
                     </div>
-
                     <div className="flex-1">
                       <h4 className="font-semibold">
                         {item.title || "Unnamed item"}
@@ -143,8 +160,6 @@ const CartView = () => {
                       <p className="text-sm text-gray-500">
                         {item.price ?? 0} {item.paymentMethod || "USDC"}
                       </p>
-
-                      {/* 🔹 Input quantity */}
                       <div className="flex items-center gap-2 mt-1">
                         <label className="text-xs text-gray-500">Qty:</label>
                         <input
@@ -161,7 +176,6 @@ const CartView = () => {
                         />
                       </div>
                     </div>
-
                     <button
                       onClick={() => handleRemove(cartItem.id)}
                       className="text-red-500 hover:text-red-600"
@@ -179,7 +193,7 @@ const CartView = () => {
               Total: <span className="text-red-500">${total}</span>
             </p>
             <button
-              onClick={handlePurchase}
+              onClick={() => setShowPopup(true)}
               className="bg-yellow-400 hover:bg-yellow-500 text-black px-4 py-2 rounded-lg"
             >
               Purchase
@@ -201,14 +215,16 @@ const CartView = () => {
               <button
                 onClick={() => setShowPopup(false)}
                 className="px-4 py-2 border rounded-lg"
+                disabled={loading}
               >
                 Cancel
               </button>
               <button
                 onClick={confirmPurchase}
                 className="px-4 py-2 bg-green-500 text-white rounded-lg"
+                disabled={loading}
               >
-                Confirm
+                {loading ? "Processing..." : "Confirm"}
               </button>
             </div>
           </div>

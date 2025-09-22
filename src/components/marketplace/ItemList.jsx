@@ -17,15 +17,25 @@ const ItemList = () => {
       try {
         const res = await fetch(`${API_URL}/api/items`);
         const data = await res.json();
-        setProducts(data);
+
+        // pastikan data array
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else if (data.items && Array.isArray(data.items)) {
+          setProducts(data.items);
+        } else {
+          setProducts([]); // fallback
+        }
       } catch (err) {
         console.error("Gagal ambil items:", err);
+        setProducts([]); // supaya tidak error saat render
       } finally {
         setLoading(false);
       }
     };
     fetchItems();
   }, []);
+
 
   const categories = [
     "All Categories",

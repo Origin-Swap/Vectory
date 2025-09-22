@@ -19,16 +19,16 @@ const SellerBoard = () => {
 
     const fetchData = async () => {
       try {
-        const statsRes = await axios.get(`${API_URL}/api/seller/${address}/stats`);
+        const statsRes = await axios.get(`${API_URL}/api/order/seller/${address}/stats`);
         setStats(statsRes.data || null);
 
         const productRes = await axios.get(
-          `${API_URL}/api/seller/${address}/top-products?limit=5`
+          `${API_URL}/api/order/seller/${address}/top-products?limit=5`
         );
         setTopProducts(productRes.data || []);
 
         const ordersRes = await axios.get(
-          `${API_URL}/api/seller/${address}/orders?limit=5`
+          `${API_URL}/api/order/seller/${address}/orders?limit=5`
         );
         setOrders(ordersRes.data || []);
       } catch (err) {
@@ -75,7 +75,7 @@ const SellerBoard = () => {
           >
             <p className="text-sm text-gray-500">Total Sales</p>
             <h2 className="text-2xl font-bold">
-              {stats ? stats.totalSales || 0 : "--"}
+              {stats ? stats.totalSold || 0 : "--"}
             </h2>
           </div>
 
@@ -86,7 +86,7 @@ const SellerBoard = () => {
           >
             <p className="text-sm text-gray-500">Total Revenue</p>
             <h2 className="text-2xl font-bold">
-              {stats ? `$${stats.totalRevenue?.toLocaleString() || 0}` : "--"}
+              {stats ? `$${stats.totalRevenue?.toLocaleString() || 0}` : "--"} SUPRA
             </h2>
           </div>
 
@@ -123,24 +123,60 @@ const SellerBoard = () => {
         <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-16">
           <h2 className="text-xl font-bold mb-4">Recent Orders</h2>
           {orders.length > 0 ? (
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
+            <table className="min-w-full text-sm text-left">
+              <thead className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
                 <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium">Order ID</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium">Product</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium">Amount</th>
-                  <th className="px-4 py-2 text-left text-xs font-medium">Status</th>
+                  <th className="py-2 px-4">Image</th>
+                  <th className="py-2 px-4">Title</th>
+                  <th className="py-2 px-4">Price</th>
+                  <th className="py-2 px-4">Quantity</th>
+                  <th className="py-2 px-4">Order Date</th>
+                  <th className="py-2 px-4">Status</th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {orders.map((order, idx) => (
-                  <tr key={idx}>
-                    <td className="px-4 py-2">{order.id}</td>
-                    <td className="px-4 py-2">{order.productName}</td>
-                    <td className="px-4 py-2">${order.amount}</td>
-                    <td className="px-4 py-2">{order.status}</td>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {orders.map((order) => {
+                let images = order.images;
+                if (typeof images === "string") {
+                  try {
+                    const parsed = JSON.parse(images);
+                    if (Array.isArray(parsed)) images = parsed;
+                  } catch (_) {}
+                }
+                const imgSrc =
+                  Array.isArray(images) && images.length > 0
+                    ? images[0]
+                    : typeof images === "string" && images.length > 0
+                    ? images
+                    : "/images/default-product.png";
+
+                return (
+                  <tr key={order.id}>
+                    <td className="py-3 px-4">
+                      <img src={imgSrc} alt={order.title} className="w-12 h-12 rounded object-cover" />
+                    </td>
+                    <td className="py-3 px-4 font-medium">{order.title}</td>
+                    <td className="py-3 px-4">${order.price} {order.paymentMethod}</td>
+                    <td className="py-3 px-4">{order.quantity}</td>
+                    <td className="py-3 px-4">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span
+                        className={`text-xs font-semibold ${
+                          order.status === "completed"
+                            ? "text-green-600"
+                            : order.status === "pending"
+                            ? "text-yellow-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {order.status}
+                      </span>
+                    </td>
                   </tr>
-                ))}
+                );
+              })}
               </tbody>
             </table>
           ) : (

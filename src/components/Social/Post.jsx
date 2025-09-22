@@ -132,7 +132,7 @@ export default function Post({ post, onLike }) {
       <div className="mt-2 flex items-center gap-4 text-sm text-gray-600">
         <button
           onClick={() => onLike(post.id)}
-          className="flex items-center gap-2 px-3 py-1 "
+          className="flex bg-white/0 items-center gap-2 px-3 py-1 "
         >
           {hasLiked ? <FaHeart className="text-red-500" /> : <BiLike />}
           {post.likes || 0}
@@ -140,13 +140,13 @@ export default function Post({ post, onLike }) {
 
         <Link
           to={`/post/${post.id}`}
-          className="flex items-center gap-2 px-3 py-1 "
+          className="flex bg-white/0 items-center gap-2 px-3 py-1 "
         >
           <LiaComments />{" "}
           {post.commentsCount ?? (post.comments ? post.comments.length : 0)}
         </Link>
 
-        <button className="flex items-center gap-2 px-3 py-1 ">
+        <button className="flex bg-white/0 items-center gap-2 px-3 py-1 ">
           <FaShare /> {post.likes || 0}
         </button>
 

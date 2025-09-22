@@ -194,7 +194,7 @@ const ItemDetail = () => {
                   <BsBagCheck /> <strong>Available:</strong> {item.quantity} items
                 </p>
                 <p className="flex items-center gap-1">
-                  <BsCartCheck /> <strong>Sold:</strong> {item.sales || 0} items
+                  <BsCartCheck /> <strong>Sold:</strong> {item.sold || 0} items
                 </p>
                 <p className="flex items-center gap-1">
                   <TbCalendarCheck /> <strong>Last Updates:</strong>{" "}
