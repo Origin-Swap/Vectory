@@ -1,40 +1,62 @@
-// components/Chat/ChatBox.jsx
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { API_URL } from "../../config/ApiUrl";
+import { useParams, Link } from "react-router-dom";
+import { useAccountSupra } from "../../context/account";
+import { IoIosArrowRoundBack } from "react-icons/io";
 
-export default function ChatBox({ userAddress, chatWithAddress }) {
+export default function ChatWindow() {
+  const { address } = useAccountSupra();
+  const { chatWithAddress } = useParams();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [receiverProfile, setReceiverProfile] = useState(null);
   const scrollRef = useRef();
 
-  // 🚀 Ambil chat antara dua user
+  // Ambil profil lawan chat
   useEffect(() => {
-    const fetchChats = async () => {
+    const fetchProfile = async () => {
+      if (!chatWithAddress) return;
       try {
-        setLoading(true);
-        const res = await axios.get(
-          `${API_URL}/api/chat/between/${userAddress}/${chatWithAddress}`
-        );
-        setMessages(res.data);
+        const res = await axios.get(`${API_URL}/api/user/${chatWithAddress}`);
+        setReceiverProfile(res.data.data);
       } catch (err) {
-        console.error("Gagal ambil chat:", err);
-      } finally {
-        setLoading(false);
-        scrollToBottom();
+        console.error("Gagal ambil profil user:", err);
       }
     };
-    fetchChats();
-  }, [userAddress, chatWithAddress]);
+    fetchProfile();
+  }, [chatWithAddress]);
 
-  // 🚀 Kirim pesan
+  // Ambil chat (sekali + polling otomatis)
+  useEffect(() => {
+    let intervalId;
+
+    const fetchChats = async () => {
+      try {
+        const res = await axios.get(
+          `${API_URL}/api/chat/between/${address}/${chatWithAddress}`
+        );
+        setMessages(res.data);
+        scrollToBottom();
+      } catch (err) {
+        console.error("Gagal ambil chat:", err);
+      }
+    };
+
+    if (address && chatWithAddress) {
+      fetchChats();
+      // polling tiap 3 detik
+      intervalId = setInterval(fetchChats, 3000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [address, chatWithAddress]);
+
   const handleSend = async () => {
     if (!input.trim()) return;
-
     try {
-      const res = await axios.post("https://towerpad.online/api/chat/send", {
-        senderAddress: userAddress,
+      const res = await axios.post(`${API_URL}/api/chat/send`, {
+        senderAddress: address,
         receiverAddress: chatWithAddress,
         message: input.trim(),
       });
@@ -54,30 +76,43 @@ export default function ChatBox({ userAddress, chatWithAddress }) {
   };
 
   return (
-    <div className="max-w-md mx-auto border rounded-xl shadow-lg flex flex-col h-[500px] bg-white">
+    <div className="mx-auto border rounded-xl shadow-lg flex flex-col h-[520px] bg-white mt-16">
       {/* Header */}
-      <div className="p-4 border-b font-semibold flex items-center justify-between">
-        <span>Chat</span>
-        <span className="text-sm text-gray-500">{chatWithAddress}</span>
+      <div className="md:hidden block p-4 border-b font-semibold flex items-center justify-between">
+      <Link to="/chat" className="flex px-3 py-1 items-center rounded-lg border">
+        <IoIosArrowRoundBack className="w-5 h-5" /> Back to Chat
+      </Link>
+        <span className="text-sm text-gray-500">
+          {receiverProfile?.username || chatWithAddress}
+        </span>
       </div>
 
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="flex-1 p-4 overflow-y-auto space-y-2 bg-gray-50"
+        className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50"
       >
-        {loading ? (
-          <div className="text-center text-gray-400">Loading...</div>
-        ) : messages.length === 0 ? (
-          <div className="text-center text-gray-400">Belum ada pesan</div>
+        {messages.length === 0 ? (
+          <div className="text-center text-gray-400">No Data</div>
         ) : (
           messages.map((msg) => {
-            const isSender = msg.senderAddress === userAddress;
+            const isSender = msg.senderAddress === address;
             return (
               <div
                 key={msg.id}
-                className={`flex ${isSender ? "justify-end" : "justify-start"}`}
+                className={`flex items-end gap-2 ${
+                  isSender ? "justify-end" : "justify-start"
+                }`}
               >
+                {/* Avatar tampil kalau bukan kita */}
+                {!isSender && (
+                  <img
+                    src={msg.sender?.avatar || "/images/avatar-image.png"}
+                    alt="avatar"
+                    className="w-8 h-8 rounded-full border"
+                  />
+                )}
+
                 <div
                   className={`px-4 py-2 rounded-2xl max-w-[70%] break-words ${
                     isSender
@@ -90,11 +125,21 @@ export default function ChatBox({ userAddress, chatWithAddress }) {
                     {new Date(msg.createdAt).toLocaleTimeString()}
                   </div>
                 </div>
+
+                {/* Avatar tampil kalau kita sendiri */}
+                {isSender && (
+                  <img
+                    src={receiverProfile?.avatar || "/images/avatar-image.png"}
+                    alt="avatar"
+                    className="w-8 h-8 rounded-full border"
+                  />
+                )}
               </div>
             );
           })
         )}
       </div>
+
 
       {/* Input */}
       <div className="p-3 border-t flex gap-2">

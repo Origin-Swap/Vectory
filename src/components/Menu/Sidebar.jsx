@@ -85,9 +85,9 @@ const SidebarMenu = () => {
         </button>
 
         <button
-          onClick={() => navigate("/notif")}
+          onClick={() => navigate("/notification")}
           className={`flex items-center font-bold gap-3 px-3 py-2 rounded-lg dark:text-white ${
-            isActive("/notif") ? "menu-active dark:bg-black" : "dark:bg-black"
+            isActive("/notification") ? "menu-active dark:bg-black" : "dark:bg-black"
           }`}
         >
           <MdNotificationsNone className="w-5 h-5" /> Notification

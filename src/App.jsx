@@ -21,7 +21,7 @@ import Checkout from './pages/Cart';
 import NotifPage from './components/Notif';
 import SocialFiIndex from './pages/post/index';
 import PostDetailPage from './pages/post/[id]';
-import ChatPage from './pages/chat';
+import ChatPage from "./pages/chat";
 import Statistics from './components/stats';
 import Upgrade from './components/subcription';
 import SellerBoard from "./components/Dashboard/SellerBoard";
@@ -80,7 +80,8 @@ const Layout = () => {
           <Route path="/stake" element={<Stake />} />
           <Route path="/socialfi" element={<SocialFiIndex />} />
           <Route path="/post/:id" element={<PostDetailPage />} />
-          <Route path="/chat/*" element={<ChatPage />} />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/chat/:chatWithAddress" element={<ChatPage />} />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/level-upgrade" element={<Upgrade />} />
           <Route path="/point-exchange" element={<SwapPage />} />

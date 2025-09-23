@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 import { API_URL } from '../../config/ApiUrl';
 import { useParams } from "react-router-dom";
 import { FaUserGear } from "react-icons/fa6";
@@ -8,6 +9,8 @@ import { LuBadgeCheck } from "react-icons/lu";
 import { useAccountSupra } from "../../context/account";
 
 const UserInfo = ({ onProfileUpdate }) => {
+  const navigate = useNavigate();
+  const [openChat, setOpenChat] = useState(false);
   const { address: connectedAddress, isConnected } = useAccountSupra();
   const { address: paramAddress } = useParams(); // param di URL
 
@@ -142,7 +145,7 @@ const UserInfo = ({ onProfileUpdate }) => {
               {/* Chat & Follow hanya kalau buka profil orang lain */}
               {paramAddress && paramAddress.toLowerCase() !== connectedAddress?.toLowerCase() && (
                 <>
-                  <button className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
+                  <button   onClick={() => navigate(`/chat/${paramAddress}`)} className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
                     <MdOutlineChat className="text-lg items-center mr-1"/>Chat
                   </button>
                   <button
@@ -176,7 +179,10 @@ const UserInfo = ({ onProfileUpdate }) => {
             {/* Chat & Follow hanya kalau buka profil orang lain */}
             {paramAddress && paramAddress.toLowerCase() !== connectedAddress?.toLowerCase() && (
               <>
-                <button className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
+                <button
+                onClick={() => navigate(`/chat/${paramAddress}`)}
+                className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition"
+                >
                   <MdOutlineChat className="text-lg items-center mr-1"/>Chat
                 </button>
                 <button

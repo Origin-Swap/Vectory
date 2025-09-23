@@ -15,9 +15,7 @@ const TabPage = () => {
 
     const fetchNotifs = async () => {
       try {
-        const res = await axios.get(
-          `${API_URL}/api/notification/${address}`
-        );
+        const res = await axios.get(`${API_URL}/api/notification/${address}`);
         setNotifications(res.data.data || []);
       } catch (err) {
         console.error("Gagal fetch notifikasi:", err);
@@ -88,10 +86,24 @@ const TabPage = () => {
               ${notif.isRead ? "opacity-70" : "hover:bg-gray-50"}`}
               onClick={() => markAsRead(notif.id)}
             >
-              <h3 className="text-md font-bold text-gray-800">{notif.message}</h3>
-              <p className="text-xs text-gray-400 mt-2">
-                {new Date(notif.createdAt).toLocaleString()}
-              </p>
+              <div className="flex items-center gap-3">
+                {/* Avatar */}
+                <img
+                  src={notif.actor?.avatar || "/images/avatar-image.png"}
+                  alt="avatar"
+                  className="w-10 h-10 rounded-full border"
+                />
+
+                {/* Text */}
+                <div className="flex-1">
+                  <h3 className="text-md font-bold text-gray-800">
+                    {notif.actor?.username || notif.actorAddress} – {notif.message}
+                  </h3>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {new Date(notif.createdAt).toLocaleString()}
+                  </p>
+                </div>
+              </div>
             </div>
           ))
         )}
