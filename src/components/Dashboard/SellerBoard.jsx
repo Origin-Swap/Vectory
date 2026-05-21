@@ -1,14 +1,14 @@
 // src/components/Dashboard/SellerBoard.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 import { API_URL } from "../../config/ApiUrl";
 import { Link } from "react-router-dom";
 import MyProducts from "../profile/MyProducts";
 import { BiCartAdd } from "react-icons/bi";
 
 const SellerBoard = () => {
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
   const [topProducts, setTopProducts] = useState([]);

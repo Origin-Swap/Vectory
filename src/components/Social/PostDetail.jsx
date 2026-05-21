@@ -6,7 +6,7 @@ import { FaRegHeart, FaShare } from "react-icons/fa";
 import { AiOutlineComment } from "react-icons/ai";
 import { LuBadgeCheck } from "react-icons/lu";
 import { Link } from "react-router-dom";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 export default function PostDetail({
   post,
@@ -15,7 +15,7 @@ export default function PostDetail({
   onAddReply,
   onDeleteComment,
 }) {
-  const { address, isConnected } = useAccountSupra();
+  const { address, isConnected } = useAccount();
   // 🚀 Normalisasi user
   const user = post.User || post.author || {};
     const [currentIndex, setCurrentIndex] = useState(0);

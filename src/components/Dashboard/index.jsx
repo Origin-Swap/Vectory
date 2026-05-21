@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PiCalendarCheckDuotone } from "react-icons/pi";
-import { useAccount } from 'wagmi';
 import axios from 'axios';
 import { API_URL } from "../../config/ApiUrl";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 import ReferralCard from "./ReferralCard";
 import Header from "./Header";
 import StatsCards from "./StatsCards";
@@ -13,7 +12,7 @@ import DailyCheckin from "./DailyCheckin";
 import PointHistory from "./PointHistory";
 
 const Dashboard = () => {
-  const { address, isConnected, connectWallet, disconnectWallet } = useAccountSupra();
+  const { address, isConnected, connectWallet, disconnectWallet } = useAccount();
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
 

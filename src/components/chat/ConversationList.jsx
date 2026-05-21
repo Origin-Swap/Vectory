@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../config/ApiUrl";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 export default function ChatWindow() {
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const { chatAddress } = useParams(); // lawan chat
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");

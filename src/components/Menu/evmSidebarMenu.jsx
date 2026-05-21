@@ -28,7 +28,7 @@ const Navbar = () => {
   const defaultAvatar = '/images/avatar-image.png';
 
   const chainOptions = [
-    { id: supra.id, name: 'SUPRA', icon: '/images/tokens/supra.webp' },
+    // { id: supra.id, name: 'SUPRA', icon: '/images/tokens/supra.webp' },
     { id: base.id, name: 'BASE', icon: '/images/chain/base.png' },
   ].filter(chain => supportedChains.some(supported => supported.id === chain.id));
 

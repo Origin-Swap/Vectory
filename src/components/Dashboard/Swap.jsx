@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from '../../config/ApiUrl';
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
 
 export default function PointSwap() {
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [pointsToSwap, setPointsToSwap] = useState("");

@@ -3,12 +3,12 @@ import { API_URL } from "../../config/ApiUrl";
 import ItemCard from '../marketplace/ItemCard';
 import { Link, useParams } from "react-router-dom";
 import { MdAddShoppingCart } from "react-icons/md";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 const MyProducts = () => {
-  const { address: connectedAddress } = useAccountSupra();
+  const { address } = useAccount();
   const { address: paramAddress } = useParams();
-  const targetAddress = paramAddress || connectedAddress;
+  const targetAddress = paramAddress || address;
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);

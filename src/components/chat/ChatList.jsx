@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../config/ApiUrl";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 import { IoListOutline } from "react-icons/io5";
 
 export default function ChatList() {
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {

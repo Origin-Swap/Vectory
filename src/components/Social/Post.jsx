@@ -5,7 +5,7 @@ import { BiLike } from "react-icons/bi";
 import { LiaComments } from "react-icons/lia";
 import { PiBookmarksLight } from "react-icons/pi";
 import { LuBadgeCheck } from "react-icons/lu";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 // ✅ helper waktu relatif
 function timeAgo(dateString) {

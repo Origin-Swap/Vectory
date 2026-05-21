@@ -1,7 +1,7 @@
 // src/components/Social/CommentForm.jsx
 import React, { useState, useEffect } from "react";
 import { API_URL } from '../../config/ApiUrl';
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 export default function CommentForm({ onSubmit }) {
   const [text, setText] = useState("");

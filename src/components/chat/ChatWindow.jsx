@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { API_URL } from "../../config/ApiUrl";
 import { useParams, Link } from "react-router-dom";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 import { IoIosArrowRoundBack } from "react-icons/io";
 
 export default function ChatWindow() {
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const { chatWithAddress } = useParams();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");

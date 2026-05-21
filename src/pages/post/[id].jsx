@@ -5,11 +5,11 @@ import { API_URL } from '../../config/ApiUrl';
 import PostDetail from "../../components/Social/PostDetail";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import RecommendedUsers from "../../components/Social/RecommendedUsers";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 export default function PostDetailPage() {
   const { id } = useParams();
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
 

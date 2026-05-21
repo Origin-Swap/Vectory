@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from '../../config/ApiUrl';
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 const TabPage = () => {
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const [activeTab, setActiveTab] = useState("new");
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -1,11 +1,11 @@
 // src/components/marketplace/CartView.jsx
 import React, { useEffect, useState } from "react";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 import { API_URL } from "../../config/ApiUrl";
 import { purchaseItems } from "../../services/purchaseService";
 
 const CartView = () => {
-  const { account, address, balance } = useAccountSupra();
+  const { account, address, balance } = useAccount();
 
   const [cart, setCart] = useState([]);
   const [selected, setSelected] = useState([]);

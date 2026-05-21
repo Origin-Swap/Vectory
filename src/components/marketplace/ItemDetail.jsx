@@ -6,11 +6,11 @@ import { TbCalendarCheck } from "react-icons/tb";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import AddToCartButton from "./AddToCartButton";
 import ItemCard from "./ItemCard";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 const ItemDetail = () => {
   const navigate = useNavigate();
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const { title } = useParams();
 
   const [item, setItem] = useState(null);

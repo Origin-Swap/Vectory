@@ -10,6 +10,9 @@ import { IoNotifications, IoCartOutline } from "react-icons/io5";
 import { FiMenu } from "react-icons/fi";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import DarkModeToggle from './../useDarkMode';
+import { BsFileEarmarkPdf } from "react-icons/bs";
+import { FaGithub, FaRegHandshake } from "react-icons/fa";
+import { PiUserCircleGearLight } from "react-icons/pi";
 
 const TopBar = () => {
   const navigate = useNavigate();
@@ -205,24 +208,30 @@ const TopBar = () => {
                     <Link
                       to="/profile"
                       onClick={() => setProfileDropdownOpen(false)}
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="flex items-center font-bold gap-3 px-3 py-1 rounded-lg dark:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
-                      My Profile
+                    <PiUserCircleGearLight className="w-5 h-5" />  My Profile
                     </Link>
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setProfileDropdownOpen(false)}
-                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    <button
+                      onClick={() => window.open("https://drive.google.com/file/d/1XeerOx7NQUVUbYjdb_ffgItS5llo_6yq/view?usp=sharing", "_blank")}
+                      className="flex items-center font-bold gap-3 px-3 py-1 rounded-lg dark:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
-                      PointBoard
-                    </Link>
-                    <Link
-                      to="/stake"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg"
+                      <BsFileEarmarkPdf className="w-5 h-5" /> Whitepaper
+                    </button>
+
+                    <button
+                      onClick={() => window.open("https://github.com/kraftera-market", "_blank")}
+                      className="flex items-center font-bold gap-3 px-3 py-1 rounded-lg dark:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
-                      Staking Pools
-                    </Link>
+                      <FaGithub className="w-5 h-5" /> Github
+                    </button>
+
+                    <button
+                      onClick={() => window.open("https://braindao.eco", "_blank")}
+                      className="flex items-center font-bold gap-3 px-3 py-1 rounded-lg dark:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    >
+                      <FaRegHandshake className="w-5 h-5" /> Ecosystem
+                    </button>
                     <button
                       onClick={() => {
                         disconnect();

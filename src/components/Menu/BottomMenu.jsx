@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../../config/ApiUrl';
-import TopBar from './TopBar';
+import TopBar from './evmTopBar';
 import { BsShop } from "react-icons/bs";
 import { ImFeed } from "react-icons/im";
 import { IoCreateOutline } from "react-icons/io5";
@@ -92,6 +92,13 @@ const BottomMenu = () => {
         >
           <VscDashboard className="w-6 h-6 text-gray-800 " />
           <span className="text-sm text-gray-800 pt-1"> Point </span>
+        </Link>
+        <Link
+          to="/stake"
+          className="flex flex-col items-center border p-1 rounded-md border-2 border-yellow-300"
+        >
+          <img src="/braindao-mark-mono.png" className="w-6 h-6 text-gray-800 " />
+          <span className="text-sm text-gray-800 pt-1"> IQ AI </span>
         </Link>
         <Link
           to="/stake"

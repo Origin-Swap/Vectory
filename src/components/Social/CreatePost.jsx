@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from '../../config/ApiUrl';
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 import { FaImage, FaTrash } from "react-icons/fa";
 
 export default function CreatePost({ onCreate }) {
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
   const [previews, setPreviews] = useState([]);

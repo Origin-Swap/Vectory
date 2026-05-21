@@ -76,7 +76,6 @@ const ItemList = () => {
   );
 
   const paymentLogos = {
-    SUPRA: "/images/tokens/supra.webp",
     KT: "/images/tokens/kt.png",
     USDT: "/images/tokens/tether-1.svg",
     USDC: "/images/tokens/usdc.png",

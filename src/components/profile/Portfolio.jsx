@@ -6,14 +6,14 @@ import UserInfo from "./UserInfo";
 import WalletSection from "./WalletSection";
 import OrderHistory from "./OrderHistory";
 import MyProducts from "./MyProducts";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 import { getSupraPrice } from "../../utils/getSupraPrice";
 import { useParams } from "react-router-dom"; // 🆕 ambil param
 
 const ProfilePortfolio = () => {
-  const { address: connectedAddress, isConnected, balance } = useAccountSupra();
+  const { address, isConnected, balance } = useAccount();
   const { address: paramAddress } = useParams(); // 🆕 param di URL
-  const targetAddress = paramAddress || connectedAddress;
+  const targetAddress = paramAddress || address;
 
   const [profile, setProfile] = useState({
     username: "UserName",
@@ -68,7 +68,7 @@ const ProfilePortfolio = () => {
   // cek apakah ini profil milik connected wallet
   const isSelfProfile =
     isConnected &&
-    (!paramAddress || paramAddress.toLowerCase() === connectedAddress?.toLowerCase());
+    (!paramAddress || paramAddress.toLowerCase() === address?.toLowerCase());
 
   return (
     <div className="max-w-6xl mt-14 md:mt-16 mx-auto md:px-4 md:py-2 px-2 py-2">

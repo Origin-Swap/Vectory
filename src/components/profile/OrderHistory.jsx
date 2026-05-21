@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { MdHistory } from "react-icons/md";
 import axios from "axios";
 import { API_URL } from "../../config/ApiUrl";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 const OrderHistory = ({ products }) => {
-  const { address } = useAccountSupra();
+  const { address } = useAccount();
   const [stats, setStats] = useState(null);
   const [orders, setOrders] = useState([]);
 

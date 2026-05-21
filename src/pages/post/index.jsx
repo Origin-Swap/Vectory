@@ -6,10 +6,10 @@ import Post from "../../components/Social/Post";
 import CreatePost from "../../components/Social/CreatePost";
 import RecommendedUsers from "../../components/Social/RecommendedUsers";
 import RecommendedUsersPhone from "../../components/Social/RecommendedUsersPhone";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 export default function IndexPage() {
-  const { isConnected, address } = useAccountSupra();
+  const { isConnected, address } = useAccount();
   const [posts, setPosts] = useState([]);
   const [query, setQuery] = useState("");
   const [activeTab, setActiveTab] = useState("forYou");

@@ -1,13 +1,13 @@
 // src/App.jsx
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoadingScreen from './components/LoadingScreen';
-import SidebarMenu from './components/Menu/SidebarMenu';
-import Topbar from './components/Menu/TopBar'; // pastikan path ini benar
+import TopBarPCMenu from './components/Menu/SidebarMenu';
+import Sidebar from './components/Menu/Sidebar';
+import Topbar from './components/Menu/TopBar';
 import BottomMenu from './components/Menu/BottomMenu';
 import Dashboard from './components/Dashboard';
-import Checkin from './components/Dashboard/dailypoint';
+import SwapPage from './components/Dashboard/Swap';
 import Stake from './components/Staking';
 import HomePage from './pages/Home';
 import CreateItem from './pages/CreateItem';
@@ -16,37 +16,22 @@ import Profile from './pages/profile';
 import EditProfile from './pages/profile/Create';
 import Shop from './pages/shop';
 import MyItems from './pages/profile/MyItems';
+import MyCart from './components/marketplace/CartView';
 import Checkout from './pages/Cart';
 import NotifPage from './components/Notif';
+import SocialFiIndex from './pages/post/index';
+import PostDetailPage from './pages/post/[id]';
+import ChatPage from "./pages/chat";
+import Statistics from './components/stats';
+import Upgrade from './components/subcription';
+import SellerBoard from "./components/Dashboard/SellerBoard";
 import Footer from "./pages/Footer";
 
 import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
-import { WagmiProvider } from 'wagmi';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { supra } from './context/chains';
-import { base } from 'viem/chains';
-import '@rainbow-me/rainbowkit/styles.css';
-import {
-  getDefaultConfig,
-  RainbowKitProvider,
-  darkTheme,
-  lightTheme
-} from '@rainbow-me/rainbowkit';
+import { AccountProvider } from './context/account'; // 🔹 Context untuk Supra Move account
 
-const queryClient = new QueryClient();
-
-// Project ID WalletConnect
-const projectId = '65e900325f6440b81073eb1b10270843'; //mainweb
-// const projectId = '92a84f411cd537d466fbaa048af85b42'; // local
-
-const config = getDefaultConfig({
-  appName: 'Vectory',
-  projectId: projectId,
-  chains: [supra, base],
-  ssr: true,
-});
-
-// ⬇️ Layout component harus berada DI DALAM LayoutProvider
+// Layout Component
+// Layout Component
 const Layout = () => {
   const { isSidebarVisible } = useLayoutContext();
 
@@ -62,65 +47,73 @@ const Layout = () => {
   }, []);
 
   return (
-    <WagmiProvider config={config}>
-          <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider
-              theme={lightTheme({
-                accentColor: '#837AF5',
-                borderRadius: 'large',
-              })}
-            >
+    <>
       {/* Sidebar menu untuk desktop */}
       <div className="hidden lg:flex">
-         <SidebarMenu />
-       </div>
-       <div className="block lg:hidden">
-         <Topbar />
-       </div>
+        <TopBarPCMenu />
+      </div>
+
+      {/* Topbar untuk mobile */}
+      <div className="block lg:hidden">
+        <Topbar />
+      </div>
+
+      {/* Sidebar tambahan (kalau ada) */}
+      <div className="hidden lg:flex">
+        <Sidebar />
+      </div>
 
       {/* Main content area */}
-      <div>
+      <div className="lg:ml-64 flex-1"> {/* ✅ Tambahkan margin-left biar tidak ketimpa sidebar */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/create-items" element={<CreateItem />} />
-          <Route path="/details/:id" element={<ItemDetails />} />
-          <Route path="/details/:id/checkout" element={<Checkout />} />
+          <Route path="/details/:title" element={<ItemDetails />} />
+          <Route path="/details/:title/checkout" element={<Checkout />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:address" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/shop" element={<Shop />} />
-          <Route path="/my-items" element={<MyItems />} />
+          <Route path="/my-cart" element={<MyCart />} />
           <Route path="/notification" element={<NotifPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/checkin" element={<Checkin />} />
-          <Route path="/stake" element={<Stake/>} />
+          <Route path="/stake" element={<Stake />} />
+          <Route path="/socialfi" element={<SocialFiIndex />} />
+          <Route path="/post/:id" element={<PostDetailPage />} />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/chat/:chatWithAddress" element={<ChatPage />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/level-upgrade" element={<Upgrade />} />
+          <Route path="/point-exchange" element={<SwapPage />} />
+          <Route path="/seller-board" element={<SellerBoard />} />
         </Routes>
         <Footer />
       </div>
 
       {/* Bottom menu untuk mobile */}
       <BottomMenu />
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    </>
   );
 };
 
-// ⬇️ Perbaikan: LayoutProvider dan WagmiProvider berada di luar Layout
+
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000); // Simulasi waktu loading selama 3 detik
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <LayoutProvider>
-          <Router>
-            {isLoading ? <LoadingScreen /> : <Layout />}
-          </Router>
+      <AccountProvider> {/* 🔹 Bungkus semua komponen dengan Supra Move Account Context */}
+        <Router>
+          {isLoading ? <LoadingScreen /> : <Layout />}
+        </Router>
+      </AccountProvider>
     </LayoutProvider>
   );
 };

@@ -6,16 +6,16 @@ import { FaUserGear } from "react-icons/fa6";
 import { MdOutlineChat, MdGroupAdd } from "react-icons/md";
 import UserProfileForm from './UserProfileForm';
 import { LuBadgeCheck } from "react-icons/lu";
-import { useAccountSupra } from "../../context/account";
+import { useAccount } from "wagmi";
 
 const UserInfo = ({ onProfileUpdate }) => {
   const navigate = useNavigate();
   const [openChat, setOpenChat] = useState(false);
-  const { address: connectedAddress, isConnected } = useAccountSupra();
+  const { address, isConnected } = useAccount();
   const { address: paramAddress } = useParams(); // param di URL
 
   // target address (profil siapa yang dibuka)
-  const targetAddress = paramAddress || connectedAddress;
+  const targetAddress = paramAddress || address;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [profile, setProfile] = useState({
@@ -26,6 +26,47 @@ const UserInfo = ({ onProfileUpdate }) => {
   });
 
   const [isFollowing, setIsFollowing] = useState(false); // 🆕 status follow
+
+  // UserInfo.jsx - Tambahkan ini setelah useEffect yang sudah ada
+
+  // Register user jika belum terdaftar
+  useEffect(() => {
+    const registerUserIfNeeded = async () => {
+      // Hanya register jika wallet terhubung dan ada address
+      if (!isConnected || !address) return;
+
+      try {
+        console.log("Checking if user exists:", address);
+
+        // Coba cek user dulu
+        const checkRes = await fetch(`${API_URL}/api/user/${address}`);
+
+        if (checkRes.status === 404) {
+          // User tidak ditemukan, register
+          console.log("User not found, registering...");
+          const registerRes = await fetch(`${API_URL}/api/user/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ address: address.toLowerCase() })
+          });
+
+          if (registerRes.ok) {
+            console.log("User registered successfully");
+            // Refresh profile setelah register
+            const profileRes = await fetch(`${API_URL}/api/user/${address}`);
+            const profileData = await profileRes.json();
+            setProfile(profileData.data);
+          }
+        } else if (checkRes.ok) {
+          console.log("User already exists");
+        }
+      } catch (err) {
+        console.error("Error checking/registering user:", err);
+      }
+    };
+
+    registerUserIfNeeded();
+  }, [address, isConnected]); // Jalankan saat address berubah
 
   // Ambil data user saat address berubah
   useEffect(() => {
@@ -57,7 +98,7 @@ const UserInfo = ({ onProfileUpdate }) => {
   // Cek apakah connected user sudah follow paramAddress
   useEffect(() => {
     const checkFollow = async () => {
-      if (!connectedAddress || !paramAddress) return;
+      if (!address || !paramAddress) return;
       try {
         const res = await fetch(
           `${API_URL}/api/user/${paramAddress}/followers`
@@ -65,7 +106,7 @@ const UserInfo = ({ onProfileUpdate }) => {
         const data = await res.json();
 
         const alreadyFollowing = data.data.some(
-          (u) => u.address.toLowerCase() === connectedAddress.toLowerCase()
+          (u) => u.address.toLowerCase() === address.toLowerCase()
         );
         setIsFollowing(alreadyFollowing);
       } catch (err) {
@@ -73,11 +114,11 @@ const UserInfo = ({ onProfileUpdate }) => {
       }
     };
     checkFollow();
-  }, [connectedAddress, paramAddress]);
+  }, [address, paramAddress]);
 
   // Handler follow/unfollow
   const handleFollowToggle = async () => {
-    if (!connectedAddress || !paramAddress) return;
+    if (!address || !paramAddress) return;
 
     try {
       if (isFollowing) {
@@ -85,7 +126,7 @@ const UserInfo = ({ onProfileUpdate }) => {
         await fetch(`${API_URL}/api/user/${paramAddress}/unfollow`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ followerAddress: connectedAddress }),
+          body: JSON.stringify({ followerAddress: address }),
         });
         setIsFollowing(false);
       } else {
@@ -93,7 +134,7 @@ const UserInfo = ({ onProfileUpdate }) => {
         await fetch(`${API_URL}/api/user/${paramAddress}/follow`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ followerAddress: connectedAddress }),
+          body: JSON.stringify({ followerAddress: address }),
         });
         setIsFollowing(true);
       }
@@ -143,7 +184,7 @@ const UserInfo = ({ onProfileUpdate }) => {
             </div>
             <div className="flex md:hidden flex-wrap gap-3 mt-4 justify-center">
               {/* Chat & Follow hanya kalau buka profil orang lain */}
-              {paramAddress && paramAddress.toLowerCase() !== connectedAddress?.toLowerCase() && (
+              {paramAddress && paramAddress.toLowerCase() !== address?.toLowerCase() && (
                 <>
                   <button   onClick={() => navigate(`/chat/${paramAddress}`)} className="flex bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition">
                     <MdOutlineChat className="text-lg items-center mr-1"/>Chat
@@ -163,7 +204,7 @@ const UserInfo = ({ onProfileUpdate }) => {
               )}
 
               {/* Edit hanya kalau buka profil sendiri */}
-              {isConnected && (!paramAddress || paramAddress.toLowerCase() === connectedAddress?.toLowerCase()) && (
+              {isConnected && (!paramAddress || paramAddress.toLowerCase() === address?.toLowerCase()) && (
                 <button
                   className="flex bg-gray-200 text-gray-800 px-4 py-2 rounded-full text-sm font-semibold hover:bg-gray-300 transition"
                   onClick={() => setIsModalOpen(true)}
@@ -177,7 +218,7 @@ const UserInfo = ({ onProfileUpdate }) => {
         {isConnected && targetAddress && (
           <div className="hidden md:flex gap-3 mt-2">
             {/* Chat & Follow hanya kalau buka profil orang lain */}
-            {paramAddress && paramAddress.toLowerCase() !== connectedAddress?.toLowerCase() && (
+            {paramAddress && paramAddress.toLowerCase() !== address?.toLowerCase() && (
               <>
                 <button
                 onClick={() => navigate(`/chat/${paramAddress}`)}
@@ -200,7 +241,7 @@ const UserInfo = ({ onProfileUpdate }) => {
             )}
 
             {/* Edit hanya kalau buka profil sendiri */}
-            {(!paramAddress || paramAddress.toLowerCase() === connectedAddress?.toLowerCase()) && (
+            {(!paramAddress || paramAddress.toLowerCase() === address?.toLowerCase()) && (
               <button
                 className="flex bg-gray-200 text-gray-800 px-5 py-2 rounded-full font-semibold hover:bg-gray-300 transition text-sm"
                 onClick={() => setIsModalOpen(true)}
@@ -226,7 +267,7 @@ const UserInfo = ({ onProfileUpdate }) => {
             </button>
 
             <UserProfileForm
-              address={connectedAddress}
+              address={address}
               initialData={{ ...profile }}
               onSave={(data) => {
                 setProfile(data);
