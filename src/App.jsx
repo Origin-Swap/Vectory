@@ -26,6 +26,9 @@ import Statistics from './components/stats';
 import Upgrade from './components/subcription';
 import SellerBoard from "./components/Dashboard/SellerBoard";
 import Footer from "./pages/Footer";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
 
 import { LayoutProvider, useLayoutContext } from './context/LayoutContext';
 import { WagmiProvider } from 'wagmi';
@@ -115,6 +118,9 @@ const Layout = () => {
           <Route path="/level-upgrade" element={<Upgrade />} />
           <Route path="/point-exchange" element={<SwapPage />} />
           <Route path="/seller-board" element={<SellerBoard />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/cookies" element={<Cookies />} />
         </Routes>
         <Footer />
       </div>

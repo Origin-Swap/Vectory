@@ -226,12 +226,13 @@ const TopBar = () => {
                       <FaGithub className="w-5 h-5" /> Github
                     </button>
 
-                    <button
+                    {/* <button
                       onClick={() => window.open("https://braindao.eco", "_blank")}
                       className="flex items-center font-bold gap-3 px-3 py-1 rounded-lg dark:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
                     >
                       <FaRegHandshake className="w-5 h-5" /> Ecosystem
-                    </button>
+                    </button> */}
+                    
                     <button
                       onClick={() => {
                         disconnect();
