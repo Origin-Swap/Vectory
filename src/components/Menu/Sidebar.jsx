@@ -72,7 +72,7 @@ const SidebarMenu = () => {
           onClick={() => window.open("https://iq.wiki/wiki/kraftera", "_blank")}
           className="flex items-center font-bold gap-3 px-3 py-1 rounded-lg dark:text-white hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
         >
-          <img src="/braindao-mark-mono.png" className="w-5 h-5" /> IQ AI
+          <img src="/braindao-mark-mono.png" className="w-5 h-5" /> IQ
         </button>
 
         <button
