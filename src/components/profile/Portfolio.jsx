@@ -7,12 +7,12 @@ import WalletSection from "./WalletSection";
 import OrderHistory from "./OrderHistory";
 import MyProducts from "./MyProducts";
 import { useAccount } from "wagmi";
-import { getSupraPrice } from "../../utils/getSupraPrice";
-import { useParams } from "react-router-dom"; // 🆕 ambil param
+import { getEthPrice } from "../../utils/getSupraPrice";
+import { useParams } from "react-router-dom";
 
 const ProfilePortfolio = () => {
   const { address, isConnected, balance } = useAccount();
-  const { address: paramAddress } = useParams(); // 🆕 param di URL
+  const { address: paramAddress } = useParams();
   const targetAddress = paramAddress || address;
 
   const [profile, setProfile] = useState({
@@ -23,23 +23,22 @@ const ProfilePortfolio = () => {
     bio: "Digital creator & blockchain enthusiast.",
     points: 860,
     balances: {
-      SUPRA: 0,
+      ETH: 0,
     },
     orders: [/* ... */],
   });
 
-  const [supraPrice, setSupraPrice] = useState(0);
+  const [ethPrice, setEthPrice] = useState(0);
 
   const userProducts = products.filter((p) => p.owner === profile.wallet);
 
   const tokenData = {
-    SUPRA: { logo: "/images/tokens/supra.webp", price: supraPrice },
+    ETH: { logo: "/images/tokens/ETH.png", price: ethPrice },
     KT: { logo: "/images/tokens/kt.png", price: 0.1, address: "0xKTTokenAddress" },
     USDT: { logo: "/images/tokens/tether-1.svg", price: 1, address: "0xUsdtTokenAddress" },
     USDC: { logo: "/images/tokens/usdc.png", price: 1, address: "0xUsdcTokenAddress" },
   };
 
-  // Update balance ketika connect
   // Update balance & wallet tergantung targetAddress
   useEffect(() => {
     if (!targetAddress) return;
@@ -48,19 +47,19 @@ const ProfilePortfolio = () => {
       ...prev,
       wallet: targetAddress,
       balances: {
-        ...prev.balances,
-        SUPRA: paramAddress ? 0 : (balance || 0),
-        // 👉 kalau lihat profil orang lain, SUPRA = 0
+        ETH: paramAddress ? 0 : (balance || 0),
+        KT: 0,      // 👈 bisa diisi dengan balance token KT dari contract
+        USDT: 0,    // 👈 bisa diisi dengan balance token USDT dari contract
+        USDC: 0     // 👈 bisa diisi dengan balance token USDC dari contract
       },
     }));
   }, [targetAddress, balance, paramAddress]);
 
-
-  // fetch harga SUPRA sekali saat load
+  // fetch harga ETH sekali saat load
   useEffect(() => {
     const fetchPrice = async () => {
-      const price = await getSupraPrice();
-      setSupraPrice(price);
+      const price = await getEthPrice();
+      setEthPrice(price);
     };
     fetchPrice();
   }, []);

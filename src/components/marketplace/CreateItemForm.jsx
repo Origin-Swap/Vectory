@@ -251,7 +251,7 @@ const CreateItemForm = () => {
       <div>
         <label className="block font-medium mb-1">Payment Method</label>
         <div className="flex gap-x-6 mt-2">
-          {["SUPRA", "KT", "USDC", "USDT"].map((method) => (
+          {["ETH", "KT", "USDC", "USDT"].map((method) => (
             <label key={method} className="flex items-center gap-x-1">
               <input
                 type="radio"
